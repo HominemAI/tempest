@@ -1,0 +1,35 @@
+# Credentials and local state
+.env
+.env.*
+!.env.example
+**/__pycache__/
+**/*.pyc
+**/.venv*/
+**/*.sqlite*
+**/*.log
+**/*.lock
+**/*.ses
+**/.DS_Store
+/migration/
+/papers/personality-data/
+/papers/emotion-labeling/
+/papers/emotion_training/artifacts/
+/papers/.models/
+/papers/.nltk-data/
+/papers/.ladybug/
+/papers/.subject-index-*/
+/papers/.chemical-index-*/
+/papers/.impeccable/review/
+/papers/explorer.html
+/papers/references.csv
+# Keep corpus locally; review licenses before publishing any full texts.
+/papers/neuroscience/
+/papers/metacognition/
+/papers/philosophy/
+/papers/phenomenology/
+/papers/embodiment/
+/papers/machine-consciousness/
+/papers/biochemical-behavior/
+/papers/biochemical-crime/
+/papers/adrenaline-opioids/
+/papers/emotion-components/

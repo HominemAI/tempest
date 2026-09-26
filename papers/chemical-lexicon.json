@@ -1,0 +1,1595 @@
+{
+  "version": 1,
+  "scope": "Editable broad screening vocabulary, not a complete ontology. Endogenous transmitters, peptides, hormones, neurotrophic and immune signals, precursors, families, and separately labeled exogenous compounds.",
+  "sources": [
+    "https://www.ncbi.nlm.nih.gov/books/NBK10795/",
+    "https://www.ncbi.nlm.nih.gov/books/NBK10960/",
+    "https://www.ncbi.nlm.nih.gov/books/NBK278995/",
+    "https://www.ncbi.nlm.nih.gov/books/NBK6480/",
+    "https://www.guidetopharmacology.org/"
+  ],
+  "notes": [
+    "Categories describe a retrieval vocabulary, not an exclusive physiological taxonomy.",
+    "Related adjectives (e.g. dopaminergic) and receptor-associated mentions are labeled separately from chemical names.",
+    "Ambiguous short aliases DA, NE, NA, NO, CO, E, T3 and T4 are intentionally excluded.",
+    "A mention is not an assertion of causal effect, a concentration measurement, or an endorsed finding.",
+    "Some molecules can be both endogenous and administered as drugs; origin is a default vocabulary grouping, not an inference about use in a passage."
+  ],
+  "chemicals": [
+    {"id":"esketamine","name":"Esketamine","category":"Anesthetic / sedative","origin":"exogenous","aliases":["esketamine"],"related_terms":[]},
+    {"id":"escitalopram","name":"Escitalopram","category":"Psychoactive compound","origin":"exogenous","aliases":["escitalopram"],"related_terms":[]},
+    {
+      "id": "acetylcholine",
+      "name": "Acetylcholine",
+      "category": "Neurotransmitter",
+      "origin": "endogenous",
+      "aliases": [
+        "acetylcholine",
+        "ACh"
+      ],
+      "related_terms": [
+        "cholinergic",
+        "acetylcholinergic"
+      ]
+    },
+    {
+      "id": "dopamine",
+      "name": "Dopamine",
+      "category": "Neurotransmitter",
+      "origin": "endogenous",
+      "aliases": [
+        "dopamine"
+      ],
+      "related_terms": [
+        "dopaminergic"
+      ]
+    },
+    {
+      "id": "serotonin",
+      "name": "Serotonin",
+      "category": "Neurotransmitter",
+      "origin": "endogenous",
+      "aliases": [
+        "serotonin",
+        "5-hydroxytryptamine",
+        "5-HT",
+        "5HT"
+      ],
+      "related_terms": [
+        "serotonergic",
+        "serotoninergic"
+      ]
+    },
+    {
+      "id": "norepinephrine",
+      "name": "Norepinephrine",
+      "category": "Neurotransmitter",
+      "origin": "endogenous",
+      "aliases": [
+        "norepinephrine",
+        "noradrenaline"
+      ],
+      "related_terms": [
+        "noradrenergic",
+        "norepinephrinergic"
+      ]
+    },
+    {
+      "id": "epinephrine",
+      "name": "Epinephrine",
+      "category": "Neurotransmitter",
+      "origin": "endogenous",
+      "aliases": [
+        "epinephrine",
+        "adrenaline"
+      ],
+      "related_terms": [
+        "adrenergic"
+      ]
+    },
+    {
+      "id": "histamine",
+      "name": "Histamine",
+      "category": "Neurotransmitter",
+      "origin": "endogenous",
+      "aliases": [
+        "histamine"
+      ],
+      "related_terms": [
+        "histaminergic"
+      ]
+    },
+    {
+      "id": "glutamate",
+      "name": "Glutamate",
+      "category": "Neurotransmitter",
+      "origin": "endogenous",
+      "aliases": [
+        "glutamate",
+        "glutamic acid"
+      ],
+      "related_terms": [
+        "glutamatergic"
+      ]
+    },
+    {
+      "id": "gaba",
+      "name": "GABA",
+      "category": "Neurotransmitter",
+      "origin": "endogenous",
+      "aliases": [
+        "GABA",
+        "gamma-aminobutyric acid",
+        "γ-aminobutyric acid",
+        "gamma aminobutyric acid"
+      ],
+      "related_terms": [
+        "GABAergic",
+        "GABA-ergic"
+      ]
+    },
+    {
+      "id": "glycine",
+      "name": "Glycine",
+      "category": "Neurotransmitter",
+      "origin": "endogenous",
+      "aliases": [
+        "glycine"
+      ],
+      "related_terms": [
+        "glycinergic"
+      ]
+    },
+    {
+      "id": "aspartate",
+      "name": "Aspartate",
+      "category": "Neurotransmitter",
+      "origin": "endogenous",
+      "aliases": [
+        "aspartate",
+        "aspartic acid"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "d-serine",
+      "name": "D-serine",
+      "category": "Neurotransmitter",
+      "origin": "endogenous",
+      "aliases": [
+        "D-serine"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "taurine",
+      "name": "Taurine",
+      "category": "Neurotransmitter",
+      "origin": "endogenous",
+      "aliases": [
+        "taurine"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "adenosine",
+      "name": "Adenosine",
+      "category": "Purine / gaseous signal",
+      "origin": "endogenous",
+      "aliases": [
+        "adenosine"
+      ],
+      "related_terms": [
+        "adenosinergic"
+      ]
+    },
+    {
+      "id": "atp",
+      "name": "ATP",
+      "category": "Purine / gaseous signal",
+      "origin": "endogenous",
+      "aliases": [
+        "ATP",
+        "adenosine triphosphate"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "nitric-oxide",
+      "name": "Nitric oxide",
+      "category": "Purine / gaseous signal",
+      "origin": "endogenous",
+      "aliases": [
+        "nitric oxide"
+      ],
+      "related_terms": [
+        "nitrergic"
+      ]
+    },
+    {
+      "id": "carbon-monoxide",
+      "name": "Carbon monoxide",
+      "category": "Purine / gaseous signal",
+      "origin": "endogenous",
+      "aliases": [
+        "carbon monoxide"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "hydrogen-sulfide",
+      "name": "Hydrogen sulfide",
+      "category": "Purine / gaseous signal",
+      "origin": "endogenous",
+      "aliases": [
+        "hydrogen sulfide",
+        "hydrogen sulphide"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "anandamide",
+      "name": "Anandamide",
+      "category": "Endocannabinoid",
+      "origin": "endogenous",
+      "aliases": [
+        "anandamide",
+        "arachidonoylethanolamide"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "2-arachidonoylglycerol",
+      "name": "2-arachidonoylglycerol",
+      "category": "Endocannabinoid",
+      "origin": "endogenous",
+      "aliases": [
+        "2-arachidonoylglycerol",
+        "2-AG"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "oxytocin",
+      "name": "Oxytocin",
+      "category": "Neuropeptide",
+      "origin": "endogenous",
+      "aliases": [
+        "oxytocin"
+      ],
+      "related_terms": [
+        "oxytocinergic"
+      ]
+    },
+    {
+      "id": "vasopressin",
+      "name": "Vasopressin",
+      "category": "Neuropeptide",
+      "origin": "endogenous",
+      "aliases": [
+        "vasopressin",
+        "arginine vasopressin",
+        "AVP"
+      ],
+      "related_terms": [
+        "vasopressinergic"
+      ]
+    },
+    {
+      "id": "orexin-hypocretin",
+      "name": "Orexin / hypocretin",
+      "category": "Neuropeptide",
+      "origin": "endogenous",
+      "aliases": [
+        "orexin",
+        "orexin-A",
+        "orexin-B",
+        "hypocretin",
+        "hypocretin-1",
+        "hypocretin-2"
+      ],
+      "related_terms": [
+        "orexinergic",
+        "hypocretinergic"
+      ]
+    },
+    {
+      "id": "neuropeptide-y",
+      "name": "Neuropeptide Y",
+      "category": "Neuropeptide",
+      "origin": "endogenous",
+      "aliases": [
+        "neuropeptide Y",
+        "NPY"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "substance-p",
+      "name": "Substance P",
+      "category": "Neuropeptide",
+      "origin": "endogenous",
+      "aliases": [
+        "substance P"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "corticotropin-releasing-hormone",
+      "name": "Corticotropin-releasing hormone",
+      "category": "Neuropeptide",
+      "origin": "endogenous",
+      "aliases": [
+        "corticotropin-releasing hormone",
+        "corticotrophin-releasing hormone",
+        "corticotropin-releasing factor",
+        "CRH",
+        "CRF"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "beta-endorphin",
+      "name": "Beta-endorphin",
+      "category": "Neuropeptide",
+      "origin": "endogenous",
+      "aliases": [
+        "beta-endorphin",
+        "β-endorphin"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "enkephalin",
+      "name": "Enkephalin",
+      "category": "Neuropeptide",
+      "origin": "endogenous",
+      "aliases": [
+        "enkephalin",
+        "enkephalins",
+        "met-enkephalin",
+        "leu-enkephalin"
+      ],
+      "related_terms": [
+        "enkephalinergic"
+      ]
+    },
+    {
+      "id": "dynorphin",
+      "name": "Dynorphin",
+      "category": "Neuropeptide",
+      "origin": "endogenous",
+      "aliases": [
+        "dynorphin",
+        "dynorphins",
+        "dynorphin A",
+        "dynorphin B"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "nociceptin",
+      "name": "Nociceptin",
+      "category": "Neuropeptide",
+      "origin": "endogenous",
+      "aliases": [
+        "nociceptin",
+        "orphanin FQ"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "cholecystokinin",
+      "name": "Cholecystokinin",
+      "category": "Neuropeptide",
+      "origin": "endogenous",
+      "aliases": [
+        "cholecystokinin",
+        "CCK"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "somatostatin",
+      "name": "Somatostatin",
+      "category": "Neuropeptide",
+      "origin": "endogenous",
+      "aliases": [
+        "somatostatin"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "neurotensin",
+      "name": "Neurotensin",
+      "category": "Neuropeptide",
+      "origin": "endogenous",
+      "aliases": [
+        "neurotensin"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "galanin",
+      "name": "Galanin",
+      "category": "Neuropeptide",
+      "origin": "endogenous",
+      "aliases": [
+        "galanin"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "pacap",
+      "name": "PACAP",
+      "category": "Neuropeptide",
+      "origin": "endogenous",
+      "aliases": [
+        "PACAP",
+        "pituitary adenylate cyclase-activating polypeptide"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "vip",
+      "name": "VIP",
+      "category": "Neuropeptide",
+      "origin": "endogenous",
+      "aliases": [
+        "VIP",
+        "vasoactive intestinal peptide"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "thyrotropin-releasing-hormone",
+      "name": "Thyrotropin-releasing hormone",
+      "category": "Neuropeptide",
+      "origin": "endogenous",
+      "aliases": [
+        "thyrotropin-releasing hormone",
+        "TRH"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "gonadotropin-releasing-hormone",
+      "name": "Gonadotropin-releasing hormone",
+      "category": "Neuropeptide",
+      "origin": "endogenous",
+      "aliases": [
+        "gonadotropin-releasing hormone",
+        "GnRH"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "melanin-concentrating-hormone",
+      "name": "Melanin-concentrating hormone",
+      "category": "Neuropeptide",
+      "origin": "endogenous",
+      "aliases": [
+        "melanin-concentrating hormone"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "alpha-msh",
+      "name": "Alpha-MSH",
+      "category": "Neuropeptide",
+      "origin": "endogenous",
+      "aliases": [
+        "alpha-MSH",
+        "α-MSH",
+        "alpha-melanocyte-stimulating hormone"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "agouti-related-peptide",
+      "name": "Agouti-related peptide",
+      "category": "Neuropeptide",
+      "origin": "endogenous",
+      "aliases": [
+        "agouti-related peptide",
+        "AgRP"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "cgrp",
+      "name": "CGRP",
+      "category": "Neuropeptide",
+      "origin": "endogenous",
+      "aliases": [
+        "CGRP",
+        "calcitonin gene-related peptide"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "neuropeptide-s",
+      "name": "Neuropeptide S",
+      "category": "Neuropeptide",
+      "origin": "endogenous",
+      "aliases": [
+        "neuropeptide S"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "neuropeptide-b",
+      "name": "Neuropeptide B",
+      "category": "Neuropeptide",
+      "origin": "endogenous",
+      "aliases": [
+        "neuropeptide B"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "neuropeptide-w",
+      "name": "Neuropeptide W",
+      "category": "Neuropeptide",
+      "origin": "endogenous",
+      "aliases": [
+        "neuropeptide W"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "cortisol",
+      "name": "Cortisol",
+      "category": "Hormone / neurosteroid",
+      "origin": "endogenous",
+      "aliases": [
+        "cortisol",
+        "hydrocortisone"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "corticosterone",
+      "name": "Corticosterone",
+      "category": "Hormone / neurosteroid",
+      "origin": "endogenous",
+      "aliases": [
+        "corticosterone"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "acth",
+      "name": "ACTH",
+      "category": "Hormone / neurosteroid",
+      "origin": "endogenous",
+      "aliases": [
+        "ACTH",
+        "adrenocorticotropic hormone",
+        "adrenocorticotrophic hormone",
+        "corticotropin",
+        "corticotrophin"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "melatonin",
+      "name": "Melatonin",
+      "category": "Hormone / neurosteroid",
+      "origin": "endogenous",
+      "aliases": [
+        "melatonin"
+      ],
+      "related_terms": [
+        "melatonergic"
+      ]
+    },
+    {
+      "id": "ghrelin",
+      "name": "Ghrelin",
+      "category": "Hormone / neurosteroid",
+      "origin": "endogenous",
+      "aliases": [
+        "ghrelin"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "leptin",
+      "name": "Leptin",
+      "category": "Hormone / neurosteroid",
+      "origin": "endogenous",
+      "aliases": [
+        "leptin"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "insulin",
+      "name": "Insulin",
+      "category": "Hormone / neurosteroid",
+      "origin": "endogenous",
+      "aliases": [
+        "insulin"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "prolactin",
+      "name": "Prolactin",
+      "category": "Hormone / neurosteroid",
+      "origin": "endogenous",
+      "aliases": [
+        "prolactin"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "estradiol",
+      "name": "Estradiol",
+      "category": "Hormone / neurosteroid",
+      "origin": "endogenous",
+      "aliases": [
+        "estradiol",
+        "oestradiol",
+        "17β-estradiol",
+        "17beta-estradiol"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "progesterone",
+      "name": "Progesterone",
+      "category": "Hormone / neurosteroid",
+      "origin": "endogenous",
+      "aliases": [
+        "progesterone"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "testosterone",
+      "name": "Testosterone",
+      "category": "Hormone / neurosteroid",
+      "origin": "endogenous",
+      "aliases": [
+        "testosterone"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "allopregnanolone",
+      "name": "Allopregnanolone",
+      "category": "Hormone / neurosteroid",
+      "origin": "endogenous",
+      "aliases": [
+        "allopregnanolone"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "pregnenolone",
+      "name": "Pregnenolone",
+      "category": "Hormone / neurosteroid",
+      "origin": "endogenous",
+      "aliases": [
+        "pregnenolone"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "dhea",
+      "name": "DHEA",
+      "category": "Hormone / neurosteroid",
+      "origin": "endogenous",
+      "aliases": [
+        "DHEA",
+        "dehydroepiandrosterone"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "thyroxine",
+      "name": "Thyroxine",
+      "category": "Hormone / neurosteroid",
+      "origin": "endogenous",
+      "aliases": [
+        "thyroxine",
+        "tetraiodothyronine"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "triiodothyronine",
+      "name": "Triiodothyronine",
+      "category": "Hormone / neurosteroid",
+      "origin": "endogenous",
+      "aliases": [
+        "triiodothyronine"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "aldosterone",
+      "name": "Aldosterone",
+      "category": "Hormone / neurosteroid",
+      "origin": "endogenous",
+      "aliases": [
+        "aldosterone"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "growth-hormone",
+      "name": "Growth hormone",
+      "category": "Hormone / neurosteroid",
+      "origin": "endogenous",
+      "aliases": [
+        "growth hormone",
+        "somatotropin"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "bdnf",
+      "name": "BDNF",
+      "category": "Neurotrophic factor",
+      "origin": "endogenous",
+      "aliases": [
+        "BDNF",
+        "brain-derived neurotrophic factor"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "ngf",
+      "name": "NGF",
+      "category": "Neurotrophic factor",
+      "origin": "endogenous",
+      "aliases": [
+        "NGF",
+        "nerve growth factor"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "gdnf",
+      "name": "GDNF",
+      "category": "Neurotrophic factor",
+      "origin": "endogenous",
+      "aliases": [
+        "GDNF",
+        "glial cell line-derived neurotrophic factor"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "neurotrophin-3",
+      "name": "Neurotrophin-3",
+      "category": "Neurotrophic factor",
+      "origin": "endogenous",
+      "aliases": [
+        "neurotrophin-3",
+        "NT-3"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "neurotrophin-4",
+      "name": "Neurotrophin-4",
+      "category": "Neurotrophic factor",
+      "origin": "endogenous",
+      "aliases": [
+        "neurotrophin-4",
+        "neurotrophin-4/5",
+        "NT-4"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "cntf",
+      "name": "CNTF",
+      "category": "Neurotrophic factor",
+      "origin": "endogenous",
+      "aliases": [
+        "CNTF",
+        "ciliary neurotrophic factor"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "interleukin-1-beta",
+      "name": "Interleukin-1 beta",
+      "category": "Immune signal",
+      "origin": "endogenous",
+      "aliases": [
+        "interleukin-1 beta",
+        "interleukin-1β",
+        "IL-1β",
+        "IL-1beta",
+        "IL-1b"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "interleukin-6",
+      "name": "Interleukin-6",
+      "category": "Immune signal",
+      "origin": "endogenous",
+      "aliases": [
+        "interleukin-6",
+        "IL-6"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "tnf-alpha",
+      "name": "TNF-alpha",
+      "category": "Immune signal",
+      "origin": "endogenous",
+      "aliases": [
+        "TNF-alpha",
+        "TNF-α",
+        "tumor necrosis factor alpha",
+        "tumour necrosis factor alpha"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "interferon-gamma",
+      "name": "Interferon-gamma",
+      "category": "Immune signal",
+      "origin": "endogenous",
+      "aliases": [
+        "interferon-gamma",
+        "interferon-γ",
+        "IFN-γ"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "interleukin-10",
+      "name": "Interleukin-10",
+      "category": "Immune signal",
+      "origin": "endogenous",
+      "aliases": [
+        "interleukin-10",
+        "IL-10"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "tryptophan",
+      "name": "Tryptophan",
+      "category": "Precursor / metabolite",
+      "origin": "endogenous",
+      "aliases": [
+        "tryptophan"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "tyrosine",
+      "name": "Tyrosine",
+      "category": "Precursor / metabolite",
+      "origin": "endogenous",
+      "aliases": [
+        "tyrosine"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "l-dopa",
+      "name": "L-DOPA",
+      "category": "Precursor / metabolite",
+      "origin": "endogenous",
+      "aliases": [
+        "L-DOPA",
+        "levodopa"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "5-htp",
+      "name": "5-HTP",
+      "category": "Precursor / metabolite",
+      "origin": "endogenous",
+      "aliases": [
+        "5-HTP",
+        "5-hydroxytryptophan"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "5-hiaa",
+      "name": "5-HIAA",
+      "category": "Precursor / metabolite",
+      "origin": "endogenous",
+      "aliases": [
+        "5-HIAA",
+        "5-hydroxyindoleacetic acid"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "kynurenine",
+      "name": "Kynurenine",
+      "category": "Precursor / metabolite",
+      "origin": "endogenous",
+      "aliases": [
+        "kynurenine"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "kynurenic-acid",
+      "name": "Kynurenic acid",
+      "category": "Precursor / metabolite",
+      "origin": "endogenous",
+      "aliases": [
+        "kynurenic acid"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "quinolinic-acid",
+      "name": "Quinolinic acid",
+      "category": "Precursor / metabolite",
+      "origin": "endogenous",
+      "aliases": [
+        "quinolinic acid"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "homovanillic-acid",
+      "name": "Homovanillic acid",
+      "category": "Precursor / metabolite",
+      "origin": "endogenous",
+      "aliases": [
+        "homovanillic acid"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "catecholamines",
+      "name": "Catecholamines",
+      "category": "Chemical family",
+      "origin": "family",
+      "aliases": [
+        "catecholamine",
+        "catecholamines"
+      ],
+      "related_terms": [
+        "catecholaminergic"
+      ]
+    },
+    {
+      "id": "monoamines",
+      "name": "Monoamines",
+      "category": "Chemical family",
+      "origin": "family",
+      "aliases": [
+        "monoamine",
+        "monoamines"
+      ],
+      "related_terms": [
+        "monoaminergic"
+      ]
+    },
+    {
+      "id": "endorphins",
+      "name": "Endorphins",
+      "category": "Chemical family",
+      "origin": "family",
+      "aliases": [
+        "endorphin",
+        "endorphins"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "endogenous-opioids",
+      "name": "Endogenous opioids",
+      "category": "Chemical family",
+      "origin": "family",
+      "aliases": [
+        "endogenous opioid",
+        "endogenous opioids",
+        "opioid peptide",
+        "opioid peptides"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "opioids-unspecified",
+      "name": "Opioids (unspecified)",
+      "category": "Chemical family",
+      "origin": "family",
+      "aliases": [
+        "opioid",
+        "opioids"
+      ],
+      "related_terms": [
+        "opioidergic"
+      ]
+    },
+    {
+      "id": "endocannabinoids",
+      "name": "Endocannabinoids",
+      "category": "Chemical family",
+      "origin": "family",
+      "aliases": [
+        "endocannabinoid",
+        "endocannabinoids"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "cannabinoids-unspecified",
+      "name": "Cannabinoids (unspecified)",
+      "category": "Chemical family",
+      "origin": "family",
+      "aliases": [
+        "cannabinoid",
+        "cannabinoids"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "glucocorticoids",
+      "name": "Glucocorticoids",
+      "category": "Chemical family",
+      "origin": "family",
+      "aliases": [
+        "glucocorticoid",
+        "glucocorticoids"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "estrogens",
+      "name": "Estrogens",
+      "category": "Chemical family",
+      "origin": "family",
+      "aliases": [
+        "estrogen",
+        "estrogens",
+        "oestrogen",
+        "oestrogens"
+      ],
+      "related_terms": [
+        "estrogenic",
+        "oestrogenic"
+      ]
+    },
+    {
+      "id": "androgens",
+      "name": "Androgens",
+      "category": "Chemical family",
+      "origin": "family",
+      "aliases": [
+        "androgen",
+        "androgens"
+      ],
+      "related_terms": [
+        "androgenic"
+      ]
+    },
+    {
+      "id": "neurosteroids",
+      "name": "Neurosteroids",
+      "category": "Chemical family",
+      "origin": "family",
+      "aliases": [
+        "neurosteroid",
+        "neurosteroids"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "neurotrophins",
+      "name": "Neurotrophins",
+      "category": "Chemical family",
+      "origin": "family",
+      "aliases": [
+        "neurotrophin",
+        "neurotrophins"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "cytokines",
+      "name": "Cytokines",
+      "category": "Chemical family",
+      "origin": "family",
+      "aliases": [
+        "cytokine",
+        "cytokines"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "propofol",
+      "name": "Propofol",
+      "category": "Anesthetic / sedative",
+      "origin": "exogenous",
+      "aliases": [
+        "propofol"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "ketamine",
+      "name": "Ketamine",
+      "category": "Anesthetic / sedative",
+      "origin": "exogenous",
+      "aliases": [
+        "ketamine"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "xenon",
+      "name": "Xenon",
+      "category": "Anesthetic / sedative",
+      "origin": "exogenous",
+      "aliases": [
+        "xenon"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "isoflurane",
+      "name": "Isoflurane",
+      "category": "Anesthetic / sedative",
+      "origin": "exogenous",
+      "aliases": [
+        "isoflurane"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "sevoflurane",
+      "name": "Sevoflurane",
+      "category": "Anesthetic / sedative",
+      "origin": "exogenous",
+      "aliases": [
+        "sevoflurane"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "desflurane",
+      "name": "Desflurane",
+      "category": "Anesthetic / sedative",
+      "origin": "exogenous",
+      "aliases": [
+        "desflurane"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "nitrous-oxide",
+      "name": "Nitrous oxide",
+      "category": "Anesthetic / sedative",
+      "origin": "exogenous",
+      "aliases": [
+        "nitrous oxide"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "midazolam",
+      "name": "Midazolam",
+      "category": "Anesthetic / sedative",
+      "origin": "exogenous",
+      "aliases": [
+        "midazolam"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "diazepam",
+      "name": "Diazepam",
+      "category": "Anesthetic / sedative",
+      "origin": "exogenous",
+      "aliases": [
+        "diazepam"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "lorazepam",
+      "name": "Lorazepam",
+      "category": "Anesthetic / sedative",
+      "origin": "exogenous",
+      "aliases": [
+        "lorazepam"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "dexmedetomidine",
+      "name": "Dexmedetomidine",
+      "category": "Anesthetic / sedative",
+      "origin": "exogenous",
+      "aliases": [
+        "dexmedetomidine"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "pentobarbital",
+      "name": "Pentobarbital",
+      "category": "Anesthetic / sedative",
+      "origin": "exogenous",
+      "aliases": [
+        "pentobarbital"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "thiopental",
+      "name": "Thiopental",
+      "category": "Anesthetic / sedative",
+      "origin": "exogenous",
+      "aliases": [
+        "thiopental",
+        "thiopentone"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "etomidate",
+      "name": "Etomidate",
+      "category": "Anesthetic / sedative",
+      "origin": "exogenous",
+      "aliases": [
+        "etomidate"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "psilocybin",
+      "name": "Psilocybin",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "psilocybin"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "psilocin",
+      "name": "Psilocin",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "psilocin"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "lsd",
+      "name": "LSD",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "LSD",
+        "lysergic acid diethylamide"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "dmt",
+      "name": "DMT",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "DMT",
+        "dimethyltryptamine",
+        "N,N-dimethyltryptamine"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "5-meo-dmt",
+      "name": "5-MeO-DMT",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "5-MeO-DMT",
+        "5-methoxy-N,N-dimethyltryptamine"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "mescaline",
+      "name": "Mescaline",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "mescaline"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "mdma",
+      "name": "MDMA",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "MDMA",
+        "3,4-methylenedioxymethamphetamine"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "thc",
+      "name": "THC",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "THC",
+        "tetrahydrocannabinol",
+        "delta-9-tetrahydrocannabinol"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "cannabidiol",
+      "name": "Cannabidiol",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "cannabidiol",
+        "CBD"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "nicotine",
+      "name": "Nicotine",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "nicotine"
+      ],
+      "related_terms": [
+        "nicotinic"
+      ]
+    },
+    {
+      "id": "caffeine",
+      "name": "Caffeine",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "caffeine"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "ethanol",
+      "name": "Ethanol",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "ethanol"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "amphetamine",
+      "name": "Amphetamine",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "amphetamine"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "methamphetamine",
+      "name": "Methamphetamine",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "methamphetamine"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "cocaine",
+      "name": "Cocaine",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "cocaine"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "methylphenidate",
+      "name": "Methylphenidate",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "methylphenidate"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "modafinil",
+      "name": "Modafinil",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "modafinil"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "morphine",
+      "name": "Morphine",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "morphine"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "fentanyl",
+      "name": "Fentanyl",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "fentanyl"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "naloxone",
+      "name": "Naloxone",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "naloxone"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "naltrexone",
+      "name": "Naltrexone",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "naltrexone"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "fluoxetine",
+      "name": "Fluoxetine",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "fluoxetine"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "citalopram",
+      "name": "Citalopram",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "citalopram"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "sertraline",
+      "name": "Sertraline",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "sertraline"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "haloperidol",
+      "name": "Haloperidol",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "haloperidol"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "clozapine",
+      "name": "Clozapine",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "clozapine"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "scopolamine",
+      "name": "Scopolamine",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "scopolamine"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "atropine",
+      "name": "Atropine",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "atropine"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "clonidine",
+      "name": "Clonidine",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "clonidine"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "propranolol",
+      "name": "Propranolol",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "propranolol"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "muscimol",
+      "name": "Muscimol",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "muscimol"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "bicuculline",
+      "name": "Bicuculline",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "bicuculline"
+      ],
+      "related_terms": []
+    },
+    {
+      "id": "n-methyl-d-aspartate",
+      "name": "N-methyl-D-aspartate",
+      "category": "Psychoactive compound",
+      "origin": "exogenous",
+      "aliases": [
+        "N-methyl-D-aspartate",
+        "NMDA"
+      ],
+      "related_terms": []
+    }
+  ]
+}

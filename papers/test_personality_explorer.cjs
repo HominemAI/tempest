@@ -1,0 +1,45 @@
+const assert=require('node:assert/strict');
+const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
+const path=require('node:path');
+const fs=require('node:fs');
+(async()=>{
+ const browser=await chromium.launch({executablePath:process.env.BROWSER_EXECUTABLE||undefined});
+ try{
+  const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];
+  page.on('pageerror',e=>errors.push(e.message));
+  page.on('dialog',d=>d.accept());
+  await page.goto('http://127.0.0.1:8767');
+  await page.waitForSelector('#v22');
+  assert.equal(await page.locator('.value').count(),23);
+  assert.equal(await page.locator('#v0').inputValue(),'3.09');
+  assert.equal(await page.locator('#parentLabel').isVisible(),false);
+  await page.locator('#pin').click();
+  assert.equal(await page.locator('.compare').count(),23);
+  await page.locator('#zero').click();
+  assert.equal(await page.locator('#v0').inputValue(),'0');
+  await page.locator('#random').click();
+  assert((await page.locator('.value').evaluateAll(ns=>ns.map(n=>Number(n.value)))).every(v=>v>=-10&&v<=10));
+  await page.reload();await page.waitForSelector('#v22');
+  const out=path.join(__dirname,'.impeccable/review/personality');fs.mkdirSync(out,{recursive:true});
+  await page.screenshot({path:path.join(out,'desktop.png'),fullPage:true});
+  await page.locator('#showDeltas').click();
+  await page.waitForFunction(()=>document.querySelector('#list').textContent.includes('No collected deltas'));
+  assert.match(await page.locator('#list').textContent(),/No collected deltas/);
+  await page.locator('#parent').selectOption('neutral');
+  await page.waitForSelector('#list .entry');
+  await page.locator('#list .entry').first().click();
+  await page.waitForFunction(()=>document.querySelector('#valueTitle').textContent==='Event adjustments');
+  assert.match(await page.locator('#description').inputValue(),/\S/);
+  assert.equal(await page.locator('#generation').isVisible(),false);
+  assert.equal(await page.locator('#randomTools').isVisible(),false);
+  await page.screenshot({path:path.join(out,'delta.png'),fullPage:true});
+  await page.reload();await page.waitForSelector('#v22');
+  await page.setViewportSize({width:390,height:844});
+  await page.screenshot({path:path.join(out,'mobile.png'),fullPage:true});
+  assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+  assert(await page.evaluate(()=>{const r=structuredClone(record);r.body.interpretation_stale=true;show(r);$('name').value='Rename only';changed();return bodyFromEditor().interpretation_stale===true}));
+  assert.match(await page.locator('#sourceNote').textContent(),/interpretation may no longer match/);
+  assert.deepEqual(errors,[]);
+  console.log('Browser checks passed; desktop, delta and mobile screenshots saved.');
+ }finally{await browser.close()}
+})().catch(e=>{console.error(e);process.exit(1)});

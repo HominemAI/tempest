@@ -1,0 +1,10 @@
+{
+  "models": [{
+    "name": "tempest-1",
+    "checkpoint_id": "model-v1",
+    "path": "papers/emotion_training/artifacts/model-v1",
+    "model_card": "model-cards/tempest-1.md",
+    "supported_baselines": ["neutral"],
+    "status": "existing-checkpoint-not-retrained"
+  }]
+}

@@ -1,0 +1,929 @@
+{
+  "collected": "2026-09-22",
+  "scope": "General consciousness research across six fields",
+  "count": 52,
+  "papers": [
+    {
+      "file": "neuroscience/2011-dehaene-changeux-conscious-processing/2011-dehaene-changeux-conscious-processing.pdf",
+      "area": "neuroscience",
+      "title": "Experimental and Theoretical Approaches to Conscious Processing",
+      "authors": "Dehaene & Changeux",
+      "year": 2011,
+      "type": "Review and theoretical synthesis; *Neuron*, 70, 200–227. **Topic:** Conscious access and global neuronal workspace.",
+      "notes": "Review of conscious access, global availability, and global neuronal workspace mechanisms.",
+      "source_urls": [
+        "https://doi.org/10.1016/j.neuron.2011.03.018",
+        "https://web.stanford.edu/class/cs379c/resources/inverted/content/Books_and_Journal_Articles_on_Consciousness/Theory_of_Mind_and_Language_Development_Articles/Publications_on_Consciousness_by_Stanislas_Dehaene/DehaeneChangeuxNEURON-11.pdf"
+      ],
+      "pages": 28,
+      "bytes": 3252647,
+      "markdown": "neuroscience/2011-dehaene-changeux-conscious-processing/2011-dehaene-changeux-conscious-processing.md",
+      "pdf_sha256": "01c6bab0ed80c9ff41d9f4d058d88533d549963930d9e886556e10cb8e73aa7b"
+    },
+    {
+      "file": "neuroscience/2014-oizumi-et-al-iit-3/2014-oizumi-et-al-iit-3.pdf",
+      "area": "neuroscience",
+      "title": "From the Phenomenology to the Mechanisms of Consciousness: Integrated Information Theory 3.0",
+      "authors": "Oizumi, Albantakis & Tononi",
+      "year": 2014,
+      "type": "Formal theory; *PLOS Computational Biology*, 10, e1003588.",
+      "notes": "Formal development of integrated information theory 3.0. A historical formulation, not the latest version.",
+      "source_urls": [
+        "https://doi.org/10.1371/journal.pcbi.1003588",
+        "https://journals.plos.org/ploscompbiol/article/file?id=10.1371%2Fjournal.pcbi.1003588&type=printable"
+      ],
+      "pages": 25,
+      "bytes": 3611787,
+      "markdown": "neuroscience/2014-oizumi-et-al-iit-3/2014-oizumi-et-al-iit-3.md",
+      "pdf_sha256": "589dcc7d2cc3c8e4f72a76a43d0daaa5fce53ab52770b8e599c826b766b963c6"
+    },
+    {
+      "file": "neuroscience/2025-cogitate-adversarial-testing/2025-cogitate-adversarial-testing.pdf",
+      "area": "neuroscience",
+      "title": "Adversarial testing of global neuronal workspace and integrated information theories of consciousness",
+      "authors": "COGITATE Consortium et al.",
+      "year": 2025,
+      "type": "Empirical, multimethod adversarial collaboration; *Nature*, 642, 133–142.",
+      "notes": "Adversarial experimental comparison of predictions from global neuronal workspace and integrated information theories. Interpretations of the findings remain contested.",
+      "source_urls": [
+        "https://doi.org/10.1038/s41586-025-08888-1",
+        "https://www.nature.com/articles/s41586-025-08888-1.pdf"
+      ],
+      "pages": 40,
+      "bytes": 34863010,
+      "markdown": "neuroscience/2025-cogitate-adversarial-testing/2025-cogitate-adversarial-testing.md",
+      "pdf_sha256": "0a6cf543d35766ee234dda82f8c1abc223b4d9183a8dc663af7e2e27eb661ed6"
+    },
+    {
+      "file": "metacognition/2014-fleming-lau-measuring-metacognition/2014-fleming-lau-measuring-metacognition.pdf",
+      "area": "metacognition",
+      "title": "How to measure metacognition",
+      "authors": "Fleming & Lau",
+      "year": 2014,
+      "type": "Methods review; *Frontiers in Human Neuroscience*, 8, 443.",
+      "notes": "Methods for distinguishing confidence bias, metacognitive sensitivity, and metacognitive efficiency.",
+      "source_urls": [
+        "https://doi.org/10.3389/fnhum.2014.00443",
+        "https://www.frontiersin.org/journals/human-neuroscience/articles/10.3389/fnhum.2014.00443/pdf"
+      ],
+      "pages": 9,
+      "bytes": 976025,
+      "markdown": "metacognition/2014-fleming-lau-measuring-metacognition/2014-fleming-lau-measuring-metacognition.md",
+      "pdf_sha256": "d0735399a3658f93434b384fe2c583fa8c58b94bc35d68bcaf435bc9bcee2ba7"
+    },
+    {
+      "file": "metacognition/2017-fleming-daw-self-evaluation/2017-fleming-daw-self-evaluation.pdf",
+      "area": "metacognition",
+      "title": "Self-Evaluation of Decision-Making: A General Bayesian Framework for Metacognitive Computation",
+      "authors": "Fleming & Daw",
+      "year": 2017,
+      "type": "Computational model; *Psychological Review*, 124, 91–114.",
+      "notes": "Bayesian model of confidence, error detection, and self-evaluation of decisions.",
+      "source_urls": [
+        "https://doi.org/10.1037/rev0000045",
+        "https://discovery.ucl.ac.uk/id/eprint/1535601/",
+        "https://discovery.ucl.ac.uk/1535601/1/91.pdf"
+      ],
+      "pages": 24,
+      "bytes": 1561500,
+      "markdown": "metacognition/2017-fleming-daw-self-evaluation/2017-fleming-daw-self-evaluation.md",
+      "pdf_sha256": "f3ebe9f020bbae691ad4212f444d4f753b75c6d9fe548771e3e856a0d5f70600"
+    },
+    {
+      "file": "philosophy/1995-chalmers-facing-up/1995-chalmers-facing-up.pdf",
+      "area": "philosophy",
+      "title": "Facing Up to the Problem of Consciousness",
+      "authors": "Chalmers",
+      "year": 1995,
+      "type": "Philosophical argument; *Journal of Consciousness Studies*, 2, 200–219. Local copy is a PDF printout of the author's article text.",
+      "notes": "Distinguishes functional explanations from the problem of explaining subjective experience.",
+      "source_urls": [
+        "https://consc.net/papers/facing.html",
+        "https://web.ics.purdue.edu/~drkelly/ChalmersHardProblem1995.pdf"
+      ],
+      "pages": 21,
+      "bytes": 183850,
+      "markdown": "philosophy/1995-chalmers-facing-up/1995-chalmers-facing-up.md",
+      "pdf_sha256": "50d04e8c309e94b101e00db7db075c74ca8ef77a29d457e6018eb684affb7306"
+    },
+    {
+      "file": "philosophy/2016-frankish-illusionism/2016-frankish-illusionism.pdf",
+      "area": "philosophy",
+      "title": "Illusionism as a Theory of Consciousness",
+      "authors": "Frankish",
+      "year": 2016,
+      "type": "Philosophical target article; *Journal of Consciousness Studies*, 23(11–12), 11–39. Author-hosted eprint.",
+      "notes": "Defends illusionism and examines objections to the claim that introspection misrepresents phenomenal properties.",
+      "source_urls": [
+        "https://www.keithfrankish.com/illusionism/",
+        "https://keithfrankish.github.io/articles/Frankish_Illusionism%20as%20a%20theory%20of%20consciousness_eprint.pdf"
+      ],
+      "pages": 24,
+      "bytes": 201348,
+      "markdown": "philosophy/2016-frankish-illusionism/2016-frankish-illusionism.md",
+      "pdf_sha256": "49d8f491d76f9a83f84d0eec2f6e439d8c3c49b453f8431a01011e0739347d67"
+    },
+    {
+      "file": "philosophy/2018-chalmers-meta-problem/2018-chalmers-meta-problem.pdf",
+      "area": "philosophy",
+      "title": "The Meta-Problem of Consciousness",
+      "authors": "Chalmers",
+      "year": 2018,
+      "type": "Philosophical and research-program analysis; *Journal of Consciousness Studies*, 25(9–10), 6–61.",
+      "notes": "Examines why people judge consciousness to pose a distinctive explanatory problem.",
+      "source_urls": [
+        "https://consc.net/consciousness/",
+        "https://consc.net/papers/metaproblem.pdf"
+      ],
+      "pages": 56,
+      "bytes": 550120,
+      "markdown": "philosophy/2018-chalmers-meta-problem/2018-chalmers-meta-problem.md",
+      "pdf_sha256": "5abe60b8acb1ea4d400401b8e98bda3ce510c2b57415e9ab55d087c7e00dbe64"
+    },
+    {
+      "file": "phenomenology/2015-olivares-et-al-neurophenomenology-revisited/2015-olivares-et-al-neurophenomenology-revisited.pdf",
+      "area": "phenomenology",
+      "title": "Neurophenomenology revisited: second-person methods for the study of human consciousness",
+      "authors": "Olivares, Vargas, Fuentes, Martínez-Pernía & Canales-Johnson",
+      "year": 2015,
+      "type": "Methodological review; *Frontiers in Psychology*, 6, 673.",
+      "notes": "Review of second-person interviewing methods linking experiential descriptions and neurophysiological observations.",
+      "source_urls": [
+        "https://doi.org/10.3389/fpsyg.2015.00673",
+        "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2015.00673/pdf"
+      ],
+      "pages": 12,
+      "bytes": 237052,
+      "markdown": "phenomenology/2015-olivares-et-al-neurophenomenology-revisited/2015-olivares-et-al-neurophenomenology-revisited.md",
+      "pdf_sha256": "186e1ac32c9fd870cf344fa7d4d81eb2d75698cb06b7c0cb1ce324d320053ad9"
+    },
+    {
+      "file": "phenomenology/2020-berkovich-ohana-et-al-guide-neurophenomenology/2020-berkovich-ohana-et-al-guide-neurophenomenology.pdf",
+      "area": "phenomenology",
+      "title": "The Hitchhiker's Guide to Neurophenomenology – The Case of Studying Self Boundaries With Meditators",
+      "authors": "Berkovich-Ohana, Dor-Ziderman, Trautwein, Schweitzer, Nave, Fulder & Ataria",
+      "year": 2020,
+      "type": "Methodological guide / hypothesis and theory; *Frontiers in Psychology*, 11, 1680.",
+      "notes": "Practical methodological discussion of neurophenomenology through the study of self-boundaries in meditation.",
+      "source_urls": [
+        "https://doi.org/10.3389/fpsyg.2020.01680",
+        "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2020.01680/pdf"
+      ],
+      "pages": 19,
+      "bytes": 745046,
+      "markdown": "phenomenology/2020-berkovich-ohana-et-al-guide-neurophenomenology/2020-berkovich-ohana-et-al-guide-neurophenomenology.md",
+      "pdf_sha256": "df9f37490829ee4f0fb722d08abf8a0aa1c37fdb3dfe76cd711f3362fae767bd"
+    },
+    {
+      "file": "embodiment/2005-di-paolo-autopoiesis-adaptivity/2005-di-paolo-autopoiesis-adaptivity.pdf",
+      "area": "embodiment",
+      "title": "Autopoiesis, adaptivity, teleology, agency",
+      "authors": "Di Paolo",
+      "year": 2005,
+      "type": "Theoretical analysis; *Phenomenology and the Cognitive Sciences*, 4, 429–452.",
+      "notes": "Theoretical treatment of autopoiesis, adaptivity, agency, and sense-making.",
+      "source_urls": [
+        "https://doi.org/10.1007/s11097-005-9002-y",
+        "https://ezequieldipaolo.net/wp-content/uploads/2011/10/autopoiesis_teleology_2005.pdf"
+      ],
+      "pages": 24,
+      "bytes": 172265,
+      "markdown": "embodiment/2005-di-paolo-autopoiesis-adaptivity/2005-di-paolo-autopoiesis-adaptivity.md",
+      "pdf_sha256": "576e825142860f3b0fe2585cf43fa5baceab593bf78e08cf79d5c69c733a833b"
+    },
+    {
+      "file": "embodiment/2016-seth-friston-active-interoceptive-inference/2016-seth-friston-active-interoceptive-inference.pdf",
+      "area": "embodiment",
+      "title": "Active interoceptive inference and the emotional brain",
+      "authors": "Seth & Friston",
+      "year": 2016,
+      "type": "Theoretical review; *Philosophical Transactions of the Royal Society B*, 371, 20160007.",
+      "notes": "Theoretical review connecting interoceptive inference, bodily regulation, emotion, and selfhood.",
+      "source_urls": [
+        "https://doi.org/10.1098/rstb.2016.0007",
+        "https://emotion.wisc.edu/wp-content/uploads/sites/1353/2021/08/Seth_2016_Active_interoceptive_inference_and_emotional_brain-1.pdf"
+      ],
+      "pages": 10,
+      "bytes": 785363,
+      "markdown": "embodiment/2016-seth-friston-active-interoceptive-inference/2016-seth-friston-active-interoceptive-inference.md",
+      "pdf_sha256": "75582522b5f226d308fb4f7ba052fc77217aa2b6a8233fe97e70ed624e281e09"
+    },
+    {
+      "file": "machine-consciousness/2023-butlin-et-al-consciousness-in-artificial-intelligence/2023-butlin-et-al-consciousness-in-artificial-intelligence.pdf",
+      "area": "machine-consciousness",
+      "title": "Consciousness in Artificial Intelligence: Insights from the Science of Consciousness",
+      "authors": "Butlin et al.",
+      "year": 2023,
+      "type": "Interdisciplinary research report; arXiv:2308.08708. Collected as a preprint/report, not represented here as a peer-reviewed experimental finding.",
+      "notes": "Interdisciplinary report deriving candidate AI-consciousness indicators from several scientific theories. Collected as a preprint/report.",
+      "source_urls": [
+        "https://arxiv.org/abs/2308.08708",
+        "https://arxiv.org/pdf/2308.08708"
+      ],
+      "pages": 88,
+      "bytes": 1763829,
+      "markdown": "machine-consciousness/2023-butlin-et-al-consciousness-in-artificial-intelligence/2023-butlin-et-al-consciousness-in-artificial-intelligence.md",
+      "pdf_sha256": "88a9d5635b274b7d7c8c55dfeea45be3018054be01da83cd2f8d1fe53d668ab8"
+    },
+    {
+      "file": "machine-consciousness/2021-blum-blum-conscious-turing-machine/2021-blum-blum-conscious-turing-machine.pdf",
+      "area": "machine-consciousness",
+      "title": "A Theory of Consciousness from a Theoretical Computer Science Perspective: Insights from the Conscious Turing Machine",
+      "authors": "Lenore Blum & Manuel Blum",
+      "year": 2021,
+      "type": "Formal computational proposal; arXiv:2107.13704. Filename follows the initial repository submission year.",
+      "notes": "Formal computational proposal based on a conscious Turing machine. Filename follows the initial 2021 submission; downloaded manuscript is dated 2022.",
+      "source_urls": [
+        "https://arxiv.org/abs/2107.13704",
+        "https://arxiv.org/pdf/2107.13704"
+      ],
+      "pages": 42,
+      "bytes": 10316043,
+      "markdown": "machine-consciousness/2021-blum-blum-conscious-turing-machine/2021-blum-blum-conscious-turing-machine.md",
+      "pdf_sha256": "3d752c0559f251a9d19a37cd88710376088111cc530af4055f7b37e0dcf12467"
+    },
+    {
+      "file": "machine-consciousness/2024-farisco-et-al-artificial-consciousness/2024-farisco-et-al-artificial-consciousness.pdf",
+      "area": "machine-consciousness",
+      "title": "Is artificial consciousness achievable? Lessons from the human brain",
+      "authors": "Farisco, Evers & Changeux",
+      "year": 2024,
+      "type": "Neuroscience-informed theoretical analysis; arXiv:2405.04540. Collected repository manuscript.",
+      "notes": "Neuroscience-informed analysis of the prospects and limitations of artificial consciousness. Collected repository manuscript.",
+      "source_urls": [
+        "https://arxiv.org/abs/2405.04540",
+        "https://arxiv.org/pdf/2405.04540"
+      ],
+      "pages": 41,
+      "bytes": 601549,
+      "markdown": "machine-consciousness/2024-farisco-et-al-artificial-consciousness/2024-farisco-et-al-artificial-consciousness.md",
+      "pdf_sha256": "d097ef33a7e1c62fd680bfd2157cc9029ad1d0e845bfd78647899a5e6de302da"
+    },
+    {
+      "area": "neuroscience",
+      "file": "neuroscience/2013-global-workspace-dynamics/2013-global-workspace-dynamics.pdf",
+      "title": "Global Workspace Dynamics: Cortical “Binding and Propagation” Enables Conscious Contents",
+      "doi": "10.3389/fpsyg.2013.00200",
+      "url": "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2013.00200/pdf",
+      "authors": "Baars, Franklin & Ramsoy",
+      "type": "Theory",
+      "notes": "Global workspace dynamics, binding, propagation, and distributed processing.",
+      "year": 2013,
+      "source_urls": [
+        "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2013.00200/pdf"
+      ],
+      "pages": 22,
+      "bytes": 1900196,
+      "markdown": "neuroscience/2013-global-workspace-dynamics/2013-global-workspace-dynamics.md",
+      "pdf_sha256": "004ca91a473146e297ed159df0a56871eeb9e2d5123b81a98a3f1b63116ba4c5"
+    },
+    {
+      "area": "neuroscience",
+      "file": "neuroscience/2011-biology-of-consciousness/2011-biology-of-consciousness.pdf",
+      "title": "Biology of Consciousness",
+      "doi": "10.3389/fpsyg.2011.00004",
+      "url": "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2011.00004/pdf",
+      "authors": "Edelman, Gally & Baars",
+      "type": "Perspective",
+      "notes": "Relations between dynamic-core and global-workspace accounts of conscious brain activity.",
+      "year": 2011,
+      "source_urls": [
+        "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2011.00004/pdf"
+      ],
+      "pages": 7,
+      "bytes": 783333,
+      "markdown": "neuroscience/2011-biology-of-consciousness/2011-biology-of-consciousness.md",
+      "pdf_sha256": "2ebe1ffb48279db15fcf5f19a9a301127a733a4e61cfe945d93a18999e5141c4"
+    },
+    {
+      "area": "neuroscience",
+      "file": "neuroscience/2013-sleep-neuroimaging/2013-sleep-neuroimaging.pdf",
+      "title": "Sleep Neuroimaging and Models of Consciousness",
+      "doi": "10.3389/fpsyg.2013.00256",
+      "url": "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2013.00256/pdf",
+      "authors": "Tagliazucchi, Behrens & Laufs",
+      "type": "Review",
+      "notes": "Sleep neuroimaging and changes in spontaneous brain activity as tests of consciousness models.",
+      "year": 2013,
+      "source_urls": [
+        "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2013.00256/pdf"
+      ],
+      "pages": 9,
+      "bytes": 1991937,
+      "markdown": "neuroscience/2013-sleep-neuroimaging/2013-sleep-neuroimaging.md",
+      "pdf_sha256": "e71a6e01ccccbab4b26ba17c5fedfa5744702b64fbb878bc5db516ded01c9d83"
+    },
+    {
+      "area": "neuroscience",
+      "file": "neuroscience/2014-feedforward-feedback-awareness/2014-feedforward-feedback-awareness.pdf",
+      "title": "Probing feedforward and feedback contributions to awareness with visual masking and transcranial magnetic stimulation",
+      "doi": "10.3389/fpsyg.2014.01173",
+      "url": "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2014.01173/pdf",
+      "authors": "Tapia & Beck",
+      "type": "Review",
+      "notes": "Visual masking and transcranial magnetic stimulation as probes of feedforward and recurrent processing.",
+      "year": 2014,
+      "source_urls": [
+        "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2014.01173/pdf"
+      ],
+      "pages": 14,
+      "bytes": 1510052,
+      "markdown": "neuroscience/2014-feedforward-feedback-awareness/2014-feedforward-feedback-awareness.md",
+      "pdf_sha256": "fb02aaf38254dbea41ed3b8740ba730c94be2b503a0287dd794787fb5da1d2b8"
+    },
+    {
+      "area": "metacognition",
+      "file": "metacognition/2016-prospective-retrospective-judgments/2016-prospective-retrospective-judgments.pdf",
+      "title": "But I Was So Sure! Metacognitive Judgments Are Less Accurate Given Prospectively than Retrospectively",
+      "doi": "10.3389/fpsyg.2016.00218",
+      "url": "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2016.00218/pdf",
+      "authors": "Siedlecka, Paulewicz & Wierzchoń",
+      "type": "Empirical study",
+      "notes": "Experimental comparison of prospective and retrospective confidence judgments.",
+      "year": 2016,
+      "source_urls": [
+        "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2016.00218/pdf"
+      ],
+      "pages": 8,
+      "bytes": 767011,
+      "markdown": "metacognition/2016-prospective-retrospective-judgments/2016-prospective-retrospective-judgments.md",
+      "pdf_sha256": "58a5f47ad5d5ba3560ea2c5d71a67f603d93f73e62b4f3c1a5308d0b272ed465"
+    },
+    {
+      "area": "metacognition",
+      "file": "metacognition/2013-episodic-retrieval/2013-episodic-retrieval.pdf",
+      "title": "Making the case that episodic recollection is attributable to operations occurring at retrieval rather than to content stored in a dedicated subsystem of long-term memory",
+      "doi": "10.3389/fnbeh.2013.00003",
+      "url": "https://www.frontiersin.org/journals/behavioral-neuroscience/articles/10.3389/fnbeh.2013.00003/pdf",
+      "authors": "Klein",
+      "type": "Theory",
+      "notes": "A retrieval-based account of episodic recollection, subjective temporality, ownership, and agency.",
+      "year": 2013,
+      "source_urls": [
+        "https://www.frontiersin.org/journals/behavioral-neuroscience/articles/10.3389/fnbeh.2013.00003/pdf"
+      ],
+      "pages": 14,
+      "bytes": 1655564,
+      "markdown": "metacognition/2013-episodic-retrieval/2013-episodic-retrieval.md",
+      "pdf_sha256": "9802d52f3a4a324c846e27b68acca8fd46eb98f600c371a7f64a205791978e07"
+    },
+    {
+      "area": "metacognition",
+      "file": "metacognition/2018-visual-perspectives-memory/2018-visual-perspectives-memory.pdf",
+      "title": "Visual Perspectives in Episodic Memory and the Sense of Self",
+      "doi": "10.3389/fpsyg.2018.02196",
+      "url": "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2018.02196/pdf",
+      "authors": "Lin",
+      "type": "Theory",
+      "notes": "First-person and observer perspectives in autobiographical recollection and self-identification.",
+      "year": 2018,
+      "source_urls": [
+        "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2018.02196/pdf"
+      ],
+      "pages": 7,
+      "bytes": 229737,
+      "markdown": "metacognition/2018-visual-perspectives-memory/2018-visual-perspectives-memory.md",
+      "pdf_sha256": "b42c4610fc27fd44a341f74b0574871be10a07bf0402964b7c8206f09a7920f3"
+    },
+    {
+      "area": "metacognition",
+      "file": "metacognition/2018-angular-gyrus-memory-self/2018-angular-gyrus-memory-self.pdf",
+      "title": "Common Recruitment of Angular Gyrus in Episodic Autobiographical Memory and Bodily Self-Consciousness",
+      "doi": "10.3389/fnbeh.2018.00270",
+      "url": "https://www.frontiersin.org/journals/behavioral-neuroscience/articles/10.3389/fnbeh.2018.00270/pdf",
+      "authors": "Bréchet, Grivaz, Gauthier & Blanke",
+      "type": "Meta-analysis / original research",
+      "notes": "Neuroanatomical overlap between autobiographical memory and bodily self-consciousness.",
+      "year": 2018,
+      "source_urls": [
+        "https://www.frontiersin.org/journals/behavioral-neuroscience/articles/10.3389/fnbeh.2018.00270/pdf"
+      ],
+      "pages": 10,
+      "bytes": 1119738,
+      "markdown": "metacognition/2018-angular-gyrus-memory-self/2018-angular-gyrus-memory-self.md",
+      "pdf_sha256": "41dfbe9d0716fb8a5ca72ca74e57188d25821d54a08b2e5dac9444051f7b060d"
+    },
+    {
+      "area": "embodiment",
+      "file": "embodiment/2014-body-social/2014-body-social.pdf",
+      "title": "The body social: an enactive approach to the self",
+      "doi": "10.3389/fpsyg.2014.00986",
+      "url": "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2014.00986/pdf",
+      "authors": "Kyselo",
+      "type": "Theory",
+      "notes": "An enactive account of selfhood and the role of social interaction in individuation.",
+      "year": 2014,
+      "source_urls": [
+        "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2014.00986/pdf"
+      ],
+      "pages": 16,
+      "bytes": 650223,
+      "markdown": "embodiment/2014-body-social/2014-body-social.md",
+      "pdf_sha256": "c04d4a1e6b40e7788b580705dadd7c3ccd8b1f2c23f1e3de4b6bd72e5fc93230"
+    },
+    {
+      "area": "embodiment",
+      "file": "embodiment/2020-enactivism-ecological-psychology/2020-enactivism-ecological-psychology.pdf",
+      "title": "Enactivism and Ecological Psychology: The Role of Bodily Experience in Agency",
+      "doi": "10.3389/fpsyg.2020.539841",
+      "url": "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2020.539841/pdf",
+      "authors": "Popova & Rączaszek-Leonardi",
+      "type": "Theory",
+      "notes": "Comparison of embodied agency in ecological psychology and enactivism.",
+      "year": 2020,
+      "source_urls": [
+        "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2020.539841/pdf"
+      ],
+      "pages": 16,
+      "bytes": 356266,
+      "markdown": "embodiment/2020-enactivism-ecological-psychology/2020-enactivism-ecological-psychology.md",
+      "pdf_sha256": "07a68e31174365815e864c1687ec257aae91e30ef481542877c22241caae02db"
+    },
+    {
+      "area": "embodiment",
+      "file": "embodiment/2018-wide-cognition-mechanisms/2018-wide-cognition-mechanisms.pdf",
+      "title": "From Wide Cognition to Mechanisms: A Silent Revolution",
+      "doi": "10.3389/fpsyg.2018.02393",
+      "url": "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2018.02393/pdf",
+      "authors": "Miłkowski et al.",
+      "type": "Theory / critique",
+      "notes": "A mechanistic critique and reassessment of embodied, embedded, extended, enactive, and distributed cognition.",
+      "year": 2018,
+      "source_urls": [
+        "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2018.02393/pdf"
+      ],
+      "pages": 17,
+      "bytes": 1896365,
+      "markdown": "embodiment/2018-wide-cognition-mechanisms/2018-wide-cognition-mechanisms.md",
+      "pdf_sha256": "7cb1fcb6cc845fca5dc4cdbec5609560c9a10130b00dee4d4f81aa1965d1f48d"
+    },
+    {
+      "area": "embodiment",
+      "file": "embodiment/2023-bodily-self-consciousness/2023-bodily-self-consciousness.pdf",
+      "title": "Understanding the neural bases of bodily self-consciousness: recent achievements and main challenges",
+      "doi": "10.3389/fnint.2023.1145924",
+      "url": "https://www.frontiersin.org/journals/integrative-neuroscience/articles/10.3389/fnint.2023.1145924/pdf",
+      "authors": "Dary & Lopez",
+      "type": "Review",
+      "notes": "Multisensory and interoceptive contributions to body ownership, self-location, agency, and first-person perspective.",
+      "year": 2023,
+      "source_urls": [
+        "https://www.frontiersin.org/journals/integrative-neuroscience/articles/10.3389/fnint.2023.1145924/pdf"
+      ],
+      "pages": 12,
+      "bytes": 2087474,
+      "markdown": "embodiment/2023-bodily-self-consciousness/2023-bodily-self-consciousness.md",
+      "pdf_sha256": "bf01a1584a095f9b7db36a6aac9ebc46a1fa381e9dfb7a44ae723de14dd92798"
+    },
+    {
+      "area": "phenomenology",
+      "file": "phenomenology/2013-mindfulness-induced-selflessness/2013-mindfulness-induced-selflessness.pdf",
+      "title": "Mindfulness-induced selflessness: a MEG neurophenomenological study",
+      "doi": "10.3389/fnhum.2013.00582",
+      "url": "https://www.frontiersin.org/journals/human-neuroscience/articles/10.3389/fnhum.2013.00582/pdf",
+      "authors": "Dor-Ziderman, Berkovich-Ohana, Glicksohn & Goldstein",
+      "type": "Empirical study",
+      "notes": "MEG study of narrative, minimal, and selfless modes of awareness in experienced meditators.",
+      "year": 2013,
+      "source_urls": [
+        "https://www.frontiersin.org/journals/human-neuroscience/articles/10.3389/fnhum.2013.00582/pdf"
+      ],
+      "pages": 17,
+      "bytes": 1172627,
+      "markdown": "phenomenology/2013-mindfulness-induced-selflessness/2013-mindfulness-induced-selflessness.md",
+      "pdf_sha256": "5a3e2397b0b4bb92302f67cc8642f46d270b50b9a44e4d3a3bec177aa81b6ab9"
+    },
+    {
+      "area": "phenomenology",
+      "file": "phenomenology/2013-embodied-transcendental/2013-embodied-transcendental.pdf",
+      "title": "The embodied transcendental: a Kantian perspective on neurophenomenology",
+      "doi": "10.3389/fnhum.2013.00611",
+      "url": "https://www.frontiersin.org/journals/human-neuroscience/articles/10.3389/fnhum.2013.00611/pdf",
+      "authors": "Khachouf, Poletti & Pagnoni",
+      "type": "Theory",
+      "notes": "Kantian intentionality, autopoiesis, and the biological grounding of neurophenomenology.",
+      "year": 2013,
+      "source_urls": [
+        "https://www.frontiersin.org/journals/human-neuroscience/articles/10.3389/fnhum.2013.00611/pdf"
+      ],
+      "pages": 15,
+      "bytes": 1712376,
+      "markdown": "phenomenology/2013-embodied-transcendental/2013-embodied-transcendental.md",
+      "pdf_sha256": "f0c9718bc160c9a6901790878971e829fc3b1c5675f3df94102e4785516909a1"
+    },
+    {
+      "area": "phenomenology",
+      "file": "phenomenology/2018-intentional-consciousness-temporality/2018-intentional-consciousness-temporality.pdf",
+      "title": "How to Analyze (Intentional) Consciousness in Terms of Meta-Belief and Temporal Awareness",
+      "doi": "10.3389/fpsyg.2018.01628",
+      "url": "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2018.01628/pdf",
+      "authors": "Beyer",
+      "type": "Philosophical analysis",
+      "notes": "Intentional consciousness, meta-belief, temporal awareness, and phenomenological analysis.",
+      "year": 2018,
+      "source_urls": [
+        "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2018.01628/pdf"
+      ],
+      "pages": 12,
+      "bytes": 283105,
+      "markdown": "phenomenology/2018-intentional-consciousness-temporality/2018-intentional-consciousness-temporality.md",
+      "pdf_sha256": "40f0076097043be6ddc79731c1461ef67e6f0405920ffda10ad0ebfde85b1d43"
+    },
+    {
+      "area": "phenomenology",
+      "file": "phenomenology/2014-intersubjective-time/2014-intersubjective-time.pdf",
+      "title": "Embodiment of intersubjective time: relational dynamics as attractors in the temporal coordination of interpersonal behaviors and experiences",
+      "doi": "10.3389/fpsyg.2014.01180",
+      "url": "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2014.01180/pdf",
+      "authors": "Laroche, Berardi & Brangier",
+      "type": "Theory",
+      "notes": "Lived time and interpersonal temporal coordination from phenomenological and dynamical perspectives.",
+      "year": 2014,
+      "source_urls": [
+        "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2014.01180/pdf"
+      ],
+      "pages": 17,
+      "bytes": 536406,
+      "markdown": "phenomenology/2014-intersubjective-time/2014-intersubjective-time.md",
+      "pdf_sha256": "9d31cd8e1dcb55214737890b50253d503e7b16a95ac1ffbac4e02ce3098f12f7"
+    },
+    {
+      "area": "philosophy",
+      "file": "philosophy/2013-first-order-representationalism/2013-first-order-representationalism.pdf",
+      "title": "General and specific consciousness: a first-order representationalist approach",
+      "doi": "10.3389/fpsyg.2013.00407",
+      "url": "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2013.00407/pdf",
+      "authors": "Mehta & Mashour",
+      "type": "Theory",
+      "notes": "A first-order representationalist account of general consciousness and particular conscious contents.",
+      "year": 2013,
+      "source_urls": [
+        "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2013.00407/pdf"
+      ],
+      "pages": 9,
+      "bytes": 325345,
+      "markdown": "philosophy/2013-first-order-representationalism/2013-first-order-representationalism.md",
+      "pdf_sha256": "c4e89b52a6e1aa6e8fd0e558c2eeb5a69dbe92d4643ca1f1da3b835814a18f5c"
+    },
+    {
+      "area": "philosophy",
+      "file": "philosophy/2016-neural-correlate-analysis/2016-neural-correlate-analysis.pdf",
+      "title": "A Deeper Look at the Neural Correlate of Consciousness",
+      "doi": "10.3389/fpsyg.2016.01044",
+      "url": "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2016.01044/pdf",
+      "authors": "Fink",
+      "type": "Conceptual analysis",
+      "notes": "Clarifies the meaning and evidential role of neural correlates of consciousness.",
+      "year": 2016,
+      "source_urls": [
+        "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2016.01044/pdf"
+      ],
+      "pages": 13,
+      "bytes": 1422969,
+      "markdown": "philosophy/2016-neural-correlate-analysis/2016-neural-correlate-analysis.md",
+      "pdf_sha256": "29d8e835a8d310a47e4d63755ef097a6e37bff2c39b23e4603d4155a37547e53"
+    },
+    {
+      "area": "machine-consciousness",
+      "file": "machine-consciousness/2022-sense-making-artificial-minds/2022-sense-making-artificial-minds.pdf",
+      "title": "Carving Up Participation: Sense-Making and Sociomorphing for Artificial Minds",
+      "doi": "10.3389/fnbot.2022.815850",
+      "url": "https://www.frontiersin.org/journals/neurorobotics/articles/10.3389/fnbot.2022.815850/pdf",
+      "authors": "Zebrowski & McGraw",
+      "type": "Theory",
+      "notes": "Participatory sense-making, social cognition, and distinctions between living and artificial minds.",
+      "year": 2022,
+      "source_urls": [
+        "https://www.frontiersin.org/journals/neurorobotics/articles/10.3389/fnbot.2022.815850/pdf"
+      ],
+      "pages": 11,
+      "bytes": 442207,
+      "markdown": "machine-consciousness/2022-sense-making-artificial-minds/2022-sense-making-artificial-minds.md",
+      "pdf_sha256": "cdf636c27995d7763d7f48b577d0a6a202d939856bdaf65ef7c740dda7126b68"
+    },
+    {
+      "file": "philosophy/1974-nagel-bat/1974-nagel-bat.pdf",
+      "title": "What Is It Like to Be a Bat?",
+      "url": "https://home.csulb.edu/~cwallis/382/readings/482/nagel.what.is.it.like.to.be.a.bat.1974.pdf",
+      "doi": "10.2307/2183914",
+      "area": "philosophy",
+      "authors": "Nagel",
+      "type": "Philosophical argument",
+      "notes": "Subjective character of experience and the limits of objective accounts.",
+      "year": 1974,
+      "source_urls": [
+        "https://home.csulb.edu/~cwallis/382/readings/482/nagel.what.is.it.like.to.be.a.bat.1974.pdf"
+      ],
+      "pages": 17,
+      "bytes": 306071,
+      "markdown": "philosophy/1974-nagel-bat/1974-nagel-bat.md",
+      "pdf_sha256": "6af42c559c3084c36337a760527ae58cd8dbedbfdb077181670420bb8cda30ef"
+    },
+    {
+      "file": "philosophy/2000-chalmers-neural-correlate/2000-chalmers-neural-correlate.pdf",
+      "title": "What Is a Neural Correlate of Consciousness?",
+      "url": "https://consc.net/papers/ncc2.pdf",
+      "doi": "",
+      "area": "philosophy",
+      "authors": "Chalmers",
+      "type": "Book chapter / conceptual analysis",
+      "notes": "Defines neural correlates of consciousness and examines their conceptual and experimental interpretation.",
+      "year": 2000,
+      "source_urls": [
+        "https://consc.net/papers/ncc2.pdf"
+      ],
+      "pages": 33,
+      "bytes": 444809,
+      "markdown": "philosophy/2000-chalmers-neural-correlate/2000-chalmers-neural-correlate.md",
+      "pdf_sha256": "353a24620d4417ba0d0eac30c2160d2771abba6b28ea2e75b620bc7e6505ed12"
+    },
+    {
+      "file": "neuroscience/2011-graziano-kastner-attention-schema/2011-graziano-kastner-attention-schema.pdf",
+      "title": "Human consciousness and its relationship to social neuroscience: A novel hypothesis",
+      "url": "https://grazianolab.princeton.edu/sites/g/files/toruqf3411/files/graziano/files/graziano_kastner_2011_reprintpdf.pdf",
+      "doi": "10.1080/17588928.2011.565121",
+      "area": "neuroscience",
+      "authors": "Graziano & Kastner",
+      "type": "Theory; PDF includes commentary material",
+      "notes": "An early attention-schema account connecting awareness, attention, and social cognition.",
+      "year": 2011,
+      "source_urls": [
+        "https://grazianolab.princeton.edu/sites/g/files/toruqf3411/files/graziano/files/graziano_kastner_2011_reprintpdf.pdf"
+      ],
+      "pages": 37,
+      "bytes": 584804,
+      "markdown": "neuroscience/2011-graziano-kastner-attention-schema/2011-graziano-kastner-attention-schema.md",
+      "pdf_sha256": "7cd66db80d56ec3e036a9de8c98d365838fbbca661722e0aea81e7dfd490257c"
+    },
+    {
+      "file": "neuroscience/2015-schartner-eeg-complexity/2015-schartner-eeg-complexity.pdf",
+      "title": "Complexity of Multi-Dimensional Spontaneous EEG Decreases during Propofol Induced General Anaesthesia",
+      "url": "https://journals.plos.org/plosone/article/file?id=10.1371%2Fjournal.pone.0133532&type=printable",
+      "doi": "10.1371/journal.pone.0133532",
+      "area": "neuroscience",
+      "authors": "Schartner et al.",
+      "type": "Empirical study",
+      "notes": "Tests multidimensional spontaneous EEG complexity during propofol-induced anesthesia.",
+      "year": 2015,
+      "source_urls": [
+        "https://journals.plos.org/plosone/article/file?id=10.1371%2Fjournal.pone.0133532&type=printable"
+      ],
+      "pages": 21,
+      "bytes": 3921151,
+      "markdown": "neuroscience/2015-schartner-eeg-complexity/2015-schartner-eeg-complexity.md",
+      "pdf_sha256": "a4d0241ecc332835f13c8305eb4be1a3cbb3c9a8dd038b02ec3f90fdefe0b8de"
+    },
+    {
+      "file": "machine-consciousness/2022-conscious-function-intelligence/2022-conscious-function-intelligence.pdf",
+      "title": "On the link between conscious function and general intelligence in humans and machines",
+      "url": "https://arxiv.org/pdf/2204.05133",
+      "doi": "",
+      "area": "machine-consciousness",
+      "authors": "Juliani, Arulkumaran, Sasai & Kanai",
+      "type": "Review / computational proposal; TMLR (2022), repository copy",
+      "notes": "Compares functional theories of consciousness and their relationship to general intelligence.",
+      "year": 2022,
+      "source_urls": [
+        "https://arxiv.org/pdf/2204.05133"
+      ],
+      "pages": 38,
+      "bytes": 811267,
+      "markdown": "machine-consciousness/2022-conscious-function-intelligence/2022-conscious-function-intelligence.md",
+      "pdf_sha256": "a064376bce0f6e4789712171431be2aca674d7bf1f57ea9d010a90281466c204"
+    },
+    {
+      "file": "machine-consciousness/2023-chalmers-conscious-llm/2023-chalmers-conscious-llm.pdf",
+      "title": "Could a Large Language Model be Conscious?",
+      "url": "https://arxiv.org/pdf/2303.07103",
+      "doi": "",
+      "area": "machine-consciousness",
+      "authors": "Chalmers",
+      "type": "Essay / repository manuscript",
+      "notes": "Arguments for and against consciousness in large language models; assessed in its 2023 technological context.",
+      "year": 2023,
+      "source_urls": [
+        "https://arxiv.org/pdf/2303.07103"
+      ],
+      "pages": 17,
+      "bytes": 332838,
+      "markdown": "machine-consciousness/2023-chalmers-conscious-llm/2023-chalmers-conscious-llm.md",
+      "pdf_sha256": "98a36f841ebb8c10e8fb41ee1c40b4b579cd134f98775d1a8f5af454a62b1db2"
+    },
+    {
+      "file": "machine-consciousness/2022-iterative-working-memory/2022-iterative-working-memory.pdf",
+      "title": "A Cognitive Architecture for Machine Consciousness and Artificial Superintelligence: Thought Is Structured by the Iterative Updating of Working Memory",
+      "url": "https://arxiv.org/pdf/2203.17255",
+      "doi": "",
+      "area": "machine-consciousness",
+      "authors": "Reser",
+      "type": "Computational proposal / preprint",
+      "notes": "Iterative working-memory updating as a proposed architecture for continuous thought; repository manuscript revised after its initial 2022 submission.",
+      "year": 2022,
+      "source_urls": [
+        "https://arxiv.org/pdf/2203.17255"
+      ],
+      "pages": 88,
+      "bytes": 6224194,
+      "markdown": "machine-consciousness/2022-iterative-working-memory/2022-iterative-working-memory.md",
+      "pdf_sha256": "177026b61db18d8182524c325e2b571364a7ca6563a823b3da32baa611b212f8"
+    },
+    {
+      "file": "neuroscience/2023-albantakis-iit-4/2023-albantakis-iit-4.pdf",
+      "title": "Integrated information theory (IIT) 4.0: Formulating the properties of phenomenal existence in physical terms",
+      "url": "https://journals.plos.org/ploscompbiol/article/file?id=10.1371%2Fjournal.pcbi.1011465&type=printable",
+      "doi": "10.1371/journal.pcbi.1011465",
+      "area": "neuroscience",
+      "authors": "Albantakis et al.",
+      "type": "Formal theory",
+      "notes": "The 4.0 formulation of integrated information theory; read alongside 3.0 and empirical theory-comparison work.",
+      "year": 2023,
+      "source_urls": [
+        "https://journals.plos.org/ploscompbiol/article/file?id=10.1371%2Fjournal.pcbi.1011465&type=printable"
+      ],
+      "pages": 45,
+      "bytes": 3574048,
+      "markdown": "neuroscience/2023-albantakis-iit-4/2023-albantakis-iit-4.md",
+      "pdf_sha256": "96129cb9589703e30663969cb0f0f329f706778b88b6b5f4b967a19f994783db"
+    },
+    {
+      "file": "neuroscience/2025-consciousness-science-overview/2025-consciousness-science-overview.pdf",
+      "title": "Consciousness science: where are we, where are we going, and what if we get there?",
+      "url": "https://www.frontiersin.org/journals/science/articles/10.3389/fsci.2025.1546279/pdf",
+      "doi": "10.3389/fsci.2025.1546279",
+      "area": "neuroscience",
+      "authors": "Cleeremans, Mudrik & Seth",
+      "type": "Review / field overview",
+      "notes": "Developments, methods, open problems, and possible futures of consciousness science.",
+      "year": 2025,
+      "source_urls": [
+        "https://www.frontiersin.org/journals/science/articles/10.3389/fsci.2025.1546279/pdf"
+      ],
+      "pages": 23,
+      "bytes": 2304662,
+      "markdown": "neuroscience/2025-consciousness-science-overview/2025-consciousness-science-overview.md",
+      "pdf_sha256": "0c3c16675f4fce48fbfbbe74ffcf7b8d9a1bbd2f5249978da8cde2e6b63b69ba"
+    },
+    {
+      "file": "neuroscience/2022-fish-pain-sentience/2022-fish-pain-sentience.pdf",
+      "title": "What Is It Like to Be a Bass? Red Herrings, Fish Pain and the Study of Animal Sentience",
+      "url": "https://www.frontiersin.org/journals/veterinary-science/articles/10.3389/fvets.2022.788289/pdf",
+      "doi": "10.3389/fvets.2022.788289",
+      "area": "neuroscience",
+      "authors": "Mason & Lavery",
+      "type": "Review",
+      "notes": "Fish pain, nociception, affective consciousness, and methods for studying animal sentience. Publisher lists a corrigendum; consult the linked article for it.",
+      "year": 2022,
+      "source_urls": [
+        "https://www.frontiersin.org/journals/veterinary-science/articles/10.3389/fvets.2022.788289/pdf"
+      ],
+      "pages": 19,
+      "bytes": 887568,
+      "markdown": "neuroscience/2022-fish-pain-sentience/2022-fish-pain-sentience.md",
+      "pdf_sha256": "66fcd0e98abffaf7170537587c0a493af0eead046d8a448081f469e9152cb177"
+    },
+    {
+      "file": "neuroscience/2024-animal-consciousness-agnostic/2024-animal-consciousness-agnostic.pdf",
+      "title": "Neuroscience of animal consciousness: still agnostic after all",
+      "url": "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2024.1456403/pdf",
+      "doi": "10.3389/fpsyg.2024.1456403",
+      "area": "neuroscience",
+      "authors": "Gutfreund",
+      "type": "Opinion / critique",
+      "notes": "Critiques inferences from animal cognitive performance to conscious awareness.",
+      "year": 2024,
+      "source_urls": [
+        "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2024.1456403/pdf"
+      ],
+      "pages": 4,
+      "bytes": 134683,
+      "markdown": "neuroscience/2024-animal-consciousness-agnostic/2024-animal-consciousness-agnostic.md",
+      "pdf_sha256": "318caabd072020d64ee21589bb739b8994e43828cf919aaa533b053915415e12"
+    },
+    {
+      "file": "neuroscience/2020-roots-animal-consciousness/2020-roots-animal-consciousness.pdf",
+      "title": "Renewed Perspectives on the Deep Roots and Broad Distribution of Animal Consciousness",
+      "url": "https://www.frontiersin.org/journals/systems-neuroscience/articles/10.3389/fnsys.2020.00057/pdf",
+      "doi": "10.3389/fnsys.2020.00057",
+      "area": "neuroscience",
+      "authors": "Irwin",
+      "type": "Perspective",
+      "notes": "Evolutionary and comparative arguments for a broad distribution of animal consciousness.",
+      "year": 2020,
+      "source_urls": [
+        "https://www.frontiersin.org/journals/systems-neuroscience/articles/10.3389/fnsys.2020.00057/pdf"
+      ],
+      "pages": 6,
+      "bytes": 800273,
+      "markdown": "neuroscience/2020-roots-animal-consciousness/2020-roots-animal-consciousness.md",
+      "pdf_sha256": "2d60bf4e138dd7996786c3777c7acae5cdf81e4ad30179e5fad6f61c4e9241e4"
+    },
+    {
+      "file": "metacognition/2017-fleming-hmeta-d/2017-fleming-hmeta-d.pdf",
+      "title": "HMeta-d: hierarchical Bayesian estimation of metacognitive efficiency from confidence ratings",
+      "url": "https://metacoglab.org/s/FlemingNOC2017.pdf",
+      "doi": "10.1093/nc/nix007",
+      "area": "metacognition",
+      "authors": "Fleming",
+      "type": "Quantitative methods",
+      "notes": "Hierarchical Bayesian estimation of metacognitive efficiency; includes simulations and a methods tutorial.",
+      "year": 2017,
+      "source_urls": [
+        "https://metacoglab.org/s/FlemingNOC2017.pdf"
+      ],
+      "pages": 14,
+      "bytes": 1212809,
+      "markdown": "metacognition/2017-fleming-hmeta-d/2017-fleming-hmeta-d.md",
+      "pdf_sha256": "5750711a00d153ce6d4af925d6a94d6802a7805a28fb2c983ab0587e953ce06e"
+    },
+    {
+      "file": "embodiment/2016-allostatic-self-efficacy/2016-allostatic-self-efficacy.pdf",
+      "title": "Allostatic Self-efficacy: A Metacognitive Theory of Dyshomeostasis-Induced Fatigue and Depression",
+      "url": "https://www.frontiersin.org/journals/human-neuroscience/articles/10.3389/fnhum.2016.00550/pdf",
+      "doi": "10.3389/fnhum.2016.00550",
+      "area": "embodiment",
+      "authors": "Stephan et al.",
+      "type": "Computational theory",
+      "notes": "Hierarchical Bayesian account of interoception, allostatic control, metacognition, fatigue, and depression; a theoretical model, not a clinical diagnostic rule.",
+      "year": 2016,
+      "source_urls": [
+        "https://www.frontiersin.org/journals/human-neuroscience/articles/10.3389/fnhum.2016.00550/pdf"
+      ],
+      "pages": 27,
+      "bytes": 2930045,
+      "markdown": "embodiment/2016-allostatic-self-efficacy/2016-allostatic-self-efficacy.md",
+      "pdf_sha256": "cf1d9072a8ebe7aa821ca4e44871cda41d67d2fce3e8a5097aa40c2d16f24ede"
+    },
+    {
+      "file": "phenomenology/2011-froese-validating-first-person-methods/2011-froese-validating-first-person-methods.pdf",
+      "title": "Validating and Calibrating First- and Second-person Methods in the Science of Consciousness",
+      "url": "https://users.sussex.ac.uk/~anils/Papers/FroeseEtal_JCS2011_withreplies.pdf",
+      "doi": "",
+      "area": "phenomenology",
+      "authors": "Froese, Gould & Seth",
+      "type": "Methodological analysis",
+      "notes": "Validation and calibration of first- and second-person methods. Downloaded compilation includes replies; counted as one principal work.",
+      "year": 2011,
+      "source_urls": [
+        "https://users.sussex.ac.uk/~anils/Papers/FroeseEtal_JCS2011_withreplies.pdf"
+      ],
+      "pages": 60,
+      "bytes": 359508,
+      "markdown": "phenomenology/2011-froese-validating-first-person-methods/2011-froese-validating-first-person-methods.md",
+      "pdf_sha256": "b487fdb53edc35416ebbc4372b287d97a0390abd0c79ff01e9eef994acd5c619"
+    },
+    {
+      "file": "phenomenology/2019-petitmengin-structures-lived-experience/2019-petitmengin-structures-lived-experience.pdf",
+      "title": "Discovering the structures of lived experience. Towards a micro-phenomenological analysis method",
+      "url": "https://www.microphenomenology.com/_files/ugd/5609aa_096cecd355d94b5d9e165174483534d0.pdf",
+      "doi": "10.1007/s11097-018-9597-4",
+      "area": "phenomenology",
+      "authors": "Petitmengin, Remillieux & Valenzuela-Moguillansky",
+      "type": "Methodological analysis",
+      "notes": "A procedure for analyzing structures of lived experience from micro-phenomenological interviews. Online publication 2018; journal volume publication 2019.",
+      "year": 2019,
+      "source_urls": [
+        "https://www.microphenomenology.com/_files/ugd/5609aa_096cecd355d94b5d9e165174483534d0.pdf"
+      ],
+      "pages": 40,
+      "bytes": 1231256,
+      "markdown": "phenomenology/2019-petitmengin-structures-lived-experience/2019-petitmengin-structures-lived-experience.md",
+      "pdf_sha256": "562ae9d6eca60e253faabbe80d8a452f404f49dba422b50e7c439ea99a36684e"
+    },
+    {
+      "file": "metacognition/2012-fleming-dolan-neural-basis/2012-fleming-dolan-neural-basis.pdf",
+      "title": "The neural basis of metacognitive ability",
+      "url": "https://metacoglab.org/s/The-neural-basis-of-metacognitive-abilituy.pdf",
+      "doi": "",
+      "area": "metacognition",
+      "authors": "Fleming & Dolan",
+      "type": "Review",
+      "notes": "Neural evidence about metacognitive ability and its relationship to cognitive performance.",
+      "year": 2012,
+      "source_urls": [
+        "https://metacoglab.org/s/The-neural-basis-of-metacognitive-abilituy.pdf"
+      ],
+      "pages": 12,
+      "bytes": 597640,
+      "markdown": "metacognition/2012-fleming-dolan-neural-basis/2012-fleming-dolan-neural-basis.md",
+      "pdf_sha256": "878bb1702adf26019f0e020872b336a89a9476190f1ac84849c3a34eb2fc8356"
+    },
+    {
+      "file": "metacognition/2019-carpenter-metacognitive-training/2019-carpenter-metacognitive-training.pdf",
+      "title": "Domain-general enhancements of metacognitive ability through adaptive training",
+      "url": "https://metacoglab.org/s/CarpenterJEPG2019.pdf",
+      "doi": "",
+      "area": "metacognition",
+      "authors": "Carpenter et al.",
+      "type": "Empirical study",
+      "notes": "Tests whether adaptive training improves metacognitive ability across tasks.",
+      "year": 2019,
+      "source_urls": [
+        "https://metacoglab.org/s/CarpenterJEPG2019.pdf"
+      ],
+      "pages": 14,
+      "bytes": 601458,
+      "markdown": "metacognition/2019-carpenter-metacognitive-training/2019-carpenter-metacognitive-training.md",
+      "pdf_sha256": "1a0a86fedb24235de3a25c7a4cc21d6a06c2dd1f790c71d79d5d56ee515fdce6"
+    }
+  ]
+}

@@ -1,0 +1,411 @@
+{
+  "version": 1,
+  "note": "Curated discovery labels based on catalog titles and summaries; not author-assigned classifications or a full methodological review. Edit here and rebuild; references inherit these document-level labels.",
+  "documents": {
+    "neuroscience/2011-dehaene-changeux-conscious-processing/2011-dehaene-changeux-conscious-processing.md": {
+      "labels": [
+        "neuroscience",
+        "global-workspace",
+        "conscious-access"
+      ]
+    },
+    "neuroscience/2014-oizumi-et-al-iit-3/2014-oizumi-et-al-iit-3.md": {
+      "labels": [
+        "neuroscience",
+        "philosophy",
+        "integrated-information"
+      ]
+    },
+    "neuroscience/2025-cogitate-adversarial-testing/2025-cogitate-adversarial-testing.md": {
+      "labels": [
+        "neuroscience",
+        "global-workspace",
+        "integrated-information",
+        "experimental-methods"
+      ]
+    },
+    "metacognition/2014-fleming-lau-measuring-metacognition/2014-fleming-lau-measuring-metacognition.md": {
+      "labels": [
+        "metacognition",
+        "psychology",
+        "measurement",
+        "statistical-methods"
+      ]
+    },
+    "metacognition/2017-fleming-daw-self-evaluation/2017-fleming-daw-self-evaluation.md": {
+      "labels": [
+        "metacognition",
+        "psychology",
+        "decision-making",
+        "computational-modeling"
+      ]
+    },
+    "philosophy/1995-chalmers-facing-up/1995-chalmers-facing-up.md": {
+      "labels": [
+        "philosophy",
+        "phenomenology",
+        "hard-problem"
+      ]
+    },
+    "philosophy/2016-frankish-illusionism/2016-frankish-illusionism.md": {
+      "labels": [
+        "philosophy",
+        "illusionism"
+      ]
+    },
+    "philosophy/2018-chalmers-meta-problem/2018-chalmers-meta-problem.md": {
+      "labels": [
+        "philosophy",
+        "metacognition",
+        "meta-problem"
+      ]
+    },
+    "phenomenology/2015-olivares-et-al-neurophenomenology-revisited/2015-olivares-et-al-neurophenomenology-revisited.md": {
+      "labels": [
+        "phenomenology",
+        "neuroscience",
+        "neurophenomenology",
+        "first-person-methods"
+      ]
+    },
+    "phenomenology/2020-berkovich-ohana-et-al-guide-neurophenomenology/2020-berkovich-ohana-et-al-guide-neurophenomenology.md": {
+      "labels": [
+        "phenomenology",
+        "neuroscience",
+        "meditation",
+        "selfhood",
+        "first-person-methods"
+      ]
+    },
+    "embodiment/2005-di-paolo-autopoiesis-adaptivity/2005-di-paolo-autopoiesis-adaptivity.md": {
+      "labels": [
+        "embodiment",
+        "philosophy",
+        "enactivism",
+        "agency"
+      ]
+    },
+    "embodiment/2016-seth-friston-active-interoceptive-inference/2016-seth-friston-active-interoceptive-inference.md": {
+      "labels": [
+        "embodiment",
+        "neuroscience",
+        "interoception",
+        "emotion",
+        "predictive-processing"
+      ]
+    },
+    "machine-consciousness/2023-butlin-et-al-consciousness-in-artificial-intelligence/2023-butlin-et-al-consciousness-in-artificial-intelligence.md": {
+      "labels": [
+        "machine-consciousness",
+        "neuroscience",
+        "philosophy",
+        "AI-assessment"
+      ]
+    },
+    "machine-consciousness/2021-blum-blum-conscious-turing-machine/2021-blum-blum-conscious-turing-machine.md": {
+      "labels": [
+        "machine-consciousness",
+        "global-workspace",
+        "computational-modeling"
+      ]
+    },
+    "machine-consciousness/2024-farisco-et-al-artificial-consciousness/2024-farisco-et-al-artificial-consciousness.md": {
+      "labels": [
+        "machine-consciousness",
+        "neuroscience",
+        "AI-assessment"
+      ]
+    },
+    "neuroscience/2013-global-workspace-dynamics/2013-global-workspace-dynamics.md": {
+      "labels": [
+        "neuroscience",
+        "global-workspace",
+        "neural-dynamics"
+      ]
+    },
+    "neuroscience/2011-biology-of-consciousness/2011-biology-of-consciousness.md": {
+      "labels": [
+        "neuroscience",
+        "biology",
+        "consciousness-theories"
+      ]
+    },
+    "neuroscience/2013-sleep-neuroimaging/2013-sleep-neuroimaging.md": {
+      "labels": [
+        "neuroscience",
+        "sleep",
+        "neuroimaging"
+      ]
+    },
+    "neuroscience/2014-feedforward-feedback-awareness/2014-feedforward-feedback-awareness.md": {
+      "labels": [
+        "neuroscience",
+        "perception",
+        "attention",
+        "experimental-methods"
+      ]
+    },
+    "metacognition/2016-prospective-retrospective-judgments/2016-prospective-retrospective-judgments.md": {
+      "labels": [
+        "metacognition",
+        "psychology",
+        "confidence",
+        "decision-making"
+      ]
+    },
+    "metacognition/2013-episodic-retrieval/2013-episodic-retrieval.md": {
+      "labels": [
+        "metacognition",
+        "psychology",
+        "episodic-memory"
+      ]
+    },
+    "metacognition/2018-visual-perspectives-memory/2018-visual-perspectives-memory.md": {
+      "labels": [
+        "metacognition",
+        "psychology",
+        "episodic-memory",
+        "selfhood"
+      ]
+    },
+    "metacognition/2018-angular-gyrus-memory-self/2018-angular-gyrus-memory-self.md": {
+      "labels": [
+        "metacognition",
+        "neuroscience",
+        "episodic-memory",
+        "embodiment",
+        "selfhood"
+      ]
+    },
+    "embodiment/2014-body-social/2014-body-social.md": {
+      "labels": [
+        "embodiment",
+        "philosophy",
+        "enactivism",
+        "social-cognition",
+        "selfhood"
+      ]
+    },
+    "embodiment/2020-enactivism-ecological-psychology/2020-enactivism-ecological-psychology.md": {
+      "labels": [
+        "embodiment",
+        "philosophy",
+        "enactivism",
+        "ecological-psychology",
+        "agency"
+      ]
+    },
+    "embodiment/2018-wide-cognition-mechanisms/2018-wide-cognition-mechanisms.md": {
+      "labels": [
+        "embodiment",
+        "philosophy",
+        "extended-cognition"
+      ]
+    },
+    "embodiment/2023-bodily-self-consciousness/2023-bodily-self-consciousness.md": {
+      "labels": [
+        "embodiment",
+        "neuroscience",
+        "selfhood",
+        "multisensory-perception"
+      ]
+    },
+    "phenomenology/2013-mindfulness-induced-selflessness/2013-mindfulness-induced-selflessness.md": {
+      "labels": [
+        "phenomenology",
+        "neuroscience",
+        "meditation",
+        "selfhood",
+        "neurophenomenology"
+      ]
+    },
+    "phenomenology/2013-embodied-transcendental/2013-embodied-transcendental.md": {
+      "labels": [
+        "phenomenology",
+        "philosophy",
+        "embodiment",
+        "neurophenomenology"
+      ]
+    },
+    "phenomenology/2018-intentional-consciousness-temporality/2018-intentional-consciousness-temporality.md": {
+      "labels": [
+        "phenomenology",
+        "philosophy",
+        "metacognition",
+        "time-consciousness"
+      ]
+    },
+    "phenomenology/2014-intersubjective-time/2014-intersubjective-time.md": {
+      "labels": [
+        "phenomenology",
+        "embodiment",
+        "social-cognition",
+        "time-consciousness"
+      ]
+    },
+    "philosophy/2013-first-order-representationalism/2013-first-order-representationalism.md": {
+      "labels": [
+        "philosophy",
+        "representationalism"
+      ]
+    },
+    "philosophy/2016-neural-correlate-analysis/2016-neural-correlate-analysis.md": {
+      "labels": [
+        "philosophy",
+        "neuroscience",
+        "neural-correlates",
+        "methodology"
+      ]
+    },
+    "machine-consciousness/2022-sense-making-artificial-minds/2022-sense-making-artificial-minds.md": {
+      "labels": [
+        "machine-consciousness",
+        "embodiment",
+        "social-cognition",
+        "enactivism"
+      ]
+    },
+    "philosophy/1974-nagel-bat/1974-nagel-bat.md": {
+      "labels": [
+        "philosophy",
+        "phenomenology",
+        "subjective-experience"
+      ]
+    },
+    "philosophy/2000-chalmers-neural-correlate/2000-chalmers-neural-correlate.md": {
+      "labels": [
+        "philosophy",
+        "neuroscience",
+        "neural-correlates",
+        "methodology"
+      ]
+    },
+    "neuroscience/2011-graziano-kastner-attention-schema/2011-graziano-kastner-attention-schema.md": {
+      "labels": [
+        "neuroscience",
+        "social-cognition",
+        "attention-schema",
+        "attention"
+      ]
+    },
+    "neuroscience/2015-schartner-eeg-complexity/2015-schartner-eeg-complexity.md": {
+      "labels": [
+        "neuroscience",
+        "anesthesia",
+        "EEG",
+        "neural-complexity"
+      ]
+    },
+    "machine-consciousness/2022-conscious-function-intelligence/2022-conscious-function-intelligence.md": {
+      "labels": [
+        "machine-consciousness",
+        "neuroscience",
+        "intelligence"
+      ]
+    },
+    "machine-consciousness/2023-chalmers-conscious-llm/2023-chalmers-conscious-llm.md": {
+      "labels": [
+        "machine-consciousness",
+        "philosophy",
+        "language-models",
+        "AI-assessment"
+      ]
+    },
+    "machine-consciousness/2022-iterative-working-memory/2022-iterative-working-memory.md": {
+      "labels": [
+        "machine-consciousness",
+        "working-memory",
+        "cognitive-architecture"
+      ]
+    },
+    "neuroscience/2023-albantakis-iit-4/2023-albantakis-iit-4.md": {
+      "labels": [
+        "neuroscience",
+        "philosophy",
+        "integrated-information"
+      ]
+    },
+    "neuroscience/2025-consciousness-science-overview/2025-consciousness-science-overview.md": {
+      "labels": [
+        "neuroscience",
+        "philosophy",
+        "consciousness-theories",
+        "methodology"
+      ]
+    },
+    "neuroscience/2022-fish-pain-sentience/2022-fish-pain-sentience.md": {
+      "labels": [
+        "neuroscience",
+        "philosophy",
+        "animal-consciousness",
+        "pain",
+        "sentience"
+      ]
+    },
+    "neuroscience/2024-animal-consciousness-agnostic/2024-animal-consciousness-agnostic.md": {
+      "labels": [
+        "neuroscience",
+        "animal-consciousness",
+        "methodology"
+      ]
+    },
+    "neuroscience/2020-roots-animal-consciousness/2020-roots-animal-consciousness.md": {
+      "labels": [
+        "neuroscience",
+        "biology",
+        "animal-consciousness",
+        "evolution"
+      ]
+    },
+    "metacognition/2017-fleming-hmeta-d/2017-fleming-hmeta-d.md": {
+      "labels": [
+        "metacognition",
+        "psychology",
+        "statistical-methods",
+        "measurement"
+      ]
+    },
+    "embodiment/2016-allostatic-self-efficacy/2016-allostatic-self-efficacy.md": {
+      "labels": [
+        "embodiment",
+        "metacognition",
+        "neuroscience",
+        "interoception",
+        "allostasis",
+        "fatigue",
+        "depression"
+      ]
+    },
+    "phenomenology/2011-froese-validating-first-person-methods/2011-froese-validating-first-person-methods.md": {
+      "labels": [
+        "phenomenology",
+        "philosophy",
+        "first-person-methods",
+        "methodology"
+      ]
+    },
+    "phenomenology/2019-petitmengin-structures-lived-experience/2019-petitmengin-structures-lived-experience.md": {
+      "labels": [
+        "phenomenology",
+        "first-person-methods",
+        "micro-phenomenology",
+        "methodology"
+      ]
+    },
+    "metacognition/2012-fleming-dolan-neural-basis/2012-fleming-dolan-neural-basis.md": {
+      "labels": [
+        "metacognition",
+        "neuroscience",
+        "self-monitoring"
+      ]
+    },
+    "metacognition/2019-carpenter-metacognitive-training/2019-carpenter-metacognitive-training.md": {
+      "labels": [
+        "metacognition",
+        "psychology",
+        "training",
+        "experimental-methods"
+      ]
+    }
+  }
+}
