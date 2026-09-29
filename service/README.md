@@ -67,6 +67,19 @@ The Kubernetes deployment is initially one replica. Do not share SQLite volumes
 over network filesystems or scale replicas against SQLite.
 Back up SQLite with its backup API (not by copying only the main file during writes).
 
+PostgreSQL uses a bounded Psycopg connection pool. Connections are always checked
+out and returned with a context manager; broken connections are replaced, each
+borrow is health-checked, and the pool recycles connections after 30 minutes or
+5 idle minutes. Defaults are 1–8 connections, at most 64 waiting requests, and a
+5-second checkout/connect timeout. PostgreSQL also enforces a 15-second statement
+timeout and a 60-second idle-in-transaction timeout. These values can be tuned
+with `TEMPEST_DB_POOL_MIN`, `TEMPEST_DB_POOL_MAX`,
+`TEMPEST_DB_POOL_MAX_WAITING`, `TEMPEST_DB_POOL_TIMEOUT_SECONDS`,
+`TEMPEST_DB_POOL_MAX_LIFETIME_SECONDS`, `TEMPEST_DB_POOL_MAX_IDLE_SECONDS`,
+`TEMPEST_DB_STATEMENT_TIMEOUT_MS`, and
+`TEMPEST_DB_IDLE_TRANSACTION_TIMEOUT_MS`. Pool sizing should be coordinated with
+the Postgres connection budget across all application replicas.
+
 ## API
 
 Application APIs require an issued Bearer key or an administrator browser session.

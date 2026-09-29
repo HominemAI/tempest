@@ -79,6 +79,7 @@ class Store:
             db.execute('CREATE TABLE IF NOT EXISTS relationship_states(personality_id TEXT NOT NULL, user_id TEXT NOT NULL, body TEXT NOT NULL, PRIMARY KEY(personality_id,user_id))')
             db.execute('CREATE TABLE IF NOT EXISTS inference_observations(id TEXT PRIMARY KEY, occurred_at TEXT NOT NULL, personality_id TEXT NOT NULL, model_id TEXT NOT NULL, duration_seconds REAL NOT NULL)')
             db.execute('CREATE TABLE IF NOT EXISTS inference_requests(id TEXT PRIMARY KEY, occurred_at TEXT NOT NULL, personality_id TEXT NOT NULL, model_id TEXT NOT NULL, duration_seconds REAL NOT NULL, prediction_count INTEGER NOT NULL)')
+            db.execute('CREATE TABLE IF NOT EXISTS inference_database_observations(request_id TEXT PRIMARY KEY, pool_wait_ms REAL NOT NULL, setup_ms REAL NOT NULL, execute_ms REAL NOT NULL, fetch_ms REAL NOT NULL, query_count INTEGER NOT NULL)')
             # Existing records remain system-only; never silently assign them to a customer.
             db.execute('INSERT INTO instance_owners(id,account_id,user_id) SELECT id,NULL,NULL FROM personalities WHERE id NOT IN (SELECT id FROM instance_owners) ON CONFLICT DO NOTHING')
 
@@ -182,13 +183,26 @@ class Store:
         with self.db() as db:
             rows=db.execute('SELECT occurred_at,personality_id,model_id,duration_seconds FROM inference_observations ORDER BY occurred_at DESC,id DESC LIMIT 1000').fetchall()
             requests=db.execute('SELECT occurred_at,duration_seconds,prediction_count FROM inference_requests ORDER BY occurred_at DESC,id DESC LIMIT 1000').fetchall()
+            database=db.execute('SELECT r.occurred_at,r.personality_id,r.model_id,d.pool_wait_ms,d.setup_ms,d.execute_ms,d.fetch_ms,d.query_count FROM inference_database_observations d JOIN inference_requests r ON r.id=d.request_id ORDER BY r.occurred_at DESC,r.id DESC LIMIT 1000').fetchall()
         samples=[{'occurred_at':row[0],'personality_id':row[1],'model_id':row[2],
                   'duration_ms':round(float(row[3])*1000,3)} for row in rows]
         average=sum(item['duration_ms'] for item in samples)/len(samples) if samples else None
         request_durations=[float(row[1])*1000 for row in requests]
+        db_samples=[{'occurred_at':row[0],'personality_id':row[1],'model_id':row[2],
+                     'pool_wait_ms':float(row[3]),'setup_ms':float(row[4]),'execute_ms':float(row[5]),'fetch_ms':float(row[6]),'query_count':int(row[7])} for row in database]
+        mean=lambda key:sum(item[key] for item in db_samples)/len(db_samples) if db_samples else None
+        pool=self.database.pool_stats()
         return {'window_limit':1000,'sample_count':len(samples),'average_ms':average,
                 'request_sample_count':len(requests),'request_average_ms':sum(request_durations)/len(request_durations) if requests else None,
-                'latest_at':samples[0]['occurred_at'] if samples else None,'observations':samples[:100]}
+                'database_sample_count':len(db_samples),'database_pool_wait_average_ms':mean('pool_wait_ms'),
+                'database_setup_average_ms':mean('setup_ms'),
+                'database_execute_average_ms':mean('execute_ms'),'database_fetch_average_ms':mean('fetch_ms'),
+                'database_query_average_ms':(mean('execute_ms') or 0)+(mean('fetch_ms') or 0) if db_samples else None,
+                'database_query_count_average':mean('query_count'),
+                'latest_at':samples[0]['occurred_at'] if samples else None,'observations':samples[:100],
+                'database_observations':db_samples[:100],
+                'database_pool':{key:pool.get(key,0) for key in
+                    ('pool_min','pool_max','pool_size','pool_available','requests_waiting','requests_queued','requests_errors','connections_lost')}}
 
     def relationship_view(self,row):
         # Draft rendering convention: map accumulated adjustment to the nearest
@@ -278,7 +292,11 @@ class Store:
             response['server_turn_seconds']=server_turn_seconds
             db.execute('UPDATE personalities SET body=? WHERE id=?',(json.dumps(state),identifier))
             db.execute('INSERT INTO turns VALUES(?,?,?,?,?)',(identifier,state['turn'],key,fingerprint,json.dumps(response)))
+            request_id=str(uuid.uuid4());timing=db.timing()
             db.execute('INSERT INTO inference_requests VALUES(?,?,?,?,?,?)',
-                       (str(uuid.uuid4()),response['timestamp'],identifier,self.model_id,server_turn_seconds,len(predictions)))
+                       (request_id,response['timestamp'],identifier,self.model_id,server_turn_seconds,len(predictions)))
+            db.execute('INSERT INTO inference_database_observations VALUES(?,?,?,?,?,?)',
+                       (request_id,timing['pool_wait_seconds'],timing['setup_seconds'],timing['execute_seconds'],timing['fetch_seconds'],timing['query_count']))
             db.execute('DELETE FROM inference_requests WHERE id NOT IN (SELECT id FROM inference_requests ORDER BY occurred_at DESC,id DESC LIMIT 1000)')
+            db.execute('DELETE FROM inference_database_observations WHERE request_id NOT IN (SELECT id FROM inference_requests)')
             return response

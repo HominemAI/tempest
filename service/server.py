@@ -4,6 +4,7 @@ import hmac
 import json
 import logging
 import os
+import time
 from pathlib import Path
 import sys
 from http.cookies import SimpleCookie
@@ -11,6 +12,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse, parse_qs
 
 from core import Store, Conflict, ROOT
+from database import DatabaseUnavailable
 from access import Access, AccessError, Unauthorized, Forbidden
 from catalog import Catalog
 from api import API
@@ -21,6 +23,8 @@ class Handler(BaseHTTPRequestHandler):
     def log_message(self,*args): pass  # Do not log event text or credentials.
 
     def respond(self,status,value,headers=None):
+        if isinstance(value,dict) and 'server_turn_seconds' in value and hasattr(self,'request_started'):
+            value['server_http_seconds']=time.perf_counter()-self.request_started
         data=json.dumps(value,allow_nan=False).encode()
         self.send_response(status)
         self.send_header('Content-Type','application/json')
@@ -42,6 +46,7 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers();self.wfile.write(data)
 
     def handle_api(self,method):
+        self.request_started=time.perf_counter()
         route=urlparse(self.path)
         if method=='GET' and route.path=='/healthz':return self.respond(200,{'status':'ready'})
         try:
@@ -97,6 +102,7 @@ class Handler(BaseHTTPRequestHandler):
             if result is None:result=self.server.api.dispatch(method,route.path,parse_qs(route.query),payload,principal)
             return self.respond(200,result)
         except AccessError as exc:self.respond(exc.status,{'error':str(exc)})
+        except DatabaseUnavailable:self.respond(503,{'error':'Database is temporarily busy or unavailable. Retry with the same idempotency key.'})
         except PermissionError:self.respond(403,{'error':'Access denied'})
         except Conflict as exc:self.respond(409,{'error':str(exc)})
         except KeyError:self.respond(404,{'error':'Personality not found'})
@@ -124,12 +130,18 @@ def main():
     sys.path.insert(0,str(ROOT/'papers/emotion_training'))
     from predict_jev_discrete import load_model, predict
     config,_,_=load_model(model)  # Readiness means weights/encoder loaded successfully.
-    store=Store(os.environ.get('TEMPEST_DB','/data/tempest.sqlite'),lambda event,state:predict(model,event,state)['categories'],model.name)
-    if config['dimensions']!=store.dimensions:raise ValueError('Checkpoint/index dimension mismatch')
-    server=make_server(args.host,args.port,token,store,public_origin=os.environ.get('TEMPEST_PUBLIC_ORIGIN'),generator=configured_generator(store.mapping_data))
-    print(f'Tempest API listening on {args.host}:{args.port}',flush=True)
-    try:server.serve_forever()
-    except KeyboardInterrupt:pass
-    finally:server.server_close()
+    database=Database(os.environ.get('TEMPEST_DB','/data/tempest.sqlite'))
+    server=None
+    try:
+        database.open(wait=True)
+        store=Store(os.environ.get('TEMPEST_DB','/data/tempest.sqlite'),lambda event,state:predict(model,event,state)['categories'],model.name,database=database)
+        if config['dimensions']!=store.dimensions:raise ValueError('Checkpoint/index dimension mismatch')
+        server=make_server(args.host,args.port,token,store,public_origin=os.environ.get('TEMPEST_PUBLIC_ORIGIN'),generator=configured_generator(store.mapping_data))
+        print(f'Tempest API listening on {args.host}:{args.port}',flush=True)
+        try:server.serve_forever()
+        except KeyboardInterrupt:pass
+    finally:
+        if server is not None:server.server_close()
+        database.close()
 
 if __name__=='__main__':main()

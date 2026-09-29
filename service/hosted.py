@@ -6,6 +6,7 @@ path, query, principal). None means the caller should continue normal routing.
 No research corpus or locally maintained simulation/history is exposed here.
 """
 import json
+from functools import lru_cache
 from pathlib import Path
 
 from access import Forbidden
@@ -25,6 +26,11 @@ ASSETS = {
     '/assets/theme.js': (PAPERS / 'web/theme.js', 'text/javascript; charset=utf-8'),
     '/assets/tempest.css': (PAPERS / 'web/tempest.css', 'text/css; charset=utf-8'),
 }
+
+@lru_cache(maxsize=2)
+def _state_index(kind):
+    # Published indexes are immutable for the lifetime of the running image.
+    return json.loads(active_mapping(kind).read_text())
 
 
 def _admin(principal):
@@ -107,4 +113,4 @@ def dispatch(method, path, query, principal):
     kind = query.get('kind', ['state'])[0]
     if kind not in ('state', 'delta'):
         raise ValueError('kind must be state or delta')
-    return json.loads(active_mapping(kind).read_text())
+    return _state_index(kind)

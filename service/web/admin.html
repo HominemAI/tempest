@@ -175,7 +175,7 @@
 
       <section id="panel-observability" class="tab-panel" role="tabpanel" aria-labelledby="tab-observability" hidden>
         <div class="section-heading">
-          <div><h2>Model inference</h2><p>Prediction calls from every client using this Tempest service. Model time measures the predictor; server-turn time also includes queue wait, turn processing, and persistence. Each average covers up to 1,000 successful samples. Event text is not collected.</p></div>
+          <div><h2>Model inference</h2><p>Prediction calls from every client using this Tempest service. Model timing isolates the predictor; server and database timings show work outside it. A live browser additionally reports an approximate request-path split—not packet-level one-way measurements. The PostgreSQL pool has bounded checkout waits and connection lifetimes. Averages cover up to 1,000 turns. Event text is not collected.</p></div>
           <button id="observability-refresh" type="button">Refresh metrics</button>
         </div>
         <dl class="usage-list observability-metrics" aria-live="polite">
@@ -183,8 +183,22 @@
           <div><dt>Calls in average</dt><dd id="inference-count">—</dd></div>
           <div><dt>Average server turn</dt><dd id="server-turn-average">—</dd></div>
           <div><dt>Turns in average</dt><dd id="server-turn-count">—</dd></div>
+          <div><dt>DB pool checkout average</dt><dd id="db-connect-average">—</dd></div>
+          <div><dt>DB session setup average</dt><dd id="db-setup-average">—</dd></div>
+          <div><dt>DB query wait average</dt><dd id="db-query-average">—</dd></div>
+          <div><dt>SQL execution average</dt><dd id="db-execute-average">—</dd></div>
+          <div><dt>Result fetch average</dt><dd id="db-fetch-average">—</dd></div>
+          <div><dt>Queries per turn average</dt><dd id="db-query-count-average">—</dd></div>
+          <div><dt>DB timing samples</dt><dd id="db-sample-count">—</dd></div>
+          <div><dt>Pool health</dt><dd id="db-pool-status">—</dd></div>
           <div><dt>Latest inference</dt><dd id="inference-latest">—</dd></div>
         </dl>
+        <h3>Recent database waits</h3>
+        <div class="table-scroll" tabindex="0" role="region" aria-label="Recent database wait timings">
+          <table><thead><tr><th scope="col">Time (UTC)</th><th scope="col">Pool checkout</th><th scope="col">Session setup</th><th scope="col">SQL execute</th><th scope="col">Result fetch</th><th scope="col">Queries</th><th scope="col">Persona instance</th></tr></thead>
+            <tbody id="database-observations"><tr><td colspan="7" class="empty-cell">Waiting for database timing samples…</td></tr></tbody>
+          </table>
+        </div>
         <h3>Recent model calls</h3>
         <div class="table-scroll" tabindex="0" role="region" aria-label="Recent model inference calls">
           <table><thead><tr><th scope="col">Time (UTC)</th><th scope="col">Duration</th><th scope="col">Model</th><th scope="col">Persona instance</th></tr></thead>

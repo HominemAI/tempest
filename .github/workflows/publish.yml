@@ -44,7 +44,7 @@ jobs:
           DATABASE_URL: postgresql://tempest:test-only@localhost:5432/tempest_test
           TEMPEST_REQUIRE_POSTGRES: 'true'
         run: |
-          pip install 'psycopg[binary]>=3.2,<4'
+          pip install 'psycopg[binary,pool]>=3.2,<4'
           python -m unittest discover -s service -p 'test_*.py' -v
       - name: Set up Buildx
         uses: docker/setup-buildx-action@v3

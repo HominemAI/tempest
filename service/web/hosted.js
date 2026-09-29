@@ -24,10 +24,16 @@ window.TempestHosted = (() => {
     return originalFetch(input, {...init, headers, credentials: 'same-origin'});
   };
   async function api(path, payload) {
+    const requestStarted = performance.now();
     const response = await fetch(path, payload === undefined ? {} : {
       method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload),
     });
+    const headersReceived = performance.now();
     const value = await response.json();
+    const bodyRead = performance.now();
+    if (value && typeof value === 'object') Object.defineProperty(value, '__transportTiming', {
+      value: {ttfb_ms: headersReceived - requestStarted, body_ms: bodyRead - headersReceived}, enumerable: false,
+    });
     if (!response.ok) {
       const error = Error(value.error || 'Request failed. Reload the saved personality and retry.');
       error.status = response.status;
@@ -133,6 +139,7 @@ window.TempestHosted = (() => {
         baselines_before: value.pressure_before, baselines_after: value.pressure, settings: value.settings,
         delta_text: value.delta_text, model_inference_seconds: predictions.map(prediction => prediction.model_inference_seconds).filter(seconds => Number.isFinite(seconds) && seconds >= 0), server_response: value,
         server_turn_seconds: Number.isFinite(value.server_turn_seconds) ? value.server_turn_seconds : null,
+        server_http_seconds: Number.isFinite(value.server_http_seconds) ? value.server_http_seconds : null,
       };
     }
     function updateInferenceAverage(turns) {
@@ -144,9 +151,14 @@ window.TempestHosted = (() => {
       const serverAverage = serverTurns.length ? `${(serverTurns.reduce((sum, seconds) => sum + seconds, 0) / serverTurns.length * 1000).toFixed(1)} ms server turn` : 'server turn timing unavailable';
       const browserRequests = turns.map(turn => turn.client_request_seconds).filter(seconds => Number.isFinite(seconds) && seconds >= 0).slice(-1000);
       const browserAverage = browserRequests.length ? `${(browserRequests.reduce((sum, seconds) => sum + seconds, 0) / browserRequests.length).toFixed(2)} s browser request` : 'browser request timing warming up';
+      const handlerSamples = turns.map(turn => turn.server_http_seconds).filter(seconds => Number.isFinite(seconds) && seconds >= 0).slice(-1000);
+      const handlerAverage = handlerSamples.length ? `${(handlerSamples.reduce((sum, seconds) => sum + seconds, 0) / handlerSamples.length * 1000).toFixed(1)} ms HTTP handler` : 'HTTP handler timing unavailable';
+      const pathSamples = turns.map(turn => turn.network_residual_seconds).filter(seconds => Number.isFinite(seconds) && seconds >= 0).slice(-1000);
+      const pathAverage = pathSamples.length ? pathSamples.reduce((sum, seconds) => sum + seconds, 0) / pathSamples.length * 1000 : null;
+      const pathText = pathAverage === null ? 'path estimate warming up' : `TTFB residual ${pathAverage.toFixed(0)} ms (≈${(pathAverage / 2).toFixed(0)} ms each way*)`;
       const intervals = turns.map(turn => turn.update_interval_seconds).filter(seconds => Number.isFinite(seconds) && seconds >= 0).slice(-1000);
       const intervalAverage = intervals.length ? `${(intervals.reduce((sum, seconds) => sum + seconds, 0) / intervals.length).toFixed(1)} s between updates` : 'update interval warming up';
-      target.textContent = `Model ${(average * 1000).toFixed(1)} ms · server ${serverAverage} · ${browserAverage} · UI ${intervalAverage}`;
+      target.textContent = `Model ${(average * 1000).toFixed(1)} ms · server ${serverAverage} · ${handlerAverage} · ${browserAverage} · ${pathText} · UI ${intervalAverage}`;
     }
     function renderInstances() {
       const select = $('saved-personality-select'), selected = select.value;
@@ -295,6 +307,11 @@ window.TempestHosted = (() => {
       });
       const turn = turnView(value);
       turn.client_request_seconds = (updateAt - started) / 1000;
+      const transport = value.__transportTiming || {};
+      turn.client_ttfb_seconds = Number.isFinite(transport.ttfb_ms) ? transport.ttfb_ms / 1000 : null;
+      turn.response_body_seconds = Number.isFinite(transport.body_ms) ? transport.body_ms / 1000 : null;
+      turn.network_residual_seconds = Number.isFinite(transport.ttfb_ms) && Number.isFinite(value.server_http_seconds)
+        ? Math.max(0, transport.ttfb_ms / 1000 - value.server_http_seconds) : null;
       turn.update_interval_seconds = updateIntervalSeconds;
       appendEventLog(turn);
       activeTurns.push(turn);

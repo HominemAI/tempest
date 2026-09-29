@@ -445,6 +445,17 @@
       $('inference-count').textContent = `${data.sample_count} / ${data.window_limit} recent calls`;
       $('server-turn-average').textContent = data.request_average_ms == null ? 'No server turns recorded yet' : `${Number(data.request_average_ms).toFixed(1)} ms`;
       $('server-turn-count').textContent = `${data.request_sample_count || 0} / ${data.window_limit} recent turns`;
+      $('db-connect-average').textContent = data.database_pool_wait_average_ms == null ? 'No database timing yet' : `${Number(data.database_pool_wait_average_ms).toFixed(1)} ms`;
+      $('db-setup-average').textContent = data.database_setup_average_ms == null ? '—' : `${Number(data.database_setup_average_ms).toFixed(1)} ms`;
+      $('db-query-average').textContent = data.database_query_average_ms == null ? '—' : `${Number(data.database_query_average_ms).toFixed(1)} ms`;
+      $('db-execute-average').textContent = data.database_execute_average_ms == null ? '—' : `${Number(data.database_execute_average_ms).toFixed(1)} ms`;
+      $('db-fetch-average').textContent = data.database_fetch_average_ms == null ? '—' : `${Number(data.database_fetch_average_ms).toFixed(1)} ms`;
+      $('db-query-count-average').textContent = data.database_query_count_average == null ? '—' : Number(data.database_query_count_average).toFixed(1);
+      $('db-sample-count').textContent = `${data.database_sample_count || 0} / ${data.window_limit} recent turns`;
+      const pool = data.database_pool || {};
+      $('db-pool-status').textContent = Number(pool.pool_max) > 0
+        ? `${pool.pool_size || 0}/${pool.pool_max} open · ${pool.pool_available || 0} idle · ${pool.requests_waiting || 0} waiting · ${pool.requests_errors || 0} checkout errors`
+        : 'SQLite: no connection pool';
       $('inference-latest').textContent = data.latest_at ? date(data.latest_at) : '—';
       const body = $('inference-observations'); body.replaceChildren();
       const observations = Array.isArray(data.observations) ? data.observations : [];
@@ -459,7 +470,23 @@
         cell(row, observation.model_id);
         cell(row, observation.personality_id, 'table-id');
       }
-      $('observability-status').textContent = `Showing ${observations.length} most recent model predictions. Model timing covers the predictor only; server-turn timing includes turn processing and persistence. Each rolling average keeps at most ${data.window_limit} samples.`;
+      const databaseBody = $('database-observations'); databaseBody.replaceChildren();
+      const databaseObservations = Array.isArray(data.database_observations) ? data.database_observations : [];
+      if (!databaseObservations.length) {
+        const row = databaseBody.insertRow(); const td = row.insertCell(); td.colSpan = 7; td.className = 'empty-cell';
+        td.textContent = 'No database timing samples yet. New event turns will populate this table.';
+      }
+      for (const observation of databaseObservations) {
+        const row = databaseBody.insertRow();
+        cell(row, date(observation.occurred_at));
+        cell(row, `${Number(observation.pool_wait_ms).toFixed(1)} ms`);
+        cell(row, `${Number(observation.setup_ms).toFixed(1)} ms`);
+        cell(row, `${Number(observation.execute_ms).toFixed(1)} ms`);
+        cell(row, `${Number(observation.fetch_ms).toFixed(1)} ms`);
+        cell(row, String(observation.query_count));
+        cell(row, observation.personality_id, 'table-id');
+      }
+      $('observability-status').textContent = `Showing ${observations.length} recent model predictions and ${databaseObservations.length} database timing samples. Query wait is SQL execution plus result fetching; each rolling window holds at most ${data.window_limit} turns.`;
     } finally {
       state.observabilityBusy = false;
       $('observability-refresh').disabled = false;
