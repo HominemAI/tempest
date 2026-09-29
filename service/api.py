@@ -84,8 +84,8 @@ class API:
             if path=='/admin/keys':
                 if method=='GET':return {'keys':self.access.list_keys(q('account_id'))}
                 days=payload.get('expires_days',90)
-                if type(days) is not int or not 1<=days<=3650:raise ValueError('expires_days must be 1–3650')
-                return self.access.issue_key(payload['name'],kind=payload.get('kind','account'),account_id=payload.get('account_id'),user_id=payload.get('user_id') or None,scopes=payload.get('scopes'),expires_at=int(time.time())+days*86400)
+                if type(days) is not int or (days != -1 and not 1<=days<=3650):raise ValueError('expires_days must be -1 (never expires) or 1–3650')
+                return self.access.issue_key(payload['name'],kind=payload.get('kind','account'),account_id=payload.get('account_id'),user_id=payload.get('user_id') or None,scopes=payload.get('scopes'),expires_at=None if days == -1 else int(time.time())+days*86400)
             if len(parts)==4 and parts[1]=='keys' and parts[3]=='revoke' and method=='POST':
                 self.access.revoke_key(parts[2]);return {'revoked':True}
             if path=='/admin/limits':

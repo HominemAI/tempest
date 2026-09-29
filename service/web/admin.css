@@ -32,8 +32,8 @@ main { width: min(1440px, 100%); margin: 0 auto; padding: 24px 28px 48px; }
 .form-grid input, .form-grid select, .scope-select-form input, .scope-select-form select { width: 100%; }
 .scope-fieldset { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; border: 1px solid var(--line); border-radius: 5px; margin: 0 0 8px; padding: 7px 10px 9px; }
 .scope-fieldset legend { padding: 0 4px; font-weight: 600; }
-.check-label { display: inline-flex; align-items: center; gap: 7px; font-weight: 400; }
-.check-label input { min-height: auto; margin: 0; }
+.check-label, .form-grid > .check-label { display: inline-flex; align-items: center; gap: 7px; font-weight: 400; }
+.check-label input { width: auto; min-height: auto; margin: 0; }
 .form-action { align-self: end; padding-bottom: 8px; }
 .secret-panel { max-width: 920px; padding: 14px; margin: 12px 0 18px; border: 1px solid var(--line); background: var(--wash); }
 .secret-panel p { margin: 2px 0 8px; }

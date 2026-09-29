@@ -44,7 +44,10 @@ Administrators issue separate Bearer keys through `/admin/keys`:
 
 Raw keys are returned once on issuance. Listing returns metadata only. Save the
 raw key securely; use the key ID to revoke it. The HTTP issuance endpoint accepts
-`expires_days` from 1 to 3650 (default 90). Expired and revoked keys return 401.
+`expires_days` from 1 to 3650 (default 90), or `-1` for no expiration. The UI
+offers **Never expires (unlimited)**; these keys remain revocable and show
+**Never** in the expiry column. This option affects newly issued keys only;
+existing keys retain their tokens and expiration dates. Expired and revoked keys return 401.
 Browser sessions, API keys, and the bootstrap secret are not interchangeable.
 
 ## Account ownership and response privacy

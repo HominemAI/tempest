@@ -44,7 +44,8 @@ def _frame(source, path):
     source = source.replace('<head>', '<head><script src="/assets/theme.js"></script><meta name="color-scheme" content="light dark">')
     source = source.replace('<link rel="stylesheet" href="/assets/inference.css">',
                             '<link rel="stylesheet" href="/assets/inference.css"><link rel="stylesheet" href="/assets/tempest.css">')
-    source = source.replace('<body>', '<body>' + _navigation(path))
+    body = '<body data-tempest-area="inference">' if path == '/inference' else '<body>'
+    source = source.replace('<body>', body + _navigation(path))
     return source.replace('<main id="tempest-content">', '<main id="tempest-content" tabindex="-1">')
 
 

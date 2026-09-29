@@ -265,7 +265,7 @@
       cell(row, `${accountName(key.account_id)}${key.user_id ? ` · ${key.user_id}` : ''}`);
       cell(row, scopeNames(key.scopes));
       cell(row, date(key.created_at));
-      cell(row, date(key.expires_at));
+      cell(row, key.expires_at == null ? 'Never' : date(key.expires_at));
       cell(row, date(key.last_used_at));
       const expiresAt = asDate(key.expires_at);
       const status = key.revoked_at ? 'Revoked' : expiresAt && expiresAt < new Date() ? 'Expired' : 'Active';
@@ -299,6 +299,9 @@
     $('key-account-wrap').hidden = !accountKey;
     $('key-account').required = accountKey;
   });
+  $('key-unlimited').addEventListener('change', () => {
+    $('key-expiry').disabled = $('key-unlimited').checked;
+  });
   $('key-form').addEventListener('submit', async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
@@ -310,12 +313,14 @@
     const payload = { kind, name: $('key-name').value.trim(), scopes };
     if (kind === 'account') payload.account_id = $('key-account').value;
     if ($('key-user').value.trim()) payload.user_id = $('key-user').value.trim();
-    if ($('key-expiry').value !== '') payload.expires_days = Number($('key-expiry').value);
+    if ($('key-unlimited').checked) payload.expires_days = -1;
+    else if ($('key-expiry').value !== '') payload.expires_days = Number($('key-expiry').value);
     button.disabled = true; clearSecret();
     try {
       const result = await request('/admin/keys', { method: 'POST', body: payload });
       if (!result.token) throw new Error('The key was created, but the response did not include its one-time token. Contact an administrator before creating another key.');
       form.reset();
+      $('key-unlimited').dispatchEvent(new Event('change'));
       $('key-kind').dispatchEvent(new Event('change'));
       showSecret(result.token);
       await loadKeys();

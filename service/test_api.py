@@ -42,6 +42,27 @@ class APITests(unittest.TestCase):
             with urllib.request.urlopen(request) as response:return response.status,json.load(response),response.headers
         except urllib.error.HTTPError as response:return response.code,json.load(response),response.headers
 
+    def test_unlimited_expiration_preserves_existing_keys(self):
+        base={'name':'test','kind':'account','account_id':self.a}
+        status,existing,_=self.call('/admin/keys',base,token=self.admin)
+        self.assertEqual(status,200)
+        self.assertIsInstance(existing['expires_at'],int)
+        for kind in ('account','admin'):
+            payload={'name':'unlimited','kind':kind,'expires_days':-1}
+            if kind=='account':payload['account_id']=self.a
+            status,key,_=self.call('/admin/keys',payload,token=self.admin)
+            self.assertEqual(status,200)
+            self.assertIsNone(key['expires_at'])
+            with patch('access.time.time',return_value=existing['expires_at']+86400):
+                self.assertEqual(self.server.access.authenticate_key(key['token'])['kind'],kind)
+            self.assertEqual(self.call('/admin/keys/'+key['id']+'/revoke',{},token=self.admin)[0],200)
+            self.assertEqual(self.call('/personalities',token=key['token'])[0],401)
+        self.assertEqual(self.call('/personalities',token=existing['token'])[0],200)
+        listed=self.call('/admin/keys',token=self.admin)[1]['keys']
+        self.assertEqual(next(k for k in listed if k['id']==existing['id'])['expires_at'],existing['expires_at'])
+        for value in (0,-2,3651,True,1.5,None,'-1'):
+            self.assertEqual(self.call('/admin/keys',dict(base,expires_days=value),token=self.admin)[0],400)
+
     def test_setup_sessions_csrf_and_no_legacy_bypass(self):
         self.assertEqual(self.call('/schema',token='bootstrap-test-secret')[0],401)
         status,data,headers=self.call('/auth/setup',{'username':'owner','password':'a-long-test-password','bootstrap_token':'bootstrap-test-secret'})
