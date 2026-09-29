@@ -163,7 +163,6 @@ function drawPressure(){
 }
 const changeLabels=barNodes.map(n=>{const label=document.createElement('span');label.className='live-change';label.hidden=true;n.bar.parentElement.append(label);return label;});
 function drawChangeLabels(state,delta){state.forEach((v,i)=>{const label=changeLabels[i],d=delta[i];label.hidden=liveCount===0;label.dataset.direction=d>0?'increase':d<0?'decrease':'unchanged';label.textContent=(d>0?'+':d<0?'−':'±')+Math.abs(d).toFixed(2);});}
-const baselineLegend=document.createElement('span');baselineLegend.className='baseline-legend';baselineLegend.textContent=' · Red: starting baseline · Purple: shifted baseline';document.querySelector('.live-legend').append(baselineLegend);
 function drawLive(state,delta,nodes=barNodes,baseline=liveBaseline,markers=baselineMarkers){if(nodes===barNodes)drawChangeLabels(state,delta);state.forEach((v,i)=>{const n=nodes[i],h=Math.abs(v)*5;n.bar.style.height=(v===0?.45:h)+'%';n.bar.style.top=(v>0?50-h:50)+'%';n.bar.className='live-bar '+stateColor(i,v);n.value.className='live-value'+(v>0?' above':'');n.value.textContent=(v>0?'+':'')+v.toFixed(2);const marker=markers[i];if(marker){marker.hidden=baseline===null;if(baseline!==null)marker.style.top=(50-baseline[i]*5)+'%';}n.button.dataset.detail=`${liveNames[i]}: ${v.toFixed(2)} · ${stateColorMeaning(i,v)} · latest change ${delta[i]>0?'+':''}${delta[i].toFixed(2)}`+(baseline===null?'':` · starting level ${baseline[i].toFixed(2)}`);n.button.setAttribute('aria-label',n.button.dataset.detail);if(tooltipTarget===n.button)$('live-inspect').textContent=n.button.dataset.detail;});}
 function liveControls(){ $('random-event-once').disabled=liveBusy||liveRunning; $('manual-event-submit').disabled=liveBusy; $('live-toggle').textContent=liveRunning?'Pause':'Play';$('live-toggle').setAttribute('aria-pressed',String(liveRunning));$('live-toggle').disabled=liveBusy&&!liveRunning;for(const id of ['live-start','live-seed','random-seed'])$(id).disabled=liveRunning||liveCount>0||liveBusy; }
 function pauseLive(message='Paused. State is retained.'){lastAnimatedEventAt=null;liveRunning=false;liveGeneration++;clearTimeout(liveTimer);$('live-status').textContent=message;liveControls();}
@@ -239,11 +238,18 @@ if(!window.TEMPEST_HOSTED){searchSavedPersonalities();refreshHistory();}
 drawLive(Array(23).fill(0),Array(23).fill(0));
 
 function selectEventTab(log){
- for(const [id,selected] of [['current-event-tab',!log],['event-log-tab',log]]){$(id).setAttribute('aria-selected',String(selected));$(id).tabIndex=selected?0:-1;}
- $('current-event-panel').hidden=log;$('event-log-panel').hidden=!log;
+ $('full-event-log').hidden=!log;$('event-log-tab').setAttribute('aria-expanded',String(log));
+ if(log){renderFullEventLog();$('full-event-history').focus();}
 }
-$('current-event-tab').onclick=()=>selectEventTab(false);$('event-log-tab').onclick=()=>selectEventTab(true);
-for(const id of ['current-event-tab','event-log-tab'])$(id).onkeydown=e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();const log=e.key==='End'||(e.key!=='Home'&&id==='current-event-tab');selectEventTab(log);$(log?'event-log-tab':'current-event-tab').focus();}};
+function renderFullEventLog(){
+ const rows=[...$('live-history').children].map(row=>{const copy=row.cloneNode(true);copy.querySelector('button').onclick=()=>{row.querySelector('button').click();$('event-turn-details').scrollIntoView({block:'nearest'});};return copy;});
+ $('full-event-history').replaceChildren(...rows);
+ if(!rows.length){const empty=document.createElement('li');empty.textContent='No events yet.';$('full-event-history').append(empty);}
+}
+new MutationObserver(()=>{if(!$('full-event-log').hidden)renderFullEventLog();$('live-event-text').hidden=Boolean($('live-history').children.length);}).observe($('live-history'),{childList:true});
+$('event-log-tab').onclick=()=>selectEventTab($('full-event-log').hidden);
+$('full-event-log-close').onclick=()=>{selectEventTab(false);$('event-log-tab').focus();};
+$('manual-event').addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing){event.preventDefault();if(!$('manual-event-submit').disabled)$('manual-event-form').requestSubmit();}});
 $('manual-event-form').onsubmit=async e=>{
  e.preventDefault();if(liveBusy)return;const event=$('manual-event').value.trim();if(!event)return;
  const seed=Number($('live-seed').value);if(!Number.isInteger(seed)||seed<0||seed>=2**32){$('live-status').textContent='Enter a valid seed.';return;}

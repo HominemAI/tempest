@@ -309,7 +309,7 @@ window.TempestHosted = (() => {
         return node;
       });
       section.append(region);
-      $('live-event-text').closest('.live-event').before(section);
+      chartScroll.after(section);
       $('relationship-user').onchange = drawRelationship;
       drawRelationship();
     }
