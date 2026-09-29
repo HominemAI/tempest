@@ -47,6 +47,7 @@ window.TempestHosted = (() => {
       $('saved-personality-load').disabled = busy || playing || !$('saved-personality-select').value || Boolean(pendingEvent);
       $('save-simulation').disabled = busy || playing || !active || Boolean(pendingEvent);
       $('live-reset').disabled = busy || playing || Boolean(pendingEvent);
+      $('start-neutral').disabled = busy || playing || Boolean(pendingEvent) || Boolean(pendingCreate);
       $('live-toggle').disabled = !playing && (busy || Boolean(pendingEvent));
       $('live-toggle').textContent = playing ? 'Pause' : 'Play';
       $('live-toggle').setAttribute('aria-pressed', String(playing));
@@ -339,6 +340,11 @@ window.TempestHosted = (() => {
     $('event-details-close').onclick = () => { $('event-turn-details').hidden = true; };
     $('manual-event-form').onsubmit = event => { event.preventDefault(); pause(); run('Applying saved event', applyEvent); };
     $('live-reset').onclick = () => run('Creating saved instance', async () => { await create(); setStatus('New instance saved. Earlier personalities and their history remain available.'); });
+    $('start-neutral').onclick = () => run('Creating neutral character', async () => {
+      $('live-start').value = 'neutral';
+      await create();
+      setStatus('Neutral character saved and loaded: all 23 states and baselines are 0. Current dynamics settings retained. Press Play or enter an event.');
+    });
     $('live-toggle').onclick = () => {
       if (playing) { pause(operation ? 'Pausing. The current turn will finish and be saved.' : undefined); return; }
       if (operation || pendingEvent) return;
@@ -351,7 +357,7 @@ window.TempestHosted = (() => {
     document.addEventListener('visibilitychange', () => { if (document.hidden && playing) pause('Paused because this tab became hidden. Press Play to continue.'); });
     window.addEventListener('pagehide', () => pause());
     $('save-simulation').onclick = () => run('Saving settings', async () => { await saveSettings(); setStatus('Settings saved. Current state and original baseline are retained.'); });
-    $('live-start').onchange = () => setStatus('Starting personality selection applies when you create a New saved instance.');
+    $('live-start').onchange = () => setStatus('Choose Create from selection to save and load a fresh character. The current character stays unchanged until then.');
     $('random-seed').onclick = () => { $('live-seed').value = crypto.getRandomValues(new Uint32Array(1))[0]; setStatus('Seed chosen. Save settings or create a new instance to persist it.'); };
     $('saved-personality-search').oninput = () => { clearTimeout(searchTimer); searchTimer = setTimeout(renderInstances, 150); };
     $('saved-personality-select').onchange = controls;

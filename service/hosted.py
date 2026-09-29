@@ -60,7 +60,7 @@ def inference_page():
         'Local Tempest inference · 512-token checkpoint · no API calls': 'Hosted Tempest inference · saved personalities and server history',
         'Save state &amp; settings': 'Save settings',
         'Load a saved baseline into a fresh live session. Loading restores saved state and settings. Save state &amp; settings updates the selected personality; its original baseline is kept.': 'Load a saved personality to continue from its current server state. Each event saves automatically. Save settings applies your control changes.',
-        '>Reset session</button>': '>New saved instance</button>',
+        '>Reset session</button>': '>Create from selection</button><button id="start-neutral" type="button">Start neutral (all 0s)</button>',
         'Ready. Events are randomly sampled from the local corpus; no cloud calls or saved profile edits.': 'Ready. Play samples the packaged local event corpus. Inference runs on the server and every turn is saved.',
         'Press Play or enter an event below.': 'Load a saved personality or enter an event below to create one.',
         'Newest first · loaded personality across sessions, or this session when unsaved. Each completed turn is saved automatically. Full state history is stored below.': 'Newest first · saved turns for the selected personality. Each completed event is stored on the server.',
