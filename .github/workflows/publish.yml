@@ -46,15 +46,6 @@ jobs:
         run: |
           pip install 'psycopg[binary]>=3.2,<4'
           python -m unittest discover -s service -p 'test_*.py' -v
-      - name: Download pinned private model bundle
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release download model-v1 --pattern tempest-model-v1.tar.gz --dir /tmp
-          cd /tmp
-          sha256sum --check "$GITHUB_WORKSPACE/service/MODEL_SHA256"
-          mkdir -p "$GITHUB_WORKSPACE/model-bundle"
-          tar -xzf tempest-model-v1.tar.gz -C "$GITHUB_WORKSPACE/model-bundle"
       - name: Set up Buildx
         uses: docker/setup-buildx-action@v3
       - name: Log in to GHCR
