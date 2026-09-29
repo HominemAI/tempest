@@ -82,6 +82,10 @@ body[data-tempest-area=inference] section[aria-label="Choose a personality"] but
 .timing-note p{font-size:10px;line-height:1.25;margin:3px 0}
 .event-workspace .event-view{height:auto;min-height:0;padding:0;overflow:auto}
 .event-workspace #live-event-text{font-size:11px;line-height:1.3;margin:0 0 4px}
+.event-workspace #live-history,.event-workspace #full-event-history{list-style:none}
+.event-workspace #live-history li,.event-workspace #full-event-history li{display:grid;grid-template-columns:2.5em minmax(0,1fr);align-items:center}
+.event-log-turn{display:block;min-width:0;margin-right:4px;text-align:right;color:var(--muted);font-size:.9em;font-variant-numeric:tabular-nums}
+.event-workspace #manual-event-submit:disabled{opacity:1;filter:none;cursor:wait}
 .event-workspace #live-history{margin:0;padding-left:22px}
 .event-workspace #live-history li{margin:0 0 2px;line-height:1.25}
 .event-workspace .event-log-link{padding:1px 4px;min-height:22px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}

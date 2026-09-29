@@ -85,7 +85,7 @@ function appendEventLog(turn,prepend=true){
  const key=turn.session+':'+turn.turn;
  eventTurnsByKey.set(key,turn);
  if([...$('live-history').children].some(row=>row.dataset.turnKey===key))return;
- const item=document.createElement('li'),button=document.createElement('button');item.dataset.turnKey=key;item.value=turn.turn;button.type='button';button.className='event-log-link';button.textContent=turn.event;button.title=turn.timestamp||turn.session;button.onclick=()=>openFullEventLog(key);item.append(button);
+ const item=document.createElement('li'),number=document.createElement('span'),button=document.createElement('button');item.dataset.turnKey=key;item.value=turn.turn;number.className='event-log-turn';number.textContent=String(turn.turn);number.setAttribute('aria-hidden','true');button.type='button';button.className='event-log-link';button.textContent=turn.event;button.title=turn.timestamp||turn.session;button.onclick=()=>openFullEventLog(key);item.append(number,button);
  if(prepend)$('live-history').prepend(item);else $('live-history').append(item);
 }
 async function restorePersonalityLog(){
