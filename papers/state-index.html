@@ -1,0 +1,10 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>State index · Tempest</title><link rel="stylesheet" href="/assets/inference.css"><link rel="stylesheet" href="/assets/state-index.css"><script src="/assets/state-index.js" defer></script></head><body><main id="tempest-content">
+<header><div><h1>State description index</h1><p id="version">Loading stored anchors…</p></div></header>
+<p class="notice" id="index-notice">Read-only · exact stored wording. Browsing does not modify indexes or labeling requests.</p>
+<label>Index<select id="kind"><option value="state">Current state · −10 to +10</option><option value="delta">Relative change · −4 to +4</option></select></label>
+<div class="index-controls"><label>Search every field<input id="search" type="search" placeholder="Phrase, state, definition, or option ID…" disabled></label><label>State<select id="dimension" disabled><option value="">All 23 states</option></select></label><label>Anchor<select id="anchor" disabled><option value="">All anchors</option></select></label><button id="random" disabled>Random anchor</button><button id="reset" disabled>Reset</button></div>
+<details id="definition" hidden><summary>State definition and distinctions</summary><dl id="definition-content"></dl></details>
+<p id="status" role="status" aria-live="polite">Loading…</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Stored state description variants"><table class="index-table"><thead><tr><th scope="col">State</th><th scope="col">Anchor</th><th scope="col">Stored wording variants</th></tr></thead><tbody id="rows"></tbody></table></div>
+<p id="scale-note">Current-state coordinates and event-change categories are separate scales. These rows show stored phrases, not a sampled description.</p>
+</main></body></html>

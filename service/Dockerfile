@@ -8,6 +8,8 @@ RUN pip install --no-cache-dir 'torch>=2.6,<3' --index-url https://download.pyto
 RUN pip install --no-cache-dir 'psycopg[binary]>=3.2,<4'
 COPY service /app/service
 COPY papers/web/pressure.js papers/web/relationship-multipliers.json /app/papers/web/
+COPY papers/web/inference.js papers/web/inference.css papers/web/state-index.js papers/web/state-index.css papers/web/tempest.css papers/web/theme.js /app/papers/web/
+COPY papers/inference.html papers/state-index.html /app/papers/
 COPY papers/personality_state_mapping.py papers/personality_synthesis.py /app/papers/
 COPY papers/personality-mapping/active.json /app/papers/personality-mapping/active.json
 COPY papers/personality-mapping/v2/anchors.json /app/papers/personality-mapping/v2/anchors.json

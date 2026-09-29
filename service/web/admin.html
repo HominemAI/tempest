@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en" data-theme="light" data-tempest-theme>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Admin · Tempest</title>
+  <script src="/assets/theme.js"></script>
+  <link rel="stylesheet" href="/assets/inference.css">
+  <link rel="stylesheet" href="/assets/tempest.css">
+  <link rel="stylesheet" href="/assets/admin.css">
+  <script src="/assets/admin.js" defer></script>
+</head>
+<body>
+  <a class="tempest-skip" href="#main">Skip to admin workspace</a>
+  <nav class="tempest-nav" aria-label="Tempest workspace">
+    <a class="tempest-brand" href="/inference">Tempest</a>
+    <div class="tempest-sections">
+      <a href="/inference">Test model</a>
+      <a href="/state-index">State index</a>
+      <a href="/admin" aria-current="page">Admin</a>
+    </div>
+    <span id="admin-identity" class="tempest-local" hidden></span>
+    <button id="tempest-theme" type="button" aria-pressed="false">Dark mode</button>
+    <button id="logout-button" type="button" hidden>Sign out</button>
+  </nav>
+
+  <main id="main" tabindex="-1">
+    <section id="auth-view" aria-labelledby="auth-heading">
+      <div class="page-heading">
+        <div>
+          <h1 id="auth-heading">Admin sign in</h1>
+          <p id="auth-intro">Sign in to manage Tempest accounts, keys, limits, and usage.</p>
+        </div>
+      </div>
+      <div class="auth-panel">
+        <form id="login-form" hidden>
+          <label for="login-username">Username</label>
+          <input id="login-username" name="username" autocomplete="username" required>
+          <label for="login-password">Password</label>
+          <input id="login-password" name="password" type="password" autocomplete="current-password" required>
+          <button class="primary" type="submit">Sign in</button>
+        </form>
+        <form id="setup-form" hidden>
+          <p class="setup-note">Create the first administrator. The bootstrap token is used only for this setup.</p>
+          <label for="setup-token">Bootstrap token</label>
+          <input id="setup-token" name="bootstrap_token" type="password" autocomplete="off" required>
+          <label for="setup-username">Admin username</label>
+          <input id="setup-username" name="username" autocomplete="username" required>
+          <label for="setup-password">Admin password</label>
+          <input id="setup-password" name="password" type="password" autocomplete="new-password" minlength="12" required>
+          <p class="field-help">Use at least 12 characters.</p>
+          <button class="primary" type="submit">Create admin and continue</button>
+        </form>
+        <p id="auth-status" class="status" role="status" aria-live="polite">Checking admin access…</p>
+      </div>
+    </section>
+
+    <section id="admin-view" hidden aria-labelledby="page-title">
+      <div class="page-heading">
+        <div>
+          <h1 id="page-title">Accounts and access</h1>
+          <p>Manage API accounts, credentials, request limits, and daily usage.</p>
+        </div>
+        <button id="refresh-button" type="button">Refresh</button>
+      </div>
+
+      <div id="workspace-status" class="status" role="status" aria-live="polite"></div>
+
+      <nav class="section-tabs" aria-label="Admin sections" role="tablist">
+        <button id="tab-accounts" type="button" role="tab" aria-selected="true" aria-controls="panel-accounts">Accounts</button>
+        <button id="tab-keys" type="button" role="tab" aria-selected="false" aria-controls="panel-keys" tabindex="-1">API keys</button>
+        <button id="tab-limits" type="button" role="tab" aria-selected="false" aria-controls="panel-limits" tabindex="-1">Limits and usage</button>
+      </nav>
+
+      <section id="panel-accounts" class="tab-panel" role="tabpanel" aria-labelledby="tab-accounts">
+        <div class="section-heading">
+          <div><h2>API accounts</h2><p>Accounts identify API customers. They do not have web sign-in access.</p></div>
+        </div>
+        <form id="account-form" class="inline-form">
+          <label for="account-name">New account name</label>
+          <input id="account-name" name="name" maxlength="120" autocomplete="off" required placeholder="e.g. Research team">
+          <button class="primary" type="submit">Create account</button>
+        </form>
+        <div class="table-scroll" tabindex="0" role="region" aria-label="API accounts table">
+          <table>
+            <thead><tr><th scope="col">Account</th><th scope="col">ID</th><th scope="col">Created (UTC)</th><th scope="col">Status</th></tr></thead>
+            <tbody id="accounts-body"><tr><td colspan="4" class="empty-cell">Loading accounts…</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="panel-keys" class="tab-panel" role="tabpanel" aria-labelledby="tab-keys" hidden>
+        <div class="section-heading">
+          <div><h2>API keys</h2><p>Keys are shown once when created. Store the value securely before leaving this page.</p></div>
+        </div>
+        <form id="key-form" class="form-grid">
+          <label for="key-kind">Key type
+            <select id="key-kind" name="kind"><option value="account">Account key</option><option value="admin">Admin key</option></select>
+          </label>
+          <label id="key-account-wrap" for="key-account">Account
+            <select id="key-account" name="account_id" required><option value="">Select an account</option></select>
+          </label>
+          <label for="key-name">Key name
+            <input id="key-name" name="name" maxlength="120" required placeholder="e.g. Production service">
+          </label>
+          <fieldset class="scope-fieldset">
+            <legend>Scopes</legend>
+            <label class="check-label"><input type="checkbox" name="scope" value="text" checked> Text</label>
+            <label class="check-label"><input type="checkbox" name="scope" value="create_description"> Creation</label>
+          </fieldset>
+          <label for="key-user">User ID <span class="optional">optional</span>
+            <input id="key-user" name="user_id" autocomplete="off" placeholder="Restrict this key to a user">
+          </label>
+          <label for="key-expiry">Expires in days <span class="optional">optional</span>
+            <input id="key-expiry" name="expires_days" type="number" min="1" max="3650" step="1" inputmode="numeric" placeholder="90 (default)">
+          </label>
+          <div class="form-action"><button class="primary" type="submit">Create API key</button></div>
+        </form>
+        <div id="new-key" class="secret-panel" hidden aria-live="polite">
+          <div><strong>Copy this key now</strong><p>The raw value is held only in this page's memory and will not be shown again.</p></div>
+          <code id="new-key-value"></code>
+          <div class="secret-actions"><button id="copy-key" type="button">Copy key</button><button id="dismiss-key" type="button">Done</button></div>
+          <p id="copy-status" class="field-help" role="status"></p>
+        </div>
+        <div class="table-scroll" tabindex="0" role="region" aria-label="API keys table">
+          <table>
+            <thead><tr><th scope="col">Name</th><th scope="col">Type</th><th scope="col">Account / user</th><th scope="col">Scopes</th><th scope="col">Created (UTC)</th><th scope="col">Expires (UTC)</th><th scope="col">Last used (UTC)</th><th scope="col">Status</th><th scope="col">Action</th></tr></thead>
+            <tbody id="keys-body"><tr><td colspan="9" class="empty-cell">Loading keys…</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="panel-limits" class="tab-panel" role="tabpanel" aria-labelledby="tab-limits" hidden>
+        <div class="section-heading">
+          <div><h2>Limits and usage</h2><p>Limits apply per UTC day. Use −1 for unlimited and 0 to disable a scope. Blank values inherit the parent limit.</p></div>
+        </div>
+        <form id="scope-select-form" class="scope-select-form">
+          <label for="limit-account">Account
+            <select id="limit-account" name="account_id"><option value="">Default limits</option></select>
+          </label>
+          <label for="limit-user">User ID <span class="optional">optional</span>
+            <input id="limit-user" name="user_id" autocomplete="off" placeholder="Account-level when blank">
+          </label>
+          <button type="submit">Load scope</button>
+        </form>
+
+        <div class="limit-grid">
+          <form id="limits-form" class="limit-panel">
+            <h3 id="limits-heading">Default limits</h3>
+            <p id="limits-caption" class="field-help">Set the fallback request allowance for each API scope.</p>
+            <label for="limit-text">Text requests per UTC day
+              <input id="limit-text" name="text" type="number" step="1" inputmode="numeric" placeholder="Inherit" required>
+            </label>
+            <label for="limit-creation">Creation requests per UTC day
+              <input id="limit-creation" name="create_description" type="number" step="1" inputmode="numeric" placeholder="Inherit" required>
+            </label>
+            <p class="field-help">For account or user overrides, leave a field blank to inherit. Defaults require a number.</p>
+            <button class="primary" type="submit">Save limits</button>
+          </form>
+          <section class="usage-panel" aria-labelledby="usage-heading">
+            <h3 id="usage-heading">Usage today</h3>
+            <p id="usage-day" class="field-help">Usage is grouped by the selected UTC day.</p>
+            <dl class="usage-list">
+              <div><dt>Text requests</dt><dd id="usage-text">—</dd></div>
+              <div><dt>Creation requests</dt><dd id="usage-creation">—</dd></div>
+              <div id="account-usage-row" hidden><dt>Account usage today</dt><dd id="usage-account">—</dd></div>
+              <div><dt>Effective limits</dt><dd id="usage-effective">—</dd></div>
+            </dl>
+          </section>
+        </div>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

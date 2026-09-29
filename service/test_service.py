@@ -58,15 +58,53 @@ class ServiceTests(unittest.TestCase):
     def test_validation(self):
         for payload in ({'baseline':[True]*23},{'baseline':[float('nan')]*23},{'baseline':[0]*23,'settings':{'longEnabled':1}},{'baseline':[0]*23,'settings':{'bad':1}}):
             with self.assertRaises(ValueError):self.store.register(payload)
+    def test_relationships_are_additional_records_not_extra_global_effects(self):
+        plain=self.store.register({'baseline':[0]*23})
+        tagged=self.store.register({'baseline':[0]*23})
+        a=self.store.events(plain['id'],{'events':['3','2','-1'],'idempotency_key':'one'})
+        payload={'events':[{'text':'3','user_id':'alice'},{'text':'2','user_id':'alice'},{'text':'-1','user_id':'bob'}],'idempotency_key':'one'}
+        b=self.store.events(tagged['id'],payload)
+        self.assertEqual(a['current'],b['current'])
+        self.assertEqual(a['pressure'],b['pressure'])
+        users={u['user_id']:u for u in b['users']}
+        self.assertEqual(users['alice']['delta'],[1]*23)
+        self.assertEqual(users['bob']['delta'],[-.25]*23)
+        self.assertEqual(self.store.events(tagged['id'],payload),b)
+        self.assertEqual(self.store.relationships(tagged['id'],'alice')['users'][0]['delta'],[1]*23)
+        self.assertEqual(self.store.relationships(plain['id'])['users'],[])
+    def test_relationship_accumulation_union_and_reload(self):
+        identifier=self.p['id']
+        self.store.events(identifier,{'events':[{'text':'3','user_id':'alice'},{'text':'2','user_id':'alice'},{'text':'-1','user_id':'alice'}],'idempotency_key':'first'})
+        self.store.events(identifier,{'events':[{'text':'-2','user_id':'alice'},'4'],'idempotency_key':'second'})
+        reloaded=Store(self.store.path,self.store.predictor,'test')
+        alice=reloaded.relationships(identifier,'alice')['users'][0]
+        self.assertEqual(alice['delta'],[.25]*23)
+        self.assertEqual(alice['turn'],2)
+        self.assertIn('alice',alice['text'])
+        self.assertEqual(reloaded.relationships(identifier,'unknown')['users'],[])
+
+    def test_failed_tagged_turn_leaves_relationships_unchanged(self):
+        payload={'events':[{'text':'3','user_id':'alice'}],'idempotency_key':'first'}
+        self.store.events(self.p['id'],payload)
+        before=self.store.relationships(self.p['id'])
+        with self.assertRaises(ValueError):
+            self.store.events(self.p['id'],{'events':[{'text':'4','user_id':'alice'},'fail'],'idempotency_key':'failed'})
+        self.assertEqual(self.store.relationships(self.p['id']),before)
+        self.assertEqual(self.store.get(self.p['id'])['turn'],1)
+        with self.assertRaises(Conflict):
+            self.store.events(self.p['id'],dict(payload,events=[{'text':'3','user_id':'bob'}]))
+        self.assertEqual(self.store.relationships(self.p['id']),before)
+
     def test_http_auth_and_state(self):
         server=make_server('127.0.0.1',0,'test-token',self.store)
+        token=server.access.issue_key('Integration test',kind='admin')['token']
         thread=threading.Thread(target=server.serve_forever);thread.start()
         base=f'http://127.0.0.1:{server.server_port}'
         try:
             with self.assertRaises(urllib.error.HTTPError) as error:urllib.request.urlopen(base+'/schema')
             self.assertEqual(error.exception.code,401)
-            req=urllib.request.Request(base+'/personalities/'+self.p['id']+'?format=text',headers={'Authorization':'Bearer test-token'})
-            response=json.load(urllib.request.urlopen(req));self.assertIn('state_text',response);self.assertNotIn('current',response)
+            req=urllib.request.Request(base+'/personalities/'+self.p['id'],headers={'Authorization':'Bearer '+token})
+            response=json.load(urllib.request.urlopen(req));self.assertIn('state_text',response);self.assertIn('current',response)
         finally:server.shutdown();server.server_close();thread.join()
 
 if __name__=='__main__':unittest.main()

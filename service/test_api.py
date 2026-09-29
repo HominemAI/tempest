@@ -1,0 +1,129 @@
+import json
+import os
+from pathlib import Path
+import tempfile
+import threading
+import unittest
+import urllib.request
+import urllib.error
+import uuid
+from unittest.mock import patch
+from core import Store
+from database import Database
+from server import make_server
+
+
+class APITests(unittest.TestCase):
+    def setUp(self):
+        self.tmp=tempfile.TemporaryDirectory()
+        path=Path(self.tmp.name)/'api.sqlite';database=Database(path,schema='tempest_test_api_'+uuid.uuid4().hex)
+        self.store=Store(path,lambda event,state:[1]*23,'test',database=database)
+        self.server=make_server('127.0.0.1',0,'bootstrap-test-secret',self.store,secure_cookie=False)
+        self.thread=threading.Thread(target=self.server.serve_forever);self.thread.start()
+        self.base=f'http://127.0.0.1:{self.server.server_port}'
+        self.admin=self.server.access.issue_key('admin',kind='admin')['token']
+        self.a=self.server.access.create_account('A')['id'];self.b=self.server.access.create_account('B')['id']
+        self.key=self.server.access.issue_key('A',account_id=self.a)['token']
+        self.other=self.server.access.issue_key('B',account_id=self.b)['token']
+
+    def tearDown(self):
+        self.server.shutdown();self.server.server_close();self.thread.join()
+        if self.store.database.postgres:
+            with self.store.db() as db:db.execute('DROP SCHEMA '+self.store.database.schema+' CASCADE')
+        self.tmp.cleanup()
+
+    def call(self,path,payload=None,token=None,headers=None):
+        headers=dict(headers or {})
+        if token:headers['Authorization']='Bearer '+token
+        data=None
+        if payload is not None:headers['Content-Type']='application/json';data=json.dumps(payload).encode()
+        request=urllib.request.Request(self.base+path,data=data,headers=headers)
+        try:
+            with urllib.request.urlopen(request) as response:return response.status,json.load(response),response.headers
+        except urllib.error.HTTPError as response:return response.code,json.load(response),response.headers
+
+    def test_setup_sessions_csrf_and_no_legacy_bypass(self):
+        self.assertEqual(self.call('/schema',token='bootstrap-test-secret')[0],401)
+        status,data,headers=self.call('/auth/setup',{'username':'owner','password':'a-long-test-password','bootstrap_token':'bootstrap-test-secret'})
+        self.assertEqual(status,200);cookie=headers['Set-Cookie'].split(';')[0]
+        self.assertIn('HttpOnly',headers['Set-Cookie']);csrf=data['csrf']
+        self.assertEqual(self.call('/auth/setup',{'username':'hijack','password':'a-long-test-password','bootstrap_token':'bootstrap-test-secret'})[0],409)
+        self.assertEqual(self.call('/admin/accounts',{'name':'Blocked'},headers={'Cookie':cookie})[0],403)
+        self.assertEqual(self.call('/admin/accounts',{'name':'Allowed'},headers={'Cookie':cookie,'X-CSRF-Token':csrf})[0],200)
+        self.assertEqual(self.call('/admin/accounts',{'name':'Blocked'},headers={'Cookie':cookie,'X-CSRF-Token':csrf,'Origin':'https://evil.example'})[0],403)
+        self.assertEqual(self.call('/auth/me',token=self.admin)[0],401)
+        self.assertEqual(self.call('/auth/logout',{},headers={'Cookie':cookie,'X-CSRF-Token':csrf})[0],200)
+        self.assertEqual(self.call('/auth/me',headers={'Cookie':cookie})[0],401)
+
+    def test_account_isolation_templates_and_numeric_filter(self):
+        template=self.server.catalog.save_template({'name':'Private','baseline':[0]*23,'visibility':'restricted','grants':[self.a]},admin=True)
+        path='/templates/'+template['id']+'/copy'
+        self.assertEqual(self.call(path,{'idempotency_key':'c'},token=self.other)[0],404)
+        status,instance,_=self.call(path,{'idempotency_key':'c','account_id':self.b},token=self.key)
+        self.assertEqual(status,200);identifier=instance['id']
+        self.assertEqual(self.store.owner(identifier)['account_id'],self.a)
+        self.assertEqual(self.call('/personalities/'+identifier,token=self.other)[0],404)
+        self.assertEqual(self.call('/schema',token=self.key)[0],403)
+        self.assertEqual(self.call('/admin/accounts',token=self.key)[0],403)
+        status,result,_=self.call('/personalities/'+identifier+'/events',{'events':['hello'],'idempotency_key':'turn'},token=self.key)
+        self.assertEqual(status,200)
+        self.assertEqual(set(result),{'id','name','turn','state_text','delta_text'})
+        self.assertNotIn('baseline',instance)
+        history=self.call('/personalities/'+identifier+'/history',token=self.key)[1]['turns'][0]
+        self.assertEqual(set(history),set(result))
+
+    def test_user_binding_quota_retry_revocation(self):
+        user=self.server.access.issue_key('user',account_id=self.a,user_id='alice')
+        otheruser=self.server.access.issue_key('user',account_id=self.a,user_id='bob')
+        instance=self.store.register({'baseline':[0]*23},self.a,'alice')['id']
+        self.server.access.update_limits(self.a,limits={'text':1})
+        route='/personalities/'+instance+'/events';payload={'events':['hi'],'idempotency_key':'one'}
+        self.assertEqual(self.call(route,payload,token=otheruser['token'])[0],404)
+        self.assertEqual(self.call(route,payload,token=user['token'])[0],200)
+        self.assertEqual(self.call(route,payload,token=user['token'])[0],200)
+        self.assertEqual(self.server.access.usage(self.a)['used']['text'],1)
+        self.assertEqual(self.call(route,dict(payload,idempotency_key='two'),token=user['token'])[0],429)
+        self.server.access.revoke_key(user['id'])
+        self.assertEqual(self.call('/personalities/'+instance,token=user['token'])[0],401)
+
+    def test_copy_replay_retains_snapshot_checks_payload_and_current_grant(self):
+        template=self.server.catalog.save_template({'name':'Original','baseline':[0]*23,'visibility':'restricted','grants':[self.a]},admin=True)
+        route='/templates/'+template['id']+'/copy';payload={'idempotency_key':'copy-one'}
+        status,original,_=self.call(route,payload,token=self.key)
+        self.assertEqual(status,200)
+        self.server.catalog.save_template({'name':'Changed','baseline':[1]*23},identifier=template['id'],admin=True)
+        self.store.configure(original['id'],{'name':'Instance changed','settings':{'pressureEnabled':True},'expected_turn':0})
+        status,replayed,_=self.call(route,payload,token=self.key)
+        self.assertEqual(status,200);self.assertEqual(replayed,original)
+        self.assertEqual(self.call(route,dict(payload,account_id=self.b),token=self.key)[0],409)
+        self.assertEqual(self.store.get(original['id'])['name'],'Instance changed')
+        self.server.catalog.save_template({'grants':[]},identifier=template['id'],admin=True)
+        self.assertEqual(self.call(route,payload,token=self.key)[0],404)
+
+    def test_description_scope_and_completed_instance(self):
+        self.server.api.generator=lambda context:{'status':'complete','configuration':{'name':'Created','baseline':[0]*23}}
+        body={'description':'A calm character','idempotency_key':'first'}
+        self.assertEqual(self.call('/characters/describe',body,token=self.key)[0],403)
+        token=self.server.access.issue_key('creator',account_id=self.a,scopes=['create_description'])['token']
+        status,result,_=self.call('/characters/describe',body,token=token)
+        self.assertEqual(status,200);self.assertIn('instance',result)
+        self.assertNotIn('current',result['instance'])
+        again=self.call('/characters/describe',body,token=token)[1]
+        self.assertEqual(result['instance']['id'],again['instance']['id'])
+        self.assertEqual(self.server.access.usage(self.a)['used']['create_description'],1)
+
+    def test_relationship_actor_is_metadata_not_authorization(self):
+        instance=self.store.register({'baseline':[0]*23},self.a)['id']
+        payload={'events':[{'text':'A visitor helps them','user_id':'external-XYZ'}],'idempotency_key':'one'}
+        status,result,_=self.call('/personalities/'+instance+'/events/users',payload,token=self.key)
+        self.assertEqual(status,200);self.assertEqual(result['users'][0]['user_id'],'external-XYZ')
+        self.assertNotIn('delta',result['users'][0]);self.assertIn('text',result['users'][0])
+        status,view,_=self.call('/personalities/'+instance+'/status/users',token=self.key)
+        self.assertEqual(status,200);self.assertNotIn('event_delta',view['users'][0])
+        self.assertEqual(self.call('/personalities/'+instance+'/status/users',token=self.other)[0],404)
+        raw=self.call('/personalities/'+instance+'/status/users',token=self.admin)[1]
+        self.assertEqual(raw['users'][0]['delta'],[.25]*23)
+        self.assertEqual(self.server.access.usage(self.a)['used']['text'],1)
+
+
+if __name__=='__main__':unittest.main()

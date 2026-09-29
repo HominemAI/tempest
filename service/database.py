@@ -6,6 +6,7 @@ import sqlite3
 import atexit
 import base64
 import tempfile
+import re
 
 class Connection:
     def __init__(self,raw,postgres):self.raw=raw;self.postgres=postgres
@@ -16,7 +17,9 @@ class Connection:
         return self.raw.execute(sql,args)
 
 class Database:
-    def __init__(self,path):
+    def __init__(self,path,schema='tempest'):
+        if not isinstance(schema,str) or not re.fullmatch(r'[a-z][a-z0-9_]{0,62}',schema):raise ValueError('Invalid database schema')
+        self.schema=schema
         self.path=Path(path)
         self.url=os.environ.get('DATABASE_URL','')
         self.postgres=bool(self.url or os.environ.get('PG_HOST'))
@@ -43,8 +46,8 @@ class Database:
             if os.environ.get('PG_SSLROOTCERT'):kwargs['sslrootcert']=os.environ['PG_SSLROOTCERT']
             if self.ca_file:kwargs.update(sslrootcert=self.ca_file,sslmode='verify-full')
             with psycopg.connect(self.url,**kwargs) as raw:
-                raw.execute('CREATE SCHEMA IF NOT EXISTS tempest')
-                raw.execute('SET LOCAL search_path TO tempest')
+                raw.execute('CREATE SCHEMA IF NOT EXISTS '+self.schema)
+                raw.execute('SET LOCAL search_path TO '+self.schema)
                 yield Connection(raw,True)
         else:
             raw=sqlite3.connect(self.path,timeout=120)

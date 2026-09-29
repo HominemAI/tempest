@@ -7,6 +7,14 @@
 !papers/web/
 !papers/web/pressure.js
 !papers/web/relationship-multipliers.json
+!papers/web/inference.js
+!papers/web/inference.css
+!papers/web/state-index.js
+!papers/web/state-index.css
+!papers/web/tempest.css
+!papers/web/theme.js
+!papers/inference.html
+!papers/state-index.html
 !papers/personality_state_mapping.py
 !papers/personality_synthesis.py
 !papers/personality-mapping/
