@@ -12,7 +12,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse, parse_qs
 
 from core import Store, Conflict, ROOT
-from database import DatabaseUnavailable
+from database import Database, DatabaseUnavailable
 from access import Access, AccessError, Unauthorized, Forbidden
 from catalog import Catalog
 from api import API
