@@ -13,9 +13,10 @@ COPY papers/personality-mapping/active.json /app/papers/personality-mapping/acti
 COPY papers/personality-mapping/v2/anchors.json /app/papers/personality-mapping/v2/anchors.json
 COPY papers/personality-mapping/delta-v1/anchors.json /app/papers/personality-mapping/delta-v1/anchors.json
 COPY papers/emotion_training/predict_jev_discrete.py papers/emotion_training/train_jev_discrete.py papers/emotion_training/pipeline.py /app/papers/emotion_training/
-COPY model-bundle/ /models/
+COPY --chown=10001:10001 model-bundle/ /models/
 RUN useradd --uid 10001 --create-home tempest && mkdir /data && chown tempest:tempest /data
 USER tempest
+RUN python -c "from pathlib import Path; files = [p for p in Path('/models').rglob('*') if p.is_file()]; assert files, 'Empty model bundle'; [(p.open('rb').close()) for p in files]; assert Path('/models/encoder/model.safetensors').is_file(), 'Missing encoder weights'"
 ENV TEMPEST_DB=/data/tempest.sqlite TEMPEST_MODEL_DIR=/models/checkpoint TEMPEST_ENCODER_DIR=/models/encoder
 EXPOSE 8080
 VOLUME ["/data"]
