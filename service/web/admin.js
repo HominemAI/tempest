@@ -443,6 +443,8 @@
       const data = await request('/admin/observability/inference');
       $('inference-average').textContent = data.average_ms == null ? 'No inference calls recorded yet' : `${Number(data.average_ms).toFixed(1)} ms`;
       $('inference-count').textContent = `${data.sample_count} / ${data.window_limit} recent calls`;
+      $('server-turn-average').textContent = data.request_average_ms == null ? 'No server turns recorded yet' : `${Number(data.request_average_ms).toFixed(1)} ms`;
+      $('server-turn-count').textContent = `${data.request_sample_count || 0} / ${data.window_limit} recent turns`;
       $('inference-latest').textContent = data.latest_at ? date(data.latest_at) : '—';
       const body = $('inference-observations'); body.replaceChildren();
       const observations = Array.isArray(data.observations) ? data.observations : [];
@@ -457,7 +459,7 @@
         cell(row, observation.model_id);
         cell(row, observation.personality_id, 'table-id');
       }
-      $('observability-status').textContent = `Showing ${observations.length} most recent calls. The rolling average uses at most ${data.window_limit} successful model predictions.`;
+      $('observability-status').textContent = `Showing ${observations.length} most recent model predictions. Model timing covers the predictor only; server-turn timing includes turn processing and persistence. Each rolling average keeps at most ${data.window_limit} samples.`;
     } finally {
       state.observabilityBusy = false;
       $('observability-refresh').disabled = false;

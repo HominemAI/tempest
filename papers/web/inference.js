@@ -237,23 +237,25 @@ $('live-start').onchange=()=>{resetLive();$('save-simulation').disabled=$('live-
 if(!window.TEMPEST_HOSTED){searchSavedPersonalities();refreshHistory();}
 drawLive(Array(23).fill(0),Array(23).fill(0));
 
-function selectEventTab(log){
- $('full-event-log').hidden=!log;$('event-log-tab').setAttribute('aria-expanded',String(log));
- if(log){renderFullEventLog();$('full-event-history').focus();}
+function openFullEventLog(){
+ const dialog=$('full-event-log');if(dialog.open)return;renderFullEventLog();dialog.showModal();$('event-log-tab').setAttribute('aria-expanded','true');$('full-event-history').focus();
 }
+function closeFullEventLog(){const dialog=$('full-event-log');if(dialog.open)dialog.close();}
 function renderFullEventLog(){
- const rows=[...$('live-history').children].map(row=>{const copy=row.cloneNode(true);copy.querySelector('button').onclick=()=>{row.querySelector('button').click();$('event-turn-details').scrollIntoView({block:'nearest'});};return copy;});
+ const rows=[...$('live-history').children].map(row=>{const copy=row.cloneNode(true);copy.querySelector('button').onclick=()=>{row.querySelector('button').click();closeFullEventLog();$('event-turn-details').scrollIntoView({block:'nearest'});};return copy;});
  $('full-event-history').replaceChildren(...rows);
  if(!rows.length){const empty=document.createElement('li');empty.textContent='No events yet.';$('full-event-history').append(empty);}
 }
-new MutationObserver(()=>{if(!$('full-event-log').hidden)renderFullEventLog();$('live-event-text').hidden=Boolean($('live-history').children.length);}).observe($('live-history'),{childList:true});
-$('event-log-tab').onclick=()=>selectEventTab($('full-event-log').hidden);
-$('full-event-log-close').onclick=()=>{selectEventTab(false);$('event-log-tab').focus();};
+new MutationObserver(()=>{if($('full-event-log').open)renderFullEventLog();$('live-event-text').hidden=Boolean($('live-history').children.length);}).observe($('live-history'),{childList:true});
+$('event-log-tab').onclick=openFullEventLog;
+$('full-event-log-close').onclick=closeFullEventLog;
+$('full-event-log').addEventListener('close',()=>{$('event-log-tab').setAttribute('aria-expanded','false');$('event-log-tab').focus();});
+$('full-event-log').addEventListener('click',event=>{if(event.target===$('full-event-log'))closeFullEventLog();});
 $('manual-event').addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing){event.preventDefault();if(!$('manual-event-submit').disabled)$('manual-event-form').requestSubmit();}});
 $('manual-event-form').onsubmit=async e=>{
  e.preventDefault();if(liveBusy)return;const event=$('manual-event').value.trim();if(!event)return;
  const seed=Number($('live-seed').value);if(!Number.isInteger(seed)||seed<0||seed>=2**32){$('live-status').textContent='Enter a valid seed.';return;}
- pauseLive('Applying manual event…');liveSeed=seed;liveRunning=true;liveGeneration++;selectEventTab(false);await liveTick(event);
+ pauseLive('Applying manual event…');liveSeed=seed;liveRunning=true;liveGeneration++;closeFullEventLog();await liveTick(event);
 };
 
 $('random-event-once').onclick=async()=>{

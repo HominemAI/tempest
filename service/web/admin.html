@@ -175,12 +175,14 @@
 
       <section id="panel-observability" class="tab-panel" role="tabpanel" aria-labelledby="tab-observability" hidden>
         <div class="section-heading">
-          <div><h2>Model inference</h2><p>Prediction calls from every client using this Tempest service. The average covers the latest 1,000 successful calls. This history starts with the observability release; event text is not collected.</p></div>
+          <div><h2>Model inference</h2><p>Prediction calls from every client using this Tempest service. Model time measures the predictor; server-turn time also includes queue wait, turn processing, and persistence. Each average covers up to 1,000 successful samples. Event text is not collected.</p></div>
           <button id="observability-refresh" type="button">Refresh metrics</button>
         </div>
         <dl class="usage-list observability-metrics" aria-live="polite">
           <div><dt>Average model time</dt><dd id="inference-average">Loading…</dd></div>
           <div><dt>Calls in average</dt><dd id="inference-count">—</dd></div>
+          <div><dt>Average server turn</dt><dd id="server-turn-average">—</dd></div>
+          <div><dt>Turns in average</dt><dd id="server-turn-count">—</dd></div>
           <div><dt>Latest inference</dt><dd id="inference-latest">—</dd></div>
         </dl>
         <h3>Recent model calls</h3>

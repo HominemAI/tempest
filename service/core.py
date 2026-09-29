@@ -78,6 +78,7 @@ class Store:
             db.execute('CREATE TABLE IF NOT EXISTS instance_owners(id TEXT PRIMARY KEY, account_id TEXT, user_id TEXT)')
             db.execute('CREATE TABLE IF NOT EXISTS relationship_states(personality_id TEXT NOT NULL, user_id TEXT NOT NULL, body TEXT NOT NULL, PRIMARY KEY(personality_id,user_id))')
             db.execute('CREATE TABLE IF NOT EXISTS inference_observations(id TEXT PRIMARY KEY, occurred_at TEXT NOT NULL, personality_id TEXT NOT NULL, model_id TEXT NOT NULL, duration_seconds REAL NOT NULL)')
+            db.execute('CREATE TABLE IF NOT EXISTS inference_requests(id TEXT PRIMARY KEY, occurred_at TEXT NOT NULL, personality_id TEXT NOT NULL, model_id TEXT NOT NULL, duration_seconds REAL NOT NULL, prediction_count INTEGER NOT NULL)')
             # Existing records remain system-only; never silently assign them to a customer.
             db.execute('INSERT INTO instance_owners(id,account_id,user_id) SELECT id,NULL,NULL FROM personalities WHERE id NOT IN (SELECT id FROM instance_owners) ON CONFLICT DO NOTHING')
 
@@ -180,10 +181,13 @@ class Store:
     def inference_observability(self):
         with self.db() as db:
             rows=db.execute('SELECT occurred_at,personality_id,model_id,duration_seconds FROM inference_observations ORDER BY occurred_at DESC,id DESC LIMIT 1000').fetchall()
+            requests=db.execute('SELECT occurred_at,duration_seconds,prediction_count FROM inference_requests ORDER BY occurred_at DESC,id DESC LIMIT 1000').fetchall()
         samples=[{'occurred_at':row[0],'personality_id':row[1],'model_id':row[2],
                   'duration_ms':round(float(row[3])*1000,3)} for row in rows]
         average=sum(item['duration_ms'] for item in samples)/len(samples) if samples else None
+        request_durations=[float(row[1])*1000 for row in requests]
         return {'window_limit':1000,'sample_count':len(samples),'average_ms':average,
+                'request_sample_count':len(requests),'request_average_ms':sum(request_durations)/len(request_durations) if requests else None,
                 'latest_at':samples[0]['occurred_at'] if samples else None,'observations':samples[:100]}
 
     def relationship_view(self,row):
@@ -218,6 +222,7 @@ class Store:
         expected=payload.get('expected_turn')
         if expected is not None and (type(expected) is not int or expected<0): raise ValueError('Invalid expected_turn')
         fingerprint=hashlib.sha256(json.dumps(payload,sort_keys=True).encode()).hexdigest()
+        request_started=time.perf_counter()
         # One process, one model; DB transaction also protects against another writer.
         with self.lock,self.db() as db:
             db.execute('BEGIN IMMEDIATE')
@@ -269,6 +274,11 @@ class Store:
                             delta_categories=combined_categories,model_inference_seconds=sum(p['model_inference_seconds'] for p in predictions),delta_index_sha256=self.delta_sha,
                             delta_text_policy='Authored model-category changes, combined by strongest positive plus strongest negative category. Before numerical translation, multipliers, recovery, and caps; not net state changes.',
                             net_delta_text=' '.join(f"{d['name']} {'increased' if n>0 else 'decreased'} by {abs(n):g} state units." for d,n in zip(self.mapping_data['dimensions'],net) if n) or 'No changes.')
+            server_turn_seconds=time.perf_counter()-request_started
+            response['server_turn_seconds']=server_turn_seconds
             db.execute('UPDATE personalities SET body=? WHERE id=?',(json.dumps(state),identifier))
             db.execute('INSERT INTO turns VALUES(?,?,?,?,?)',(identifier,state['turn'],key,fingerprint,json.dumps(response)))
+            db.execute('INSERT INTO inference_requests VALUES(?,?,?,?,?,?)',
+                       (str(uuid.uuid4()),response['timestamp'],identifier,self.model_id,server_turn_seconds,len(predictions)))
+            db.execute('DELETE FROM inference_requests WHERE id NOT IN (SELECT id FROM inference_requests ORDER BY occurred_at DESC,id DESC LIMIT 1000)')
             return response

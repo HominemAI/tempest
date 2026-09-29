@@ -39,7 +39,7 @@ window.TempestHosted = (() => {
   function mount() {
     let active = null, instances = [], activeTurns = [], operation = null, pendingEvent = null, pendingCreate = null;
     let relationshipUsers = [], relationshipNodes = [];
-    let searchTimer, playbackTimer = null, playing = false;
+    let searchTimer, playbackTimer = null, playing = false, lastChartUpdateAt = null;
     const setStatus = message => { $('live-status').textContent = message; };
     function controls() {
       const busy = Boolean(operation);
@@ -69,6 +69,7 @@ window.TempestHosted = (() => {
     liveControls = controls;
     function pause(message = 'Paused. State and history are saved.') {
       playing = false;
+      lastChartUpdateAt = null;
       clearTimeout(playbackTimer);
       playbackTimer = null;
       lastAnimatedEventAt = null;
@@ -131,6 +132,7 @@ window.TempestHosted = (() => {
         event_delta: value.combined_event_effect, net_delta: value.net_delta, after: value.current,
         baselines_before: value.pressure_before, baselines_after: value.pressure, settings: value.settings,
         delta_text: value.delta_text, model_inference_seconds: predictions.map(prediction => prediction.model_inference_seconds).filter(seconds => Number.isFinite(seconds) && seconds >= 0), server_response: value,
+        server_turn_seconds: Number.isFinite(value.server_turn_seconds) ? value.server_turn_seconds : null,
       };
     }
     function updateInferenceAverage(turns) {
@@ -138,7 +140,13 @@ window.TempestHosted = (() => {
       const target = $('inference-time-average');
       if (!samples.length) { target.textContent = 'Model inference average: no timing data in the latest 1,000 events'; return; }
       const average = samples.reduce((sum, seconds) => sum + seconds, 0) / samples.length;
-      target.textContent = `Model inference average: ${(average * 1000).toFixed(1)} ms · ${samples.length} ${samples.length === 1 ? 'event' : 'events'} (up to 1,000)`;
+      const serverTurns = turns.map(turn => turn.server_turn_seconds).filter(seconds => Number.isFinite(seconds) && seconds >= 0).slice(-1000);
+      const serverAverage = serverTurns.length ? `${(serverTurns.reduce((sum, seconds) => sum + seconds, 0) / serverTurns.length * 1000).toFixed(1)} ms server turn` : 'server turn timing unavailable';
+      const browserRequests = turns.map(turn => turn.client_request_seconds).filter(seconds => Number.isFinite(seconds) && seconds >= 0).slice(-1000);
+      const browserAverage = browserRequests.length ? `${(browserRequests.reduce((sum, seconds) => sum + seconds, 0) / browserRequests.length).toFixed(2)} s browser request` : 'browser request timing warming up';
+      const intervals = turns.map(turn => turn.update_interval_seconds).filter(seconds => Number.isFinite(seconds) && seconds >= 0).slice(-1000);
+      const intervalAverage = intervals.length ? `${(intervals.reduce((sum, seconds) => sum + seconds, 0) / intervals.length).toFixed(1)} s between updates` : 'update interval warming up';
+      target.textContent = `Model ${(average * 1000).toFixed(1)} ms · server ${serverAverage} · ${browserAverage} · UI ${intervalAverage}`;
     }
     function renderInstances() {
       const select = $('saved-personality-select'), selected = select.value;
@@ -274,6 +282,9 @@ window.TempestHosted = (() => {
       const started = performance.now();
       const value = await api(`/personalities/${encodeURIComponent(pendingEvent.identifier)}/events`, pendingEvent.payload);
       pendingEvent = null;
+      const updateAt = performance.now();
+      const updateIntervalSeconds = lastChartUpdateAt === null ? null : (updateAt - lastChartUpdateAt) / 1000;
+      lastChartUpdateAt = updateAt;
       updateEventMotion(started);
       showState(value, value.net_delta);
       const categories = value.delta_categories;
@@ -283,15 +294,27 @@ window.TempestHosted = (() => {
         node.button.setAttribute('aria-label', node.button.dataset.detail);
       });
       const turn = turnView(value);
+      turn.client_request_seconds = (updateAt - started) / 1000;
+      turn.update_interval_seconds = updateIntervalSeconds;
       appendEventLog(turn);
       activeTurns.push(turn);
       updateInferenceAverage(activeTurns);
       showHistory(activeTurns);
       $('history-session').value = value.id;
       $('live-event-text').textContent = turn.event;
-      selectEventTab(false);
+      closeFullEventLog();
       if (randomEvent === null) $('manual-event').value = '';
-      await refreshRelationships();
+      if (Array.isArray(value.users) && value.users.length) {
+        for (const user of value.users) {
+          const index = relationshipUsers.findIndex(existing => existing.user_id === user.user_id);
+          if (index < 0) relationshipUsers.push(user); else relationshipUsers[index] = user;
+        }
+        const selected = $('relationship-user').value;
+        $('relationship-user').replaceChildren(new Option(relationshipUsers.length ? 'Choose an event actor' : 'No tagged users yet', ''));
+        for (const user of relationshipUsers) $('relationship-user').add(new Option(user.user_id, user.user_id));
+        $('relationship-user').value = relationshipUsers.some(user => user.user_id === selected) ? selected : relationshipUsers[0]?.user_id || '';
+        drawRelationship();
+      }
       const item = instances.find(instance => instance.id === value.id);
       if (item) item.turn = value.turn;
       renderInstances();
