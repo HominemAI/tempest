@@ -9,7 +9,9 @@ env:
   IMAGE_NAME: hominemai/tempest
 jobs:
   build-and-push:
-    runs-on: ubuntu-latest
+    runs-on:
+      group: smg-private
+      labels: [self-hosted, linux, x64, smg-k8s]
     services:
       postgres:
         image: postgres:16
