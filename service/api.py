@@ -5,6 +5,7 @@ import threading
 import time
 import uuid
 from access import AccessError, Forbidden, Conflict
+from user_identity import UserIdentities
 
 class Unavailable(AccessError):
     status=503
@@ -24,6 +25,7 @@ class API:
     def __init__(self,store,access,catalog,generator=None):
         self.store=store;self.access=access;self.catalog=catalog;self.generator=generator
         self.lock=threading.RLock()
+        self.identities=UserIdentities(self.store.database)
         with self.store.database.connect() as db:
             db.execute('CREATE TABLE IF NOT EXISTS template_copy_requests(id TEXT PRIMARY KEY, fingerprint TEXT NOT NULL, configuration TEXT NOT NULL, response TEXT)')
 
@@ -75,6 +77,17 @@ class API:
             return result
 
     def dispatch(self,method,path,query,payload,p):
+        # Normalize at the boundary so every existing ownership, quota, draft,
+        # relationship and replay key uses the same source-qualified identity.
+        payload=self.identities.input(payload)
+        query=dict(query)
+        if 'source' in query or query.get('user_id',[None])[0] is not None:
+            identity=self.identities.input({key:query[key][0] for key in ('user_id','source') if key in query})
+            query.pop('source',None)
+            query['user_id']=[identity['user_id']]
+        return self.identities.output(self._dispatch(method,path,query,payload,p))
+
+    def _dispatch(self,method,path,query,payload,p):
         admin=p['kind']=='admin';parts=path.strip('/').split('/');q=lambda key:query.get(key,[None])[0]
         if path.startswith('/admin/'):
             if not admin:raise Forbidden('Administrator access required')

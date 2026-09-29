@@ -49,6 +49,76 @@ class APITests(unittest.TestCase):
         self.assertTrue(0<len(value['event'])<=1200)
         self.assertGreater(value['pool_size'],0)
 
+    def test_source_isolates_ownership_relationships_and_limits(self):
+        tokens = {}
+        instances = {}
+        for source in ('discord', 'denizens', 'default'):
+            identity = {'user_id':'alice', 'source':source}
+            status,key,_ = self.call('/admin/keys',dict(identity,name=source,account_id=self.a),token=self.admin)
+            self.assertEqual(status,200,key)
+            self.assertEqual((key['user_id'],key['source']),('alice',source))
+            tokens[source] = key['token']
+            status,instance,_ = self.call('/admin/instances',dict(identity,account_id=self.a,baseline=[0]*23),token=self.admin)
+            self.assertEqual(status,200,instance)
+            instances[source] = instance['id']
+            self.assertEqual(self.call('/personalities/'+instance['id'],token=key['token'])[0],200)
+        self.assertEqual(self.call('/personalities/'+instances['discord'],token=tokens['denizens'])[0],404)
+        path='/personalities/'+instances['discord']
+        events=[{'text':'A visitor helps them','user_id':'bob','source':source} for source in ('discord','denizens')]
+        status,value,_=self.call(path+'/events/users',{'events':events,'idempotency_key':'sources'},token=tokens['discord'])
+        self.assertEqual(status,200,value)
+        self.assertEqual({(u['source'],u['user_id']) for u in value['users']},{('discord','bob'),('denizens','bob')})
+        for source in ('discord','denizens'):
+            status,value,_=self.call(path+'/status/users?user_id=bob&source='+source,token=tokens['discord'])
+            self.assertEqual(status,200,value)
+            self.assertEqual(len(value['users']),1)
+            self.assertEqual(value['users'][0]['source'],source)
+            self.assertNotIn('tempest-source:',value['users'][0]['text'])
+        self.assertEqual(self.call(path+'/status/users?user_id=bob',token=tokens['discord'])[1]['users'],[])
+        self.call('/admin/limits',{'account_id':self.a,'user_id':'alice','source':'discord','text':7},token=self.admin)
+        a=self.call('/admin/limits?account_id='+self.a+'&user_id=alice&source=discord',token=self.admin)[1]
+        b=self.call('/admin/limits?account_id='+self.a+'&user_id=alice&source=denizens',token=self.admin)[1]
+        self.assertEqual(a['limits']['text'],7)
+        self.assertNotEqual(b['limits']['text'],7)
+        self.assertEqual(a['source'],'discord')
+        usage=self.call('/admin/usage?account_id='+self.a+'&user_id=alice&source=discord',token=self.admin)[1]
+        self.assertEqual(usage['used']['text'],1)
+        self.assertEqual(usage['source'],'discord')
+        replay=self.call(path+'/events/users',{'events':events,'idempotency_key':'sources'},token=tokens['discord'])[1]
+        self.assertEqual(replay['turn'],1)
+        self.assertEqual(replay['users'][0]['source'],'discord')
+        untouched=self.call('/personalities/'+instances['denizens']+'/status/users',token=tokens['denizens'])[1]
+        self.assertEqual(untouched['users'],[])
+        for source in ('',None,42,'x'*129):
+            self.assertEqual(self.call(path+'/events',{'events':[{'text':'hello','user_id':'bob','source':source}],'idempotency_key':'bad'},token=tokens['discord'])[0],400)
+
+    def test_source_copy_description_and_legacy_identity(self):
+        self.server.api.generator=lambda context:{'status':'complete','configuration':{'name':'Created','baseline':[0]*23}}
+        template=self.server.catalog.save_template({'name':'Public','baseline':[0]*23,'visibility':'public'},admin=True)
+        copied=[];created=[]
+        for source in ('one','two'):
+            body={'account_id':self.a,'user_id':'same','source':source,'idempotency_key':'same-key'}
+            route='/templates/'+template['id']+'/copy'
+            status,value,_=self.call(route,body,token=self.admin)
+            self.assertEqual(status,200,value)
+            copied.append(value['id'])
+            self.assertEqual(self.call(route,body,token=self.admin)[1]['id'],value['id'])
+            owner=self.call('/admin/instances/'+value['id'],token=self.admin)[1]
+            self.assertEqual((owner['source'],owner['user_id']),(source,'same'))
+            status,value,_=self.call('/characters/describe',dict(body,description='A calm person'),token=self.admin)
+            self.assertEqual(status,200,value)
+            created.append(value['instance']['id'])
+        self.assertNotEqual(copied[0],copied[1])
+        self.assertNotEqual(created[0],created[1])
+        legacy=self.store.register({'baseline':[0]*23},self.a,'legacy')['id']
+        status,key,_=self.call('/admin/keys',{'name':'Legacy','account_id':self.a,'user_id':'legacy','source':'default'},token=self.admin)
+        self.assertEqual(status,200,key)
+        self.assertEqual(self.call('/personalities/'+legacy,token=key['token'])[0],200)
+        from user_identity import UserIdentities
+        reopened=UserIdentities(self.store.database)
+        internal=reopened.encode('same','one')
+        self.assertEqual(reopened.output({'user_id':internal}),{'user_id':'same','source':'one'})
+
     def test_unlimited_expiration_preserves_existing_keys(self):
         base={'name':'test','kind':'account','account_id':self.a}
         status,existing,_=self.call('/admin/keys',base,token=self.admin)
