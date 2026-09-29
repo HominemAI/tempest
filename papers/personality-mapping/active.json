@@ -1,0 +1,6 @@
+{
+  "state": "papers/personality-mapping/v2/anchors.json",
+  "delta": "papers/personality-mapping/delta-v1/anchors.json",
+  "state_sha256": "75b0f68c9b083e38701340ece6a16a0d28265eaca8575f2a9352ff14762cdc21",
+  "delta_sha256": "b6d5471635f91754a3ba9d43e4baad22072248b03e9c112a54fc80f98b231b4f"
+}
