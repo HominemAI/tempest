@@ -25,10 +25,16 @@ docker run --rm --name tempest -p 127.0.0.1:8080:8080 \
   tempest:1
 ```
 
-Before building locally, download the private `model-v1` release asset, verify it
-against `service/MODEL_SHA256`, and extract it into `model-bundle/`. GitHub Actions
-does this automatically. The published image includes the pinned checkpoint and
-encoder, but excludes datasets and credentials. You can override it by mounting a checkpoint containing
+Application releases reuse the digest-pinned, validated `v0.2.0` runtime from
+GHCR, including CPU dependencies, checkpoint, and encoder. Authenticate Docker
+to GHCR if required to pull that private base. No model download is needed for
+this application-only build. The image includes the random-event text pool but
+not the source labeling database, credentials, or user records.
+
+For dependency/model changes, use `service/Dockerfile.runtime`: first download
+the private `model-v1` release asset, verify `service/MODEL_SHA256`, and extract
+it into `model-bundle/`. Build and validate a new runtime, then deliberately update
+the pinned base reference in `service/Dockerfile`. You can override weights by mounting a checkpoint containing
 `config.json` and `weights.pt`, and its complete SentenceTransformer encoder directory.
 The encoder hash must match the checkpoint. The active v2 state-language index and
 shared pressure engine/relationship coefficients are included in the image.
@@ -176,6 +182,7 @@ The Omni-style GitHub Actions workflow publishes version tags (`v*.*.*`) to
 `ghcr.io/hominemai/tempest`, using `GITHUB_TOKEN`, Docker metadata and Buildx.
 It tests SQLite and PostgreSQL before publishing. The `model-v1` release stores
 only the pinned config/weights/encoder archive (private repository).
-PRs build without publishing. Images remain private; Kubernetes needs a GHCR
-pull secret. The infra manifest references `omni/ghcr-hominem` and existing
-`omni-secrets` PostgreSQL/API-key entries. No secrets are committed here.
+PRs build without publishing. Images remain private; this SMG cluster already
+has working pull access, so its manifest does not add a pull secret. Other
+clusters need their own registry authorization. The manifest uses existing
+`omni-secrets` PostgreSQL/setup-token entries. No secrets are committed here.
