@@ -9,6 +9,7 @@ import sqlite3
 import subprocess
 import sys
 import threading
+import time
 import uuid
 from datetime import datetime, timezone
 from database import Database
@@ -221,10 +222,12 @@ class Store:
             recovered=[v+(b-v)*rate for v,b,rate in zip(before,target,cfg['recovery'])]
             predictions=[];proposals=[]
             for event,actor in normalized:
+                inference_started=time.perf_counter()
                 categories=self.predictor(event,list(recovered))
+                inference_seconds=time.perf_counter()-inference_started
                 if len(categories)!=23 or any(type(c) is not int or not -4<=c<=4 for c in categories): raise ValueError('Invalid model categories')
                 effect=[cfg['effects'][c+4]*m for c,m in zip(categories,cfg['multipliers'])]
-                predictions.append({'event':event,'user_id':actor,'categories':categories,'effect':effect,'delta_text':self.delta_description(categories,key+'|'+str(len(predictions)))});proposals.append(effect)
+                predictions.append({'event':event,'user_id':actor,'categories':categories,'effect':effect,'model_inference_seconds':inference_seconds,'delta_text':self.delta_description(categories,key+'|'+str(len(predictions)))});proposals.append(effect)
             combined=engine({'operation':'union','proposals':proposals})['net']
             updated_pressure=engine({'operation':'advance','old':previous,'current':recovered,'delta':combined,
                 'config':cfg['constitution'],'enabled':cfg['pressureEnabled'],'longEnabled':cfg['longEnabled'],
@@ -249,7 +252,7 @@ class Store:
             response.update(timestamp=datetime.now(timezone.utc).isoformat(),idempotency_key=key,before=before,model_input=recovered,predictions=predictions,
                             combined_event_effect=combined,net_delta=net,pressure_before=previous,
                             delta_text=self.delta_description(combined_categories,key),
-                            delta_categories=combined_categories,delta_index_sha256=self.delta_sha,
+                            delta_categories=combined_categories,model_inference_seconds=sum(p['model_inference_seconds'] for p in predictions),delta_index_sha256=self.delta_sha,
                             delta_text_policy='Authored model-category changes, combined by strongest positive plus strongest negative category. Before numerical translation, multipliers, recovery, and caps; not net state changes.',
                             net_delta_text=' '.join(f"{d['name']} {'increased' if n>0 else 'decreased'} by {abs(n):g} state units." for d,n in zip(self.mapping_data['dimensions'],net) if n) or 'No changes.')
             db.execute('UPDATE personalities SET body=? WHERE id=?',(json.dumps(state),identifier))

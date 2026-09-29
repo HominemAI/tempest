@@ -130,8 +130,15 @@ window.TempestHosted = (() => {
         before: value.before, model_input: value.model_input, categories: value.delta_categories || predictions[0]?.categories || Array(23).fill(0),
         event_delta: value.combined_event_effect, net_delta: value.net_delta, after: value.current,
         baselines_before: value.pressure_before, baselines_after: value.pressure, settings: value.settings,
-        delta_text: value.delta_text, server_response: value,
+        delta_text: value.delta_text, model_inference_seconds: predictions.map(prediction => prediction.model_inference_seconds).filter(seconds => Number.isFinite(seconds) && seconds >= 0), server_response: value,
       };
+    }
+    function updateInferenceAverage(turns) {
+      const samples = turns.flatMap(turn => turn.model_inference_seconds || []).slice(-1000);
+      const target = $('inference-time-average');
+      if (!samples.length) { target.textContent = 'Model inference average: no timing data in the latest 1,000 events'; return; }
+      const average = samples.reduce((sum, seconds) => sum + seconds, 0) / samples.length;
+      target.textContent = `Model inference average: ${(average * 1000).toFixed(1)} ms · ${samples.length} ${samples.length === 1 ? 'event' : 'events'} (up to 1,000)`;
     }
     function renderInstances() {
       const select = $('saved-personality-select'), selected = select.value;
@@ -169,6 +176,7 @@ window.TempestHosted = (() => {
     }
     function showHistory(values, limited = false) {
       historyTurns = values;
+      updateInferenceAverage(values);
       $('history-turn').replaceChildren();
       values.forEach((value, index) => $('history-turn').add(new Option('Turn ' + value.turn, String(index))));
       if (values.length) $('history-turn').value = String(values.length - 1);
@@ -185,6 +193,7 @@ window.TempestHosted = (() => {
       $('saved-personality-select').value = identifier;
       $('live-history').replaceChildren();
       activeTurns = saved.turns;
+      updateInferenceAverage(saved.turns);
       [...saved.turns].reverse().forEach(value => appendEventLog(value, false));
       showHistory(saved.turns, saved.limited);
       $('live-event-text').textContent = saved.turns.at(-1)?.event || 'No events have been applied to this saved personality.';
@@ -221,6 +230,7 @@ window.TempestHosted = (() => {
       showState(value);
       $('live-history').replaceChildren();
       activeTurns = [];
+      updateInferenceAverage([]);
       showHistory([]);
       $('live-event-text').textContent = 'New personality saved. Enter an event to apply its first turn.';
       await refreshInstances();
@@ -275,6 +285,7 @@ window.TempestHosted = (() => {
       const turn = turnView(value);
       appendEventLog(turn);
       activeTurns.push(turn);
+      updateInferenceAverage(activeTurns);
       showHistory(activeTurns);
       $('history-session').value = value.id;
       $('live-event-text').textContent = turn.event;
