@@ -4,7 +4,7 @@ function compactLiveLayout(){
  const picker=document.querySelector('section[aria-label="Choose a personality"] .controls'),liveControls=$('live-panel')?.querySelector(':scope > .controls');
  if(picker&&liveControls){
   picker.classList.add('live-toolbar');picker.querySelector('label')?.classList.add('personality-picker');
-  const seed=liveControls.querySelector('label'),seedInput=$('live-seed');if(seed&&seedInput){seed.classList.add('seed-control');seed.replaceChildren(Object.assign(document.createElement('span'),{textContent:'🌱 Seed'}),seedInput);}
+  const seed=liveControls.querySelector('label'),seedInput=$('live-seed');if(seed&&seedInput){seed.classList.add('seed-control');seed.replaceChildren(Object.assign(document.createElement('span'),{textContent:'Seed'}),seedInput);}
   while(liveControls.firstChild)picker.append(liveControls.firstChild);liveControls.remove();
  }
  const form=$('manual-event-form'),workspace=form?.parentElement,summary=workspace?.querySelector('.event-log-summary');
@@ -85,7 +85,7 @@ function appendEventLog(turn,prepend=true){
  const key=turn.session+':'+turn.turn;
  eventTurnsByKey.set(key,turn);
  if([...$('live-history').children].some(row=>row.dataset.turnKey===key))return;
- const item=document.createElement('li'),button=document.createElement('button');item.dataset.turnKey=key;item.value=turn.turn;button.type='button';button.className='event-log-link';button.textContent=turn.event;button.title=turn.timestamp||turn.session;button.onclick=()=>inspectEventTurn(turn);item.append(button);
+ const item=document.createElement('li'),button=document.createElement('button');item.dataset.turnKey=key;item.value=turn.turn;button.type='button';button.className='event-log-link';button.textContent=turn.event;button.title=turn.timestamp||turn.session;button.onclick=()=>openFullEventLog(key);item.append(button);
  if(prepend)$('live-history').prepend(item);else $('live-history').append(item);
 }
 async function restorePersonalityLog(){
@@ -282,14 +282,18 @@ $('live-start').onchange=()=>{resetLive();$('save-simulation').disabled=$('live-
 if(!window.TEMPEST_HOSTED){searchSavedPersonalities();refreshHistory();}
 drawLive(Array(23).fill(0),Array(23).fill(0));
 
-function openFullEventLog(){
- const dialog=$('full-event-log');if(dialog.open)return;renderFullEventLog();dialog.showModal();$('event-log-tab').setAttribute('aria-expanded','true');$('full-event-history').focus();
+function openFullEventLog(turnKey=null){
+ const dialog=$('full-event-log');if(turnKey)selectedFullEventKey=turnKey;renderFullEventLog();if(!dialog.open){dialog.showModal();$('event-log-tab').setAttribute('aria-expanded','true');}if(turnKey)selectFullEvent(turnKey);$('full-event-history').focus();
 }
 function closeFullEventLog(){const dialog=$('full-event-log');if(dialog.open)dialog.close();}
 let selectedFullEventKey=null;
+function selectFullEvent(key){
+ const turn=eventTurnsByKey.get(key);if(!turn)return;selectedFullEventKey=key;inspectEventTurn(turn,true);
+ $('full-event-history').querySelectorAll('[data-turn-key] button').forEach(button=>button.setAttribute('aria-pressed',String(button.closest('[data-turn-key]').dataset.turnKey===key)));
+}
 function renderFullEventLog(){
  const list=$('full-event-history'),focusedKey=list.contains(document.activeElement)?document.activeElement.closest('li')?.dataset.turnKey:null;
- const rows=[...$('live-history').children].map(row=>{const copy=row.cloneNode(true),key=row.dataset.turnKey,button=copy.querySelector('button');copy.dataset.turnKey=key;button.setAttribute('aria-pressed',String(key===selectedFullEventKey));button.onclick=()=>{const turn=eventTurnsByKey.get(key);if(turn){selectedFullEventKey=key;inspectEventTurn(turn,true);list.querySelectorAll('[data-turn-key] button').forEach(candidate=>candidate.setAttribute('aria-pressed',String(candidate.closest('[data-turn-key]').dataset.turnKey===key)));}};return copy;});
+ const rows=[...$('live-history').children].map(row=>{const copy=row.cloneNode(true),key=row.dataset.turnKey,button=copy.querySelector('button');copy.dataset.turnKey=key;button.setAttribute('aria-pressed',String(key===selectedFullEventKey));button.onclick=()=>selectFullEvent(key);return copy;});
  $('full-event-history').replaceChildren(...rows);
  if(!rows.length){const empty=document.createElement('li');empty.textContent='No events yet.';$('full-event-history').append(empty);}
  if(focusedKey){const button=[...list.querySelectorAll('[data-turn-key]')].find(row=>row.dataset.turnKey===focusedKey)?.querySelector('button');button?.focus({preventScroll:true});}
