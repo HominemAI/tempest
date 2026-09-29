@@ -71,6 +71,7 @@
         <button id="tab-accounts" type="button" role="tab" aria-selected="true" aria-controls="panel-accounts">Accounts</button>
         <button id="tab-keys" type="button" role="tab" aria-selected="false" aria-controls="panel-keys" tabindex="-1">API keys</button>
         <button id="tab-limits" type="button" role="tab" aria-selected="false" aria-controls="panel-limits" tabindex="-1">Limits and usage</button>
+        <button id="tab-observability" type="button" role="tab" aria-selected="false" aria-controls="panel-observability" tabindex="-1">Observability</button>
       </nav>
 
       <section id="panel-accounts" class="tab-panel" role="tabpanel" aria-labelledby="tab-accounts">
@@ -170,6 +171,25 @@
             </dl>
           </section>
         </div>
+      </section>
+
+      <section id="panel-observability" class="tab-panel" role="tabpanel" aria-labelledby="tab-observability" hidden>
+        <div class="section-heading">
+          <div><h2>Model inference</h2><p>Prediction calls from every client using this Tempest service. The average covers the latest 1,000 successful calls. This history starts with the observability release; event text is not collected.</p></div>
+          <button id="observability-refresh" type="button">Refresh metrics</button>
+        </div>
+        <dl class="usage-list observability-metrics" aria-live="polite">
+          <div><dt>Average model time</dt><dd id="inference-average">Loading…</dd></div>
+          <div><dt>Calls in average</dt><dd id="inference-count">—</dd></div>
+          <div><dt>Latest inference</dt><dd id="inference-latest">—</dd></div>
+        </dl>
+        <h3>Recent model calls</h3>
+        <div class="table-scroll" tabindex="0" role="region" aria-label="Recent model inference calls">
+          <table><thead><tr><th scope="col">Time (UTC)</th><th scope="col">Duration</th><th scope="col">Model</th><th scope="col">Persona instance</th></tr></thead>
+            <tbody id="inference-observations"><tr><td colspan="4" class="empty-cell">Loading inference history…</td></tr></tbody>
+          </table>
+        </div>
+        <p id="observability-status" class="field-help" role="status" aria-live="polite">Refreshing automatically while this tab is open.</p>
       </section>
     </section>
   </main>

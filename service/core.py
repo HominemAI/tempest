@@ -77,6 +77,7 @@ class Store:
             db.execute('CREATE TABLE IF NOT EXISTS turns(id TEXT, turn INTEGER, request_key TEXT, fingerprint TEXT, response TEXT, PRIMARY KEY(id,turn), UNIQUE(id,request_key))')
             db.execute('CREATE TABLE IF NOT EXISTS instance_owners(id TEXT PRIMARY KEY, account_id TEXT, user_id TEXT)')
             db.execute('CREATE TABLE IF NOT EXISTS relationship_states(personality_id TEXT NOT NULL, user_id TEXT NOT NULL, body TEXT NOT NULL, PRIMARY KEY(personality_id,user_id))')
+            db.execute('CREATE TABLE IF NOT EXISTS inference_observations(id TEXT PRIMARY KEY, occurred_at TEXT NOT NULL, personality_id TEXT NOT NULL, model_id TEXT NOT NULL, duration_seconds REAL NOT NULL)')
             # Existing records remain system-only; never silently assign them to a customer.
             db.execute('INSERT INTO instance_owners(id,account_id,user_id) SELECT id,NULL,NULL FROM personalities WHERE id NOT IN (SELECT id FROM instance_owners) ON CONFLICT DO NOTHING')
 
@@ -176,6 +177,15 @@ class Store:
             self.read(db,identifier)
             return {'turns':[json.loads(r[0]) for r in db.execute('SELECT response FROM turns WHERE id=? AND turn>? ORDER BY turn LIMIT 100',(identifier,after))]}
 
+    def inference_observability(self):
+        with self.db() as db:
+            rows=db.execute('SELECT occurred_at,personality_id,model_id,duration_seconds FROM inference_observations ORDER BY occurred_at DESC,id DESC LIMIT 1000').fetchall()
+        samples=[{'occurred_at':row[0],'personality_id':row[1],'model_id':row[2],
+                  'duration_ms':round(float(row[3])*1000,3)} for row in rows]
+        average=sum(item['duration_ms'] for item in samples)/len(samples) if samples else None
+        return {'window_limit':1000,'sample_count':len(samples),'average_ms':average,
+                'latest_at':samples[0]['occurred_at'] if samples else None,'observations':samples[:100]}
+
     def relationship_view(self,row):
         # Draft rendering convention: map accumulated adjustment to the nearest
         # delta-index intensity on a full +/-10 scale. This is not model output.
@@ -226,6 +236,10 @@ class Store:
                 categories=self.predictor(event,list(recovered))
                 inference_seconds=time.perf_counter()-inference_started
                 if len(categories)!=23 or any(type(c) is not int or not -4<=c<=4 for c in categories): raise ValueError('Invalid model categories')
+                occurred_at=datetime.now(timezone.utc).isoformat()
+                db.execute('INSERT INTO inference_observations VALUES(?,?,?,?,?)',
+                           (str(uuid.uuid4()),occurred_at,identifier,self.model_id,inference_seconds))
+                db.execute('DELETE FROM inference_observations WHERE id NOT IN (SELECT id FROM inference_observations ORDER BY occurred_at DESC,id DESC LIMIT 1000)')
                 effect=[cfg['effects'][c+4]*m for c,m in zip(categories,cfg['multipliers'])]
                 predictions.append({'event':event,'user_id':actor,'categories':categories,'effect':effect,'model_inference_seconds':inference_seconds,'delta_text':self.delta_description(categories,key+'|'+str(len(predictions)))});proposals.append(effect)
             combined=engine({'operation':'union','proposals':proposals})['net']

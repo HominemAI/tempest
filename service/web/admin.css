@@ -57,6 +57,8 @@ td { overflow-wrap: anywhere; }
 .usage-list > div { display: grid; grid-template-columns: minmax(140px, 1fr) 2fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line); }
 .usage-list dt { color: var(--muted); }
 .usage-list dd { margin: 0; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.observability-metrics { max-width: 720px; margin: 14px 0 24px; }
+.observability-metrics dd { font-weight: 650; }
 [hidden] { display: none !important; }
 @media (max-width: 760px) {
   main { padding: 18px 14px 36px; }

@@ -109,6 +109,7 @@ class API:
                 limits={k:payload[k] for k in ('text','create_description') if k in payload}
                 return self.access.update_limits(account_id=payload.get('account_id') or None,user_id=payload.get('user_id') or None,limits=limits)
             if path=='/admin/usage' and method=='GET':return self.access.usage(q('account_id'),q('user_id'))
+            if path=='/admin/observability/inference' and method=='GET':return self.store.inference_observability()
             if path=='/admin/templates':
                 if method=='GET':return {'templates':self.catalog.list_templates(admin=True)}
                 return self.catalog.save_template(payload,admin=True)

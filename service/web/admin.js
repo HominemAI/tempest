@@ -1,7 +1,7 @@
 'use strict';
 (() => {
   const $ = (id) => document.getElementById(id);
-  const state = { csrf: '', admin: null, accounts: [], activeTab: 'accounts', scope: { account_id: '', user_id: '' } };
+  const state = { csrf: '', admin: null, accounts: [], activeTab: 'accounts', scope: { account_id: '', user_id: '' }, observabilityTimer: null, observabilityBusy: false };
   const authView = $('auth-view');
   const adminView = $('admin-view');
 
@@ -74,6 +74,7 @@
   }
 
   function showAuth(message = '', kind = '') {
+    clearInterval(state.observabilityTimer);
     state.csrf = '';
     state.admin = null;
     adminView.hidden = true;
@@ -169,7 +170,7 @@
 
   function selectTab(name, focus = false) {
     state.activeTab = name;
-    for (const key of ['accounts', 'keys', 'limits']) {
+    for (const key of ['accounts', 'keys', 'limits', 'observability']) {
       const active = key === name;
       const tab = $(`tab-${key}`);
       tab.setAttribute('aria-selected', String(active));
@@ -178,17 +179,24 @@
       if (active && focus) tab.focus();
     }
     if (name === 'limits') loadScopeData().catch(showWorkspaceError);
+    if (name === 'observability') {
+      loadObservability().catch(showWorkspaceError);
+      clearInterval(state.observabilityTimer);
+      state.observabilityTimer = setInterval(() => {
+        if (!document.hidden && !state.observabilityBusy && state.activeTab === 'observability') loadObservability().catch(showWorkspaceError);
+      }, 15000);
+    } else clearInterval(state.observabilityTimer);
   }
 
-  for (const key of ['accounts', 'keys', 'limits']) {
+  for (const key of ['accounts', 'keys', 'limits', 'observability']) {
     $(`tab-${key}`).addEventListener('click', () => selectTab(key));
     $(`tab-${key}`).addEventListener('keydown', (event) => {
       if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
       event.preventDefault();
-      const keys = ['accounts', 'keys', 'limits'];
+      const keys = ['accounts', 'keys', 'limits', 'observability'];
       const index = keys.indexOf(key);
-      const next = event.key === 'Home' ? 0 : event.key === 'End' ? 2
-        : (index + (event.key === 'ArrowRight' ? 1 : 2)) % 3;
+      const next = event.key === 'Home' ? 0 : event.key === 'End' ? 3
+        : (index + (event.key === 'ArrowRight' ? 1 : 3)) % 4;
       selectTab(keys[next], true);
     });
   }
@@ -427,6 +435,37 @@
     showUsage(usage);
   }
 
+  async function loadObservability() {
+    if (state.observabilityBusy) return;
+    state.observabilityBusy = true;
+    $('observability-refresh').disabled = true;
+    try {
+      const data = await request('/admin/observability/inference');
+      $('inference-average').textContent = data.average_ms == null ? 'No inference calls recorded yet' : `${Number(data.average_ms).toFixed(1)} ms`;
+      $('inference-count').textContent = `${data.sample_count} / ${data.window_limit} recent calls`;
+      $('inference-latest').textContent = data.latest_at ? date(data.latest_at) : '—';
+      const body = $('inference-observations'); body.replaceChildren();
+      const observations = Array.isArray(data.observations) ? data.observations : [];
+      if (!observations.length) {
+        const row = body.insertRow(); const td = row.insertCell(); td.colSpan = 4; td.className = 'empty-cell';
+        td.textContent = 'No model inference calls have been recorded yet.';
+      }
+      for (const observation of observations) {
+        const row = body.insertRow();
+        cell(row, date(observation.occurred_at));
+        cell(row, `${Number(observation.duration_ms).toFixed(1)} ms`);
+        cell(row, observation.model_id);
+        cell(row, observation.personality_id, 'table-id');
+      }
+      $('observability-status').textContent = `Showing ${observations.length} most recent calls. The rolling average uses at most ${data.window_limit} successful model predictions.`;
+    } finally {
+      state.observabilityBusy = false;
+      $('observability-refresh').disabled = false;
+    }
+  }
+
+  $('observability-refresh').addEventListener('click', () => loadObservability().catch(showWorkspaceError));
+
   $('scope-select-form').addEventListener('submit', async (event) => {
     event.preventDefault();
     await loadScopeData().catch(showWorkspaceError);
@@ -465,6 +504,7 @@
     await loadAccounts();
     await loadKeys();
     if (state.activeTab === 'limits') await loadScopeData();
+    if (state.activeTab === 'observability') await loadObservability();
     setStatus('workspace-status', 'Admin data is up to date.');
   }
 
