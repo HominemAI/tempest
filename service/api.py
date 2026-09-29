@@ -78,6 +78,9 @@ class API:
         admin=p['kind']=='admin';parts=path.strip('/').split('/');q=lambda key:query.get(key,[None])[0]
         if path.startswith('/admin/'):
             if not admin:raise Forbidden('Administrator access required')
+            if path=='/admin/events/random' and method=='GET':
+                from event_pool import sample
+                return sample()
             if path=='/admin/accounts':
                 if method=='GET':return {'accounts':self.access.list_accounts()}
                 return self.access.create_account(payload['name'],payload.get('external_id'))

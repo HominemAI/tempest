@@ -4,7 +4,29 @@ This is the implemented service access boundary, not a deployment migration.
 The service hosts an administrator workspace at `/admin`, adapts the existing
 live model interface at `/inference`, and serves the language index at
 `/state-index`. The research personality editor, comparisons, audit tools,
-corpus, and local research history have not been migrated into this service.
+paper corpus, and local research history have not been migrated into this service.
+
+## Hosted Test model behavior
+
+Play/Pause and Play random event use the same 42,565-event text pool as the local
+live-mode corpus, packaged as `service/random_events.json`. Rebuild the pool with
+`python service/export_event_pool.py SOURCE.sqlite service/random_events.json`.
+`GET /admin/events/random` samples one text and is administrator-only. It neither
+runs inference nor consumes an event turn. Labels and personality records are not
+included in the packaged pool.
+
+Playback sends ordinary event requests, targets a one-second cadence, and never
+overlaps turns. Pause lets an in-flight turn finish and persist, then stops. Hidden
+tabs pause; reload restores the selected instance without automatically playing.
+Manual submission pauses playback. Random turns preserve a drafted manual event.
+Failed event submissions keep their idempotency key for explicit retry.
+
+Saved settings, state, pressure, relationship deltas, and history use the service,
+not a second browser simulation. The existing seed/reset controls, effect-size and
+per-state sliders, baseline markers, event-log inspection, history export, theme,
+and tooltips are retained. Change labels show model category effect sizes before
+recovery/multipliers; charts show the resulting current state. New turns include
+a server timestamp. Earlier local research histories are not silently imported.
 
 ## First administrator and credentials
 

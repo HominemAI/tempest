@@ -1,4 +1,5 @@
 :root{color-scheme:light;--ink:#202e3d;--muted:#526273;--line:#d7dfe7;--paper:#fff;--wash:#f4f7fa;--accent:#174f91;--positive:#216239;--negative:#a12d2d}
+body[data-tempest-area=inference] button:disabled{cursor:not-allowed}
 .live-baseline.temporary{border-top:1px solid #a855f7;left:0;width:100%;z-index:6}.live-baseline.adapted{border-top:2px dotted var(--updated-ink);left:15%;width:70%;z-index:5}
 .builder-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px 22px;margin:16px 0}.builder-grid label{display:grid;grid-template-columns:1fr 44px;gap:4px;font-size:12px}.builder-grid input{grid-column:1;padding:0;width:100%;accent-color:var(--accent)}.builder-grid output{grid-column:2;text-align:right;font-variant-numeric:tabular-nums}.controls input[type=checkbox]{display:inline-block;width:auto}.pressure-scroll .regulation-sections>details>label{display:flex;gap:12px;align-items:center;font-size:12px}.pressure-scroll input[type=range]{accent-color:var(--accent)}
 select{font:inherit;padding:8px;border:1px solid var(--line);border-radius:5px;background:var(--paper);color:var(--ink);min-height:38px}

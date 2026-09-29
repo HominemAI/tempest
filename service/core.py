@@ -10,6 +10,7 @@ import subprocess
 import sys
 import threading
 import uuid
+from datetime import datetime, timezone
 from database import Database
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -245,7 +246,7 @@ class Store:
                 relationship_changes.append(dict(self.relationship_view(item),event_delta=effect,delta_text=self.delta_description(cats,key+'|'+actor)))
             if relationship_changes:response['users']=relationship_changes
             combined_categories=[max(0,*[p['categories'][i] for p in predictions])+min(0,*[p['categories'][i] for p in predictions]) for i in range(23)]
-            response.update(idempotency_key=key,before=before,model_input=recovered,predictions=predictions,
+            response.update(timestamp=datetime.now(timezone.utc).isoformat(),idempotency_key=key,before=before,model_input=recovered,predictions=predictions,
                             combined_event_effect=combined,net_delta=net,pressure_before=previous,
                             delta_text=self.delta_description(combined_categories,key),
                             delta_categories=combined_categories,delta_index_sha256=self.delta_sha,

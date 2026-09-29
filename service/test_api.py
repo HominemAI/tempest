@@ -42,6 +42,13 @@ class APITests(unittest.TestCase):
             with urllib.request.urlopen(request) as response:return response.status,json.load(response),response.headers
         except urllib.error.HTTPError as response:return response.code,json.load(response),response.headers
 
+    def test_random_events_admin_only(self):
+        self.assertEqual(self.call('/admin/events/random',token=self.key)[0],403)
+        status,value,_=self.call('/admin/events/random',token=self.admin)
+        self.assertEqual(status,200)
+        self.assertTrue(0<len(value['event'])<=1200)
+        self.assertGreater(value['pool_size'],0)
+
     def test_unlimited_expiration_preserves_existing_keys(self):
         base={'name':'test','kind':'account','account_id':self.a}
         status,existing,_=self.call('/admin/keys',base,token=self.admin)

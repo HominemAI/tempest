@@ -39,23 +39,24 @@ window.TempestHosted = (() => {
   function mount() {
     let active = null, instances = [], activeTurns = [], operation = null, pendingEvent = null, pendingCreate = null;
     let relationshipUsers = [], relationshipNodes = [];
-    let searchTimer;
-    const randomUnavailable = 'Random playback is unavailable until an administrator configures an event pool. Enter a manual event below.';
+    let searchTimer, playbackTimer = null, playing = false;
     const setStatus = message => { $('live-status').textContent = message; };
     function controls() {
       const busy = Boolean(operation);
       $('manual-event-submit').disabled = busy;
-      $('saved-personality-load').disabled = busy || !$('saved-personality-select').value || Boolean(pendingEvent);
-      $('save-simulation').disabled = busy || !active || Boolean(pendingEvent);
-      $('live-reset').disabled = busy || Boolean(pendingEvent);
-      $('live-toggle').disabled = true;
-      $('random-event-once').disabled = true;
-      $('live-toggle').title = randomUnavailable;
-      $('random-event-once').title = randomUnavailable;
-      for (const id of ['live-start', 'live-seed', 'random-seed']) $(id).disabled = busy || Boolean(pendingEvent);
+      $('saved-personality-load').disabled = busy || playing || !$('saved-personality-select').value || Boolean(pendingEvent);
+      $('save-simulation').disabled = busy || playing || !active || Boolean(pendingEvent);
+      $('live-reset').disabled = busy || playing || Boolean(pendingEvent);
+      $('live-toggle').disabled = !playing && (busy || Boolean(pendingEvent));
+      $('live-toggle').textContent = playing ? 'Pause' : 'Play';
+      $('live-toggle').setAttribute('aria-pressed', String(playing));
+      $('random-event-once').disabled = busy || playing || Boolean(pendingEvent);
+      $('live-toggle').title = playing ? 'Pause after the current turn finishes' : 'Apply random events, one turn at a time';
+      $('random-event-once').title = 'Apply one random event while paused';
+      for (const id of ['live-start', 'live-seed', 'random-seed']) $(id).disabled = busy || playing || Boolean(pendingEvent);
       $('manual-event').disabled = busy || Boolean(pendingEvent);
       $('event-actor').disabled = busy || Boolean(pendingEvent);
-      for (const id of ['saved-personality-select','history-session','history-refresh']) $(id).disabled = busy;
+      for (const id of ['saved-personality-select','history-session','history-refresh']) $(id).disabled = busy || playing;
       $('manual-event-submit').textContent = pendingEvent ? 'Retry pending event' : 'Apply event';
       // Configuration must remain unchanged while a turn awaits replay.
       for (const input of document.querySelectorAll('#category-controls input,#pressure-controls input,#recovery-sliders input,#multiplier-sliders input,#recovery-master,#pressure-enabled,#long-enabled')) input.disabled = busy || Boolean(pendingEvent);
@@ -65,6 +66,23 @@ window.TempestHosted = (() => {
     // Legacy visibility listeners remain useful, but their control updates must
     // never re-enable local playback or alter server state.
     liveControls = controls;
+    function pause(message = 'Paused. State and history are saved.') {
+      playing = false;
+      clearTimeout(playbackTimer);
+      playbackTimer = null;
+      lastAnimatedEventAt = null;
+      setStatus(message);
+      controls();
+    }
+    async function playback() {
+      if (!playing || operation) return;
+      const started = performance.now();
+      await run('Applying random event', async () => {
+        const selected = await api('/admin/events/random');
+        if (playing) await applyEvent(selected.event);
+      });
+      if (playing) playbackTimer = setTimeout(playback, Math.max(0, 1000 - (performance.now() - started)));
+    }
     function configuration() {
       const config = simulationSettings();
       delete config.version;
@@ -106,7 +124,7 @@ window.TempestHosted = (() => {
       const predictions = value.predictions || [];
       const events = predictions.map(prediction => prediction.event);
       return {
-        session: value.id, personality_id: value.id, turn: value.turn, timestamp: '',
+        session: value.id, personality_id: value.id, turn: value.turn, timestamp: value.timestamp || '',
         event: events.join('\n'), dimensions: liveNames, seed: value.settings?.seed || 0,
         before: value.before, model_input: value.model_input, categories: value.delta_categories || predictions[0]?.categories || Array(23).fill(0),
         event_delta: value.combined_event_effect, net_delta: value.net_delta, after: value.current,
@@ -216,6 +234,7 @@ window.TempestHosted = (() => {
       setStatus(name + '…');
       try { await work(); }
       catch (error) {
+        pause();
         if (error.status === 409) {
           pendingEvent = null;
           pendingCreate = null;
@@ -228,9 +247,10 @@ window.TempestHosted = (() => {
         else setStatus(error.message + (pendingCreate ? ' Retry New saved instance to retrieve the same instance.' : ''));
       } finally { operation = null; controls(); }
     }
-    async function applyEvent() {
+    async function applyEvent(randomEvent = null) {
       if (!pendingEvent) {
-        const event = $('manual-event').value.trim();
+        const event = randomEvent === null ? $('manual-event').value.trim() : randomEvent;
+        if (typeof event !== 'string') throw Error('The event source returned invalid text.');
         if (!event) return;
         if (!active) await create();
         await saveSettings();
@@ -245,6 +265,12 @@ window.TempestHosted = (() => {
       pendingEvent = null;
       updateEventMotion(started);
       showState(value, value.net_delta);
+      const categories = value.delta_categories;
+      drawChangeLabels(value.current, categories.map(category => value.settings.effects[category + 4]));
+      barNodes.forEach((node, index) => {
+        node.button.dataset.detail += ` · category ${categories[index]} → ${value.settings.effects[categories[index] + 4].toFixed(2)} × ${value.settings.multipliers[index].toFixed(2)} · recovery ${(value.model_input[index] - value.before[index]).toFixed(2)}`;
+        node.button.setAttribute('aria-label', node.button.dataset.detail);
+      });
       const turn = turnView(value);
       appendEventLog(turn);
       activeTurns.push(turn);
@@ -252,12 +278,12 @@ window.TempestHosted = (() => {
       $('history-session').value = value.id;
       $('live-event-text').textContent = turn.event;
       selectEventTab(false);
-      $('manual-event').value = '';
+      if (randomEvent === null) $('manual-event').value = '';
       await refreshRelationships();
       const item = instances.find(instance => instance.id === value.id);
       if (item) item.turn = value.turn;
       renderInstances();
-      setStatus(`Saved turn ${value.turn} · ${Math.round(performance.now() - started)} ms. State, baselines, and history come from the server.`);
+      setStatus(`${playing ? 'Running' : 'Paused'} · saved turn ${value.turn} · ${Math.round(performance.now() - started)} ms. State, baselines, and history come from the server.`);
     }
     function addRelationshipChart() {
       const actorLabel = document.createElement('label');
@@ -311,10 +337,19 @@ window.TempestHosted = (() => {
 
     addRelationshipChart();
     $('event-details-close').onclick = () => { $('event-turn-details').hidden = true; };
-    $('manual-event-form').onsubmit = event => { event.preventDefault(); run('Applying saved event', applyEvent); };
+    $('manual-event-form').onsubmit = event => { event.preventDefault(); pause(); run('Applying saved event', applyEvent); };
     $('live-reset').onclick = () => run('Creating saved instance', async () => { await create(); setStatus('New instance saved. Earlier personalities and their history remain available.'); });
-    $('live-toggle').onclick = () => setStatus(randomUnavailable);
-    $('random-event-once').onclick = () => setStatus(randomUnavailable);
+    $('live-toggle').onclick = () => {
+      if (playing) { pause(operation ? 'Pausing. The current turn will finish and be saved.' : undefined); return; }
+      if (operation || pendingEvent) return;
+      playing = true; controls(); playback();
+    };
+    $('random-event-once').onclick = () => run('Applying one random event', async () => {
+      const selected = await api('/admin/events/random');
+      await applyEvent(selected.event);
+    });
+    document.addEventListener('visibilitychange', () => { if (document.hidden && playing) pause('Paused because this tab became hidden. Press Play to continue.'); });
+    window.addEventListener('pagehide', () => pause());
     $('save-simulation').onclick = () => run('Saving settings', async () => { await saveSettings(); setStatus('Settings saved. Current state and original baseline are retained.'); });
     $('live-start').onchange = () => setStatus('Starting personality selection applies when you create a New saved instance.');
     $('random-seed').onclick = () => { $('live-seed').value = crypto.getRandomValues(new Uint32Array(1))[0]; setStatus('Seed chosen. Save settings or create a new instance to persist it.'); };
@@ -346,7 +381,7 @@ window.TempestHosted = (() => {
       await refreshInstances();
       const identifier = new URL(location.href).searchParams.get('instance');
       if (identifier) await load(identifier);
-      else setStatus('Ready. Select a saved personality or enter an event to create a saved instance. ' + randomUnavailable);
+      else setStatus('Ready. Press Play for random events, apply one random event, or enter an event below. Turns save automatically.');
     });
   }
   return {ready, api, mount};
