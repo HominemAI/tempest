@@ -3,7 +3,8 @@ ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1 HF_HUB_OFFLINE=1 TRANSFORMERS_O
 RUN apt-get update && apt-get install -y --no-install-recommends nodejs libgomp1 && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY papers/emotion_training/requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir 'torch>=2.6,<3' --index-url https://download.pytorch.org/whl/cpu \
+    && pip install --no-cache-dir -r requirements.txt
 RUN pip install --no-cache-dir 'psycopg[binary]>=3.2,<4'
 COPY service /app/service
 COPY papers/web/pressure.js papers/web/relationship-multipliers.json /app/papers/web/
