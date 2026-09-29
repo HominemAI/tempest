@@ -56,7 +56,7 @@ window.TempestHosted = (() => {
       $('live-reset').disabled = busy || playing || Boolean(pendingEvent) || !isPersonalityChoiceValid();
       $('live-toggle').disabled = !playing && (busy || Boolean(pendingEvent));
       const playbackLabel = playing ? 'Pause' : 'Play';
-      $('live-toggle').textContent = playing ? '⏸' : '🔀';
+      $('live-toggle').textContent = playing ? '⏸' : '▶';
       $('live-toggle').setAttribute('aria-label', playbackLabel);
       $('live-toggle').title = playbackLabel;
       $('live-toggle').setAttribute('aria-pressed', String(playing));
