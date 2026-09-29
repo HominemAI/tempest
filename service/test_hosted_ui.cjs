@@ -1,0 +1,52 @@
+// Optional browser regression: install Playwright, then node service/test_hosted_ui.cjs.
+// Starts its own temporary database and synthetic predictor; never calls production.
+const {chromium}=require('playwright');
+const assert=require('node:assert/strict');
+const {spawn}=require('node:child_process');
+const path=require('node:path');
+(async()=>{
+ const env={...process.env};delete env.DATABASE_URL;delete env.PG_HOST;delete env.TEMPEST_REQUIRE_POSTGRES;
+ const server=spawn(process.env.PYTHON||'python3',['-u','-c','import sys,tempfile,time;from pathlib import Path;sys.path.insert(0,"service");from core import Store;from server import make_server;tmp=tempfile.TemporaryDirectory();store=Store(Path(tmp.name)/"test.sqlite",lambda event,state:(time.sleep(.15) or [1]*23),"browser-test");server=make_server("127.0.0.1",0,"browser-test-bootstrap",store,secure_cookie=False);print(server.server_port,flush=True);server.serve_forever()'],{cwd:path.resolve(__dirname,'..'),env,stdio:['ignore','pipe','inherit']});
+ let browser;
+ try {
+ const port=await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(Error('Test server startup timeout')),15000);server.once('error',reject);server.once('exit',()=>reject(Error('Test server exited')));server.stdout.once('data',data=>{clearTimeout(timer);resolve(Number(String(data).trim()));});});
+ const base=`http://127.0.0.1:${port}`;
+ browser=await chromium.launch({headless:true,...(process.env.PLAYWRIGHT_EXECUTABLE_PATH?{executablePath:process.env.PLAYWRIGHT_EXECUTABLE_PATH}:{})});
+ const context=await browser.newContext({viewport:{width:1280,height:900}});
+ const setup=await context.request.post(base+'/auth/setup',{data:{username:'tester',password:'browser-only-password',bootstrap_token:'browser-test-bootstrap'}});
+ assert.equal(setup.status(),200);
+ const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto(base+'/inference');
+ await page.waitForFunction(()=>!document.querySelector('#live-toggle').disabled);
+ await page.fill('#event-actor','test-actor');await page.fill('#manual-event','Keep my manual draft');
+ await page.click('#live-toggle');await page.waitForFunction(()=>Number(document.querySelector('#live-count').textContent)>=2);
+ await page.click('#live-toggle');await page.waitForTimeout(700);
+ const count=await page.locator('#live-count').textContent();await page.waitForTimeout(1300);
+ assert.equal(await page.locator('#live-count').textContent(),count);
+ assert.equal(await page.locator('#manual-event').inputValue(),'Keep my manual draft');
+ assert.equal(await page.locator('#live-toggle').textContent(),'Play');
+ await page.click('#random-event-once');await page.waitForFunction(n=>Number(document.querySelector('#live-count').textContent)===n,Number(count)+1);
+ await page.waitForFunction(()=>!document.querySelector('#manual-event-submit').disabled);
+ let failed=false;const attempts=[];
+ await page.route('**/personalities/*/events',async route=>{attempts.push(route.request().postDataJSON());if(!failed){failed=true;return route.fulfill({status:503,json:{error:'Test retry'}});}return route.continue();});
+ await page.click('#manual-event-submit');await page.waitForFunction(()=>document.querySelector('#manual-event-submit').textContent==='Retry pending event'&&!document.querySelector('#manual-event-submit').disabled);
+ await page.click('#manual-event-submit');await page.waitForFunction(()=>document.querySelector('#manual-event').value==='');
+ assert.deepEqual(attempts[0],attempts[1]);
+ await page.waitForFunction(()=>!document.querySelector('#manual-event-submit').disabled);
+ assert.equal(await page.locator('#relationship-user').inputValue(),'test-actor');
+ const last=await page.locator('#live-count').textContent();const url=page.url();
+ await page.click('#event-log-tab');await page.locator('.event-log-link').first().click();
+ await page.locator('#event-turn-phrase').filter({hasText:/./}).waitFor();
+ await page.reload();await page.waitForFunction(n=>document.querySelector('#live-count').textContent===n,last);
+ assert.equal(page.url(),url);assert.equal(await page.locator('#live-toggle').textContent(),'Play');
+ await page.click('#live-toggle');
+ await page.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,get:()=>true});document.dispatchEvent(new Event('visibilitychange'));});
+ assert.equal(await page.locator('#live-toggle').textContent(),'Play');
+ await page.waitForTimeout(500);
+ await page.evaluate(()=>{delete document.hidden;window.scrollTo(0,0);});
+ await page.setViewportSize({width:390,height:844});
+ assert.equal(await page.locator('main').evaluate(el=>getComputedStyle(el).paddingLeft),'14px');
+ assert.deepEqual(errors,[]);
+ console.log('PASS: Play/Pause, single random event, preserved draft, actor chart, retry same key, log details, reload persistence, responsive screenshots');
+ } finally { if(browser)await browser.close();server.kill('SIGTERM'); }
+})().catch(e=>{console.error(e);process.exit(1)});
