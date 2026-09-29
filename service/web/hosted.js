@@ -50,12 +50,15 @@ window.TempestHosted = (() => {
     function controls() {
       const busy = Boolean(operation);
       $('manual-event-submit').disabled = busy;
-      $('saved-personality-load').disabled = busy || playing || !$('saved-personality-select').value || Boolean(pendingEvent);
+      const selectedOption = [...$('saved-personality-select').options].find(option => option.value === $('saved-personality-select').value);
+      $('saved-personality-load').disabled = busy || playing || !selectedOption || selectedOption.textContent !== $('saved-personality-search').value.trim() || Boolean(pendingEvent);
       $('save-simulation').disabled = busy || playing || !active || Boolean(pendingEvent);
-      $('live-reset').disabled = busy || playing || Boolean(pendingEvent);
-      $('start-neutral').disabled = busy || playing || Boolean(pendingEvent) || Boolean(pendingCreate);
+      $('live-reset').disabled = busy || playing || Boolean(pendingEvent) || !isPersonalityChoiceValid();
       $('live-toggle').disabled = !playing && (busy || Boolean(pendingEvent));
-      $('live-toggle').textContent = playing ? 'Pause' : 'Play';
+      const playbackLabel = playing ? 'Pause' : 'Play';
+      $('live-toggle').textContent = playing ? 'Ⅱ' : '▶';
+      $('live-toggle').setAttribute('aria-label', playbackLabel);
+      $('live-toggle').title = playbackLabel;
       $('live-toggle').setAttribute('aria-pressed', String(playing));
       $('random-event-once').disabled = busy || playing || Boolean(pendingEvent);
       $('live-toggle').title = playing ? 'Pause after the current turn finishes' : 'Apply random events, one turn at a time';
@@ -148,30 +151,32 @@ window.TempestHosted = (() => {
       if (!samples.length) { target.textContent = 'Model inference average: no timing data in the latest 1,000 events'; return; }
       const average = samples.reduce((sum, seconds) => sum + seconds, 0) / samples.length;
       const serverTurns = turns.map(turn => turn.server_turn_seconds).filter(seconds => Number.isFinite(seconds) && seconds >= 0).slice(-1000);
-      const serverAverage = serverTurns.length ? `${(serverTurns.reduce((sum, seconds) => sum + seconds, 0) / serverTurns.length * 1000).toFixed(1)} ms server turn` : 'server turn timing unavailable';
+      const serverAverage = serverTurns.length ? `${(serverTurns.reduce((sum, seconds) => sum + seconds, 0) / serverTurns.length * 1000).toFixed(0)} ms` : '—';
       const browserRequests = turns.map(turn => turn.client_request_seconds).filter(seconds => Number.isFinite(seconds) && seconds >= 0).slice(-1000);
-      const browserAverage = browserRequests.length ? `${(browserRequests.reduce((sum, seconds) => sum + seconds, 0) / browserRequests.length).toFixed(2)} s browser request` : 'browser request timing warming up';
+      const browserAverage = browserRequests.length ? `${(browserRequests.reduce((sum, seconds) => sum + seconds, 0) / browserRequests.length).toFixed(2)} s` : '—';
       const handlerSamples = turns.map(turn => turn.server_http_seconds).filter(seconds => Number.isFinite(seconds) && seconds >= 0).slice(-1000);
-      const handlerAverage = handlerSamples.length ? `${(handlerSamples.reduce((sum, seconds) => sum + seconds, 0) / handlerSamples.length * 1000).toFixed(1)} ms HTTP handler` : 'HTTP handler timing unavailable';
+      const handlerAverage = handlerSamples.length ? `${(handlerSamples.reduce((sum, seconds) => sum + seconds, 0) / handlerSamples.length * 1000).toFixed(0)} ms` : '—';
       const pathSamples = turns.map(turn => turn.network_residual_seconds).filter(seconds => Number.isFinite(seconds) && seconds >= 0).slice(-1000);
       const pathAverage = pathSamples.length ? pathSamples.reduce((sum, seconds) => sum + seconds, 0) / pathSamples.length * 1000 : null;
-      const pathText = pathAverage === null ? 'path estimate warming up' : `TTFB residual ${pathAverage.toFixed(0)} ms (≈${(pathAverage / 2).toFixed(0)} ms each way*)`;
+      const pathText = pathAverage === null ? '—' : `≈${(pathAverage / 2).toFixed(0)} ms/way*`;
       const intervals = turns.map(turn => turn.update_interval_seconds).filter(seconds => Number.isFinite(seconds) && seconds >= 0).slice(-1000);
-      const intervalAverage = intervals.length ? `${(intervals.reduce((sum, seconds) => sum + seconds, 0) / intervals.length).toFixed(1)} s between updates` : 'update interval warming up';
-      target.textContent = `Model ${(average * 1000).toFixed(1)} ms · server ${serverAverage} · ${handlerAverage} · ${browserAverage} · ${pathText} · UI ${intervalAverage}`;
+      const intervalAverage = intervals.length ? `${(intervals.reduce((sum, seconds) => sum + seconds, 0) / intervals.length).toFixed(1)} s` : '—';
+      target.textContent = `Model ${(average * 1000).toFixed(0)} ms · server ${serverAverage} · HTTP ${handlerAverage} · browser ${browserAverage} · path ${pathText} · UI ${intervalAverage}`;
+      target.title = 'Rolling averages over up to 1,000 events: model inference · server turn · HTTP handler · browser request · estimated network path · UI update interval.';
     }
     function renderInstances() {
       const select = $('saved-personality-select'), selected = select.value;
-      const query = $('saved-personality-search').value.trim().toLowerCase();
+      const query = personalitySearchQuery().toLowerCase();
       const matches = instances.filter(value => `${value.name} ${value.id} ${value.account_id || ''} ${value.user_id || ''}`.toLowerCase().includes(query));
       select.replaceChildren(new Option(matches.length ? 'Choose a saved personality' : 'No matching personalities', ''));
       for (const value of matches) select.add(new Option(`${value.name || 'Unnamed personality'} · ${value.turn} turns · ${value.id}`, value.id));
+      renderPersonalityPicker(matches.map(value => ({...value, picker_label:`${value.name || 'Unnamed personality'} · ${value.turn} turns · ${value.id}`})));
       select.value = matches.some(value => value.id === selected) ? selected : '';
       const historySelect = $('history-session'), historySelected = historySelect.value || active?.id;
       historySelect.replaceChildren(new Option('Choose a personality', ''));
       for (const value of instances) historySelect.add(new Option(`${value.name || 'Unnamed personality'} · ${value.turn} turns`, value.id));
       historySelect.value = historySelected || '';
-      $('saved-personality-status').textContent = `${matches.length} matching saved personalities. Loading continues from the saved server state.`;
+      $('saved-personality-status').textContent = `${matches.length} matching saved personalities.`;
       controls();
     }
     async function refreshInstances() {
@@ -211,7 +216,9 @@ window.TempestHosted = (() => {
       pendingCreate = null;
       showState(state);
       $('saved-personality-select').value = identifier;
+      $('saved-personality-search').value = [...$('saved-personality-select').options].find(option => option.value === identifier)?.textContent || state.name || identifier;
       $('live-history').replaceChildren();
+      eventTurnsByKey.clear();
       activeTurns = saved.turns;
       updateInferenceAverage(saved.turns);
       [...saved.turns].reverse().forEach(value => appendEventLog(value, false));
@@ -238,6 +245,8 @@ window.TempestHosted = (() => {
     async function create() {
       if (!pendingCreate) {
         const settings = configuration(), source = $('live-start').value;
+        const selectedId = $('saved-personality-select').value;
+        if (source === 'saved' && selectedId && active?.id !== selectedId) await load(selectedId);
         pendingCreate = {
           baseline: source === 'saved' && active ? [...active.baseline] : source === 'neutral' ? Array(23).fill(0) : seededBaseline(settings.seed),
           settings, name: source === 'saved' && active ? `${active.name || 'Personality'} copy`.slice(0, 180) : `${source === 'neutral' ? 'Neutral' : 'Random'} baseline · ${settings.seed}`,
@@ -249,12 +258,14 @@ window.TempestHosted = (() => {
       pendingEvent = null;
       showState(value);
       $('live-history').replaceChildren();
+      eventTurnsByKey.clear();
       activeTurns = [];
       updateInferenceAverage([]);
       showHistory([]);
       $('live-event-text').textContent = 'New personality saved. Enter an event to apply its first turn.';
       await refreshInstances();
       $('saved-personality-select').value = value.id;
+      $('saved-personality-search').value = [...$('saved-personality-select').options].find(option => option.value === value.id)?.textContent || value.name || value.id;
       await refreshRelationships();
       return value;
     }
@@ -262,7 +273,7 @@ window.TempestHosted = (() => {
       if (operation) return;
       operation = name;
       controls();
-      setStatus(name + '…');
+      setStatus(name.startsWith('Applying') ? '' : name + '…');
       try { await work(); }
       catch (error) {
         pause();
@@ -319,7 +330,6 @@ window.TempestHosted = (() => {
       showHistory(activeTurns);
       $('history-session').value = value.id;
       $('live-event-text').textContent = turn.event;
-      closeFullEventLog();
       if (randomEvent === null) $('manual-event').value = '';
       if (Array.isArray(value.users) && value.users.length) {
         for (const user of value.users) {
@@ -339,6 +349,7 @@ window.TempestHosted = (() => {
     }
     function addRelationshipChart() {
       const actorLabel = document.createElement('label');
+      actorLabel.className = 'event-actor-label';
       actorLabel.textContent = 'Event actor user ID (optional)';
       const actor = document.createElement('input');
       actor.id = 'event-actor'; actor.type = 'text'; actor.maxLength = 128;
@@ -391,11 +402,6 @@ window.TempestHosted = (() => {
     $('event-details-close').onclick = () => { $('event-turn-details').hidden = true; };
     $('manual-event-form').onsubmit = event => { event.preventDefault(); pause(); run('Applying saved event', applyEvent); };
     $('live-reset').onclick = () => run('Creating saved instance', async () => { await create(); setStatus('New instance saved. Earlier personalities and their history remain available.'); });
-    $('start-neutral').onclick = () => run('Creating neutral character', async () => {
-      $('live-start').value = 'neutral';
-      await create();
-      setStatus('Neutral character saved and loaded: all 23 states and baselines are 0. Current dynamics settings retained. Press Play or enter an event.');
-    });
     $('live-toggle').onclick = () => {
       if (playing) { pause(operation ? 'Pausing. The current turn will finish and be saved.' : undefined); return; }
       if (operation || pendingEvent) return;
@@ -408,9 +414,8 @@ window.TempestHosted = (() => {
     document.addEventListener('visibilitychange', () => { if (document.hidden && playing) pause('Paused because this tab became hidden. Press Play to continue.'); });
     window.addEventListener('pagehide', () => pause());
     $('save-simulation').onclick = () => run('Saving settings', async () => { await saveSettings(); setStatus('Settings saved. Current state and original baseline are retained.'); });
-    $('live-start').onchange = () => setStatus('Choose Create from selection to save and load a fresh character. The current character stays unchanged until then.');
     $('random-seed').onclick = () => { $('live-seed').value = crypto.getRandomValues(new Uint32Array(1))[0]; setStatus('Seed chosen. Save settings or create a new instance to persist it.'); };
-    $('saved-personality-search').oninput = () => { clearTimeout(searchTimer); searchTimer = setTimeout(renderInstances, 150); };
+    $('saved-personality-search').oninput = () => { controls(); clearTimeout(searchTimer); searchTimer = setTimeout(renderInstances, 150); };
     $('saved-personality-select').onchange = controls;
     $('saved-personality-load').onclick = () => run('Loading saved personality', () => load($('saved-personality-select').value));
     $('history-refresh').onclick = () => run('Refreshing saved history', async () => {

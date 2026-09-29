@@ -8,11 +8,13 @@ function loadDeltaIndex(){
  }).catch(e=>{deltaIndexPromise=null;throw e;});
  return deltaIndexPromise;
 }
-async function inspectEventTurn(turn){
+async function inspectEventTurn(turn,inModal=false){
  const sequence=++eventDetailSequence;
- $('event-turn-details').hidden=false;$('event-turn-title').textContent=`Turn ${turn.turn} · ${turn.event}`;
- $('event-turn-phrase').textContent='Loading delta descriptions…';$('event-turn-source').textContent='';
- const numbers=$('event-turn-numbers');numbers.replaceChildren();
+ const detail=inModal?{section:$('full-event-details'),empty:$('full-event-empty'),content:$('full-event-detail-content'),title:$('full-event-title'),phrase:$('full-event-phrase'),source:$('full-event-source'),numbers:$('full-event-numbers')}:{section:$('event-turn-details'),empty:null,content:null,title:$('event-turn-title'),phrase:$('event-turn-phrase'),source:$('event-turn-source'),numbers:$('event-turn-numbers')};
+ detail.section.hidden=false;if(detail.empty)detail.empty.hidden=true;if(detail.content)detail.content.hidden=false;
+ detail.title.textContent=`Turn ${turn.turn} · ${turn.event}`;
+ detail.phrase.textContent='Loading delta descriptions…';detail.source.textContent='';
+ const numbers=detail.numbers;numbers.replaceChildren();
  turn.dimensions.forEach((name,i)=>{
   if(turn.event_delta[i]===0&&turn.net_delta[i]===0)return;
   const line=document.createElement('span'),label=document.createElement('strong');line.className='event-delta-line';label.textContent=name+': ';line.append(label);
@@ -23,8 +25,8 @@ async function inspectEventTurn(turn){
  });
  if(!numbers.children.length)numbers.textContent='No changes.';
  if(window.TEMPEST_HOSTED&&typeof turn.delta_text==='string'){
-  $('event-turn-phrase').textContent=turn.delta_text;
-  $('event-turn-source').textContent='Stored server description · model-category changes before multipliers, recovery, and caps.';
+  detail.phrase.textContent=turn.delta_text;
+  detail.source.textContent='Stored server description · model-category changes before multipliers, recovery, and caps.';
   return;
  }
  try{
@@ -39,9 +41,9 @@ async function inspectEventTurn(turn){
    let hash=2166136261;for(const char of key)hash=Math.imul(hash^char.charCodeAt(0),16777619)>>>0;
    phrases.push(options[hash%options.length].text.trim());
   });
-  $('event-turn-phrase').textContent=phrases.length?phrases.join(' '):'No changes.';
-  $('event-turn-source').textContent=`Delta index ${index.version} · Describes model categories before multipliers, recovery, and caps—not the final net change.`;
- }catch(e){if(sequence===eventDetailSequence)$('event-turn-phrase').textContent=e.message+'. Reopen this event to retry.';}
+  detail.phrase.textContent=phrases.length?phrases.join(' '):'No changes.';
+  detail.source.textContent=`Delta index ${index.version} · Describes model categories before multipliers, recovery, and caps—not the final net change.`;
+ }catch(e){if(sequence===eventDetailSequence)detail.phrase.textContent=e.message+'. Reopen this event to retry.';}
 }
 let lastAnimatedEventAt=null;
 function updateEventMotion(requestStarted){
@@ -56,8 +58,10 @@ const HISTORY_PENDING='tempest-unsaved-turns-v1';
 let pendingTurns=[];
 if(!window.TEMPEST_HOSTED)try{const stored=JSON.parse(localStorage.getItem(HISTORY_PENDING)||'[]');if(Array.isArray(stored))pendingTurns=stored;}catch(e){$('history-status').textContent='Pending history could not be read from browser storage.';}
 let historyTurns=[];
+const eventTurnsByKey=new Map();
 function appendEventLog(turn,prepend=true){
  const key=turn.session+':'+turn.turn;
+ eventTurnsByKey.set(key,turn);
  if([...$('live-history').children].some(row=>row.dataset.turnKey===key))return;
  const item=document.createElement('li'),button=document.createElement('button');item.dataset.turnKey=key;item.value=turn.turn;button.type='button';button.className='event-log-link';button.textContent=turn.event;button.title=turn.timestamp||turn.session;button.onclick=()=>inspectEventTurn(turn);item.append(button);
  if(prepend)$('live-history').prepend(item);else $('live-history').append(item);
@@ -164,11 +168,12 @@ function drawPressure(){
 const changeLabels=barNodes.map(n=>{const label=document.createElement('span');label.className='live-change';label.hidden=true;n.bar.parentElement.append(label);return label;});
 function drawChangeLabels(state,delta){state.forEach((v,i)=>{const label=changeLabels[i],d=delta[i];label.hidden=liveCount===0;label.dataset.direction=d>0?'increase':d<0?'decrease':'unchanged';label.textContent=(d>0?'+':d<0?'−':'±')+Math.abs(d).toFixed(2);});}
 function drawLive(state,delta,nodes=barNodes,baseline=liveBaseline,markers=baselineMarkers){if(nodes===barNodes)drawChangeLabels(state,delta);state.forEach((v,i)=>{const n=nodes[i],h=Math.abs(v)*5;n.bar.style.height=(v===0?.45:h)+'%';n.bar.style.top=(v>0?50-h:50)+'%';n.bar.className='live-bar '+stateColor(i,v);n.value.className='live-value'+(v>0?' above':'');n.value.textContent=(v>0?'+':'')+v.toFixed(2);const marker=markers[i];if(marker){marker.hidden=baseline===null;if(baseline!==null)marker.style.top=(50-baseline[i]*5)+'%';}n.button.dataset.detail=`${liveNames[i]}: ${v.toFixed(2)} · ${stateColorMeaning(i,v)} · latest change ${delta[i]>0?'+':''}${delta[i].toFixed(2)}`+(baseline===null?'':` · starting level ${baseline[i].toFixed(2)}`);n.button.setAttribute('aria-label',n.button.dataset.detail);if(tooltipTarget===n.button)$('live-inspect').textContent=n.button.dataset.detail;});}
-function liveControls(){ $('random-event-once').disabled=liveBusy||liveRunning; $('manual-event-submit').disabled=liveBusy; $('live-toggle').textContent=liveRunning?'Pause':'Play';$('live-toggle').setAttribute('aria-pressed',String(liveRunning));$('live-toggle').disabled=liveBusy&&!liveRunning;for(const id of ['live-start','live-seed','random-seed'])$(id).disabled=liveRunning||liveCount>0||liveBusy; }
+function liveControls(){ $('random-event-once').disabled=liveBusy||liveRunning; $('manual-event-submit').disabled=liveBusy;const label=liveRunning?'Pause':'Play';$('live-toggle').textContent=liveRunning?'Ⅱ':'▶';$('live-toggle').setAttribute('aria-label',label);$('live-toggle').title=label;$('live-toggle').setAttribute('aria-pressed',String(liveRunning));$('live-toggle').disabled=liveBusy&&!liveRunning;for(const id of ['live-start','live-seed','random-seed'])$(id).disabled=liveRunning||liveCount>0||liveBusy; }
 function pauseLive(message='Paused. State is retained.'){lastAnimatedEventAt=null;liveRunning=false;liveGeneration++;clearTimeout(liveTimer);$('live-status').textContent=message;liveControls();}
-function resetLive(){historySession=crypto.randomUUID();pauseLive('Session reset. Start with a fresh personality.');liveState=null;liveBaseline=null;pressureState=null;liveCount=0;$('live-count').textContent='0';$('live-event-text').textContent='Start to watch the personality respond.';$('live-history').replaceChildren();$('event-turn-details').hidden=true;drawLive(Array(23).fill(0),Array(23).fill(0));drawPressure();$('live-inspect').textContent='Hover or focus an emoji for its state name, value, and latest change.';liveControls();$('live-toggle').textContent='Play';if($('live-start').value==='saved'&&loadedPersonality){previewPersonality();restorePersonalityLog();}}
+function resetLive(){historySession=crypto.randomUUID();pauseLive('Session reset. Start with a fresh personality.');liveState=null;liveBaseline=null;pressureState=null;liveCount=0;$('live-count').textContent='0';$('live-event-text').textContent='Start to watch the personality respond.';$('live-history').replaceChildren();eventTurnsByKey.clear();$('event-turn-details').hidden=true;drawLive(Array(23).fill(0),Array(23).fill(0));drawPressure();$('live-inspect').textContent='Hover or focus an emoji for its state name, value, and latest change.';liveControls();if($('live-start').value==='saved'&&loadedPersonality){previewPersonality();restorePersonalityLog();}}
 async function liveTick(manualEvent=null,singleTurn=false){
  if(!liveRunning||liveBusy)return;liveBusy=true;const generation=liveGeneration,started=performance.now(),rates=[...recoveryRates],multipliers=[...eventMultipliers],effects=[...categoryEffects],previous=liveState?[...liveState]:null;liveControls();
+ if(!window.TEMPEST_HOSTED&&$('live-start').value==='saved'&&loadedPersonality?.id!==$('saved-personality-select').value){liveBusy=false;pauseLive('Use the selected personality before starting inference.');return;}
  const constitution=structuredClone(pressureConfig),pressureEnabled=$('pressure-enabled').checked,longEnabled=$('long-enabled').checked;
  const links=$('relationships-enabled').checked&&pressureEnabled?(relationshipData?.links||[]):[];
  try{
@@ -206,12 +211,30 @@ $('random-seed').onclick=()=>{$('live-seed').value=crypto.getRandomValues(new Ui
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&liveRunning)pauseLive('Paused because this tab became hidden. Press Play to continue.');});
 window.addEventListener('pagehide',()=>pauseLive());
 let savedSearchSequence=0,savedSearchTimer,savedLoadSequence=0;
+const randomPersonalityChoice='Random baseline',neutralPersonalityChoice='Neutral · all 0s';
+function renderPersonalityPicker(rows){
+ const list=$('personality-options'),options=[new Option(randomPersonalityChoice),new Option(neutralPersonalityChoice)];
+ for(const row of rows){const label=row.picker_label||`${row.name||'Unnamed personality'} · ${row.id}`;const option=new Option(label);option.dataset.personalityId=row.id;options.push(option);}
+ list.replaceChildren(...options);
+}
+function personalitySearchQuery(){const value=$('saved-personality-search').value.trim();if(value===randomPersonalityChoice||value===neutralPersonalityChoice)return '';const selected=[...$('saved-personality-select').options].find(option=>option.value===$('saved-personality-select').value);return selected?.textContent===value?'':value;}
+function isPersonalityChoiceValid(){const value=$('saved-personality-search').value.trim();return value===randomPersonalityChoice||value===neutralPersonalityChoice||[...$('personality-options').options].some(option=>option.value===value&&option.dataset.personalityId);}
+function syncPersonalityPicker(){
+ const value=$('saved-personality-search').value.trim(),select=$('saved-personality-select'),load=$('saved-personality-load');
+ select.value='';
+ if(value===randomPersonalityChoice){$('live-start').value='random';load.disabled=true;$('save-simulation').disabled=true;if(!window.TEMPEST_HOSTED)resetLive();return;}
+ if(value===neutralPersonalityChoice){$('live-start').value='neutral';load.disabled=true;$('save-simulation').disabled=true;if(!window.TEMPEST_HOSTED)resetLive();return;}
+ const match=[...$('personality-options').options].find(option=>option.value===value&&option.dataset.personalityId);
+ if(match){select.value=match.dataset.personalityId;load.disabled=false;if(window.TEMPEST_HOSTED||loadedPersonality?.id===select.value){$('live-start').value='saved';if(!window.TEMPEST_HOSTED)resetLive();}$('save-simulation').disabled=loadedPersonality?.id!==select.value;}
+ else{load.disabled=true;}
+}
 async function searchSavedPersonalities(){
  const seq=++savedSearchSequence,select=$('saved-personality-select');$('saved-personality-load').disabled=true;
- try{const params=new URLSearchParams({kind:'profile',q:$('saved-personality-search').value.trim(),offset:'0'});const response=await fetch('/api/personalities/list?'+params),data=await response.json();if(seq!==savedSearchSequence)return;if(!response.ok)throw Error(data.error||'Could not load personalities');select.replaceChildren(new Option(data.rows.length?'Choose a saved personality':'No matching personalities',''));for(const row of data.rows)select.add(new Option(`${row.name} · ${row.id}`,row.id));$('saved-personality-status').textContent=`${data.total} matches; showing ${data.rows.length}. Refine the search to find more. Loading copies baseline values only.`;}
+ try{const params=new URLSearchParams({kind:'profile',q:personalitySearchQuery(),offset:'0'});const response=await fetch('/api/personalities/list?'+params),data=await response.json();if(seq!==savedSearchSequence)return;if(!response.ok)throw Error(data.error||'Could not load personalities');select.replaceChildren(new Option('Choose a saved personality',''));for(const row of data.rows)select.add(new Option(`${row.name} · ${row.id}`,row.id));renderPersonalityPicker(data.rows);$('saved-personality-status').textContent=`${data.total} matching personalities.`;}
  catch(e){if(seq===savedSearchSequence){select.replaceChildren(new Option('Search unavailable',''));$('saved-personality-status').textContent=e.message+' — change the search to retry.';}}
 }
-$('saved-personality-search').oninput=()=>{savedSearchSequence++;clearTimeout(savedSearchTimer);savedSearchTimer=setTimeout(searchSavedPersonalities,250);};
+$('saved-personality-search').oninput=()=>{const current=[...$('saved-personality-select').options].find(option=>option.value===$('saved-personality-select').value);$('saved-personality-load').disabled=!current||current.textContent!==$('saved-personality-search').value.trim();savedSearchSequence++;clearTimeout(savedSearchTimer);savedSearchTimer=setTimeout(searchSavedPersonalities,250);};
+$('saved-personality-search').onchange=syncPersonalityPicker;
 $('saved-personality-select').onchange=()=>{$('saved-personality-load').disabled=!$('saved-personality-select').value;};
 $('saved-personality-load').onclick=async()=>{
  const id=$('saved-personality-select').value;if(!id)return;const seq=++savedLoadSequence;$('saved-personality-load').disabled=true;
@@ -220,7 +243,7 @@ $('saved-personality-load').onclick=async()=>{
   const snapshot=record.body.simulation_snapshot||null;
   if(snapshot&&(!validVector(snapshot.current,23,-10,10)||!['original','adapted','temporary'].every(k=>validVector(snapshot.pressure?.[k],23,-10,10))||!['pressure','duration','intensity'].every(k=>validVector(snapshot.pressure?.[k],23,-1e9,1e9))))throw Error('Invalid saved simulation state.');
   await relationshipsReady;if(seq!==savedLoadSequence)return;restoreSettings(record.body.simulation_settings);
-  loadedPersonality=record;loadedSnapshot=snapshot;savedVector.splice(0,23,...vector);const savedOption=$('live-start').querySelector('[value=saved]');savedOption.disabled=false;savedOption.textContent=record.name;$('live-start').value='saved';resetLive();$('save-simulation').disabled=false;
+  loadedPersonality=record;loadedSnapshot=snapshot;savedVector.splice(0,23,...vector);const savedOption=$('live-start').querySelector('[value=saved]');savedOption.disabled=false;savedOption.textContent=record.name;$('live-start').value='saved';$('saved-personality-search').value=[...$('saved-personality-select').options].find(option=>option.value===id)?.textContent||record.name;resetLive();$('save-simulation').disabled=false;
   $('saved-personality-status').textContent=`Loaded ${record.name}. Graph shows its current state and baselines. ${record.body.simulation_settings?'Saved settings restored.':'No saved settings yet; using defaults.'}`;
  }
  catch(e){$('saved-personality-status').textContent=e.message;}
@@ -241,10 +264,13 @@ function openFullEventLog(){
  const dialog=$('full-event-log');if(dialog.open)return;renderFullEventLog();dialog.showModal();$('event-log-tab').setAttribute('aria-expanded','true');$('full-event-history').focus();
 }
 function closeFullEventLog(){const dialog=$('full-event-log');if(dialog.open)dialog.close();}
+let selectedFullEventKey=null;
 function renderFullEventLog(){
- const rows=[...$('live-history').children].map(row=>{const copy=row.cloneNode(true);copy.querySelector('button').onclick=()=>{row.querySelector('button').click();closeFullEventLog();$('event-turn-details').scrollIntoView({block:'nearest'});};return copy;});
+ const list=$('full-event-history'),focusedKey=list.contains(document.activeElement)?document.activeElement.closest('li')?.dataset.turnKey:null;
+ const rows=[...$('live-history').children].map(row=>{const copy=row.cloneNode(true),key=row.dataset.turnKey,button=copy.querySelector('button');copy.dataset.turnKey=key;button.setAttribute('aria-pressed',String(key===selectedFullEventKey));button.onclick=()=>{const turn=eventTurnsByKey.get(key);if(turn){selectedFullEventKey=key;inspectEventTurn(turn,true);list.querySelectorAll('[data-turn-key] button').forEach(candidate=>candidate.setAttribute('aria-pressed',String(candidate.closest('[data-turn-key]').dataset.turnKey===key)));}};return copy;});
  $('full-event-history').replaceChildren(...rows);
  if(!rows.length){const empty=document.createElement('li');empty.textContent='No events yet.';$('full-event-history').append(empty);}
+ if(focusedKey){const button=[...list.querySelectorAll('[data-turn-key]')].find(row=>row.dataset.turnKey===focusedKey)?.querySelector('button');button?.focus({preventScroll:true});}
 }
 new MutationObserver(()=>{if($('full-event-log').open)renderFullEventLog();$('live-event-text').hidden=Boolean($('live-history').children.length);}).observe($('live-history'),{childList:true});
 $('event-log-tab').onclick=openFullEventLog;
@@ -255,12 +281,12 @@ $('manual-event').addEventListener('keydown',event=>{if(event.key==='Enter'&&!ev
 $('manual-event-form').onsubmit=async e=>{
  e.preventDefault();if(liveBusy)return;const event=$('manual-event').value.trim();if(!event)return;
  const seed=Number($('live-seed').value);if(!Number.isInteger(seed)||seed<0||seed>=2**32){$('live-status').textContent='Enter a valid seed.';return;}
- pauseLive('Applying manual event…');liveSeed=seed;liveRunning=true;liveGeneration++;closeFullEventLog();await liveTick(event);
+ pauseLive('');liveSeed=seed;liveRunning=true;liveGeneration++;await liveTick(event);
 };
 
 $('random-event-once').onclick=async()=>{
  if(liveRunning||liveBusy)return;
  const seed=Number($('live-seed').value);if(!Number.isInteger(seed)||seed<0||seed>=2**32){$('live-status').textContent='Enter a valid seed.';return;}
- liveSeed=seed;liveRunning=true;liveGeneration++;$('live-status').textContent='Applying one random event…';await liveTick(null,true);
+ liveSeed=seed;liveRunning=true;liveGeneration++;$('live-status').textContent='';await liveTick(null,true);
 };
 if(window.TEMPEST_HOSTED)window.TempestHosted.mount();
