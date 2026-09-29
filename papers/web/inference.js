@@ -1,5 +1,27 @@
 'use strict';
 const $=id=>document.getElementById(id);
+function compactLiveLayout(){
+ const picker=document.querySelector('section[aria-label="Choose a personality"] .controls'),liveControls=$('live-panel')?.querySelector(':scope > .controls');
+ if(picker&&liveControls){
+  picker.classList.add('live-toolbar');picker.querySelector('label')?.classList.add('personality-picker');
+  const seed=liveControls.querySelector('label'),seedInput=$('live-seed');if(seed&&seedInput){seed.classList.add('seed-control');seed.replaceChildren(Object.assign(document.createElement('span'),{textContent:'🌱 Seed'}),seedInput);}
+  while(liveControls.firstChild)picker.append(liveControls.firstChild);liveControls.remove();
+ }
+ const form=$('manual-event-form'),workspace=form?.parentElement,summary=workspace?.querySelector('.event-log-summary');
+ if(form&&workspace&&summary&&!form.dataset.compactLayout){
+  form.dataset.compactLayout='true';form.classList.add('event-form-layout');
+  const entry=document.createElement('div');entry.className='event-entry';
+  const eventLabel=form.querySelector('label[for="manual-event"]'),textarea=$('manual-event');entry.append(eventLabel,textarea);textarea.removeAttribute('aria-describedby');textarea.addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing){event.preventDefault();form.requestSubmit($('manual-event-submit'));}});
+  const oldActions=form.querySelector('.controls'),submit=$('manual-event-submit'),help=$('event-submit-help');help?.remove();oldActions?.remove();
+  const actorSlot=document.createElement('div');actorSlot.className='event-actor-slot';
+  const actionRow=document.createElement('div');actionRow.className='event-submit-actions';actionRow.append(actorSlot,$('event-log-tab'),submit);
+  const logContent=summary.firstElementChild;logContent.className='event-log-summary';summary.remove();
+  form.append(entry,logContent,actionRow);
+  const actor=form.querySelector('.event-actor-label');if(actor)actorSlot.append(actor);
+ }
+ for(const id of ['saved-personality-status','live-status']){const node=$(id);if(node&&!node.dataset.compactObserver){node.classList.add('visually-hidden');new MutationObserver(()=>node.classList.toggle('status-error',/error|failed|invalid|could not|unavailable|denied|paused:|sign in|retry|must/i.test(node.textContent))).observe(node,{subtree:true,childList:true,characterData:true});node.dataset.compactObserver='true';}}
+}
+compactLiveLayout();
 let deltaIndexPromise=null,eventDetailSequence=0;
 function loadDeltaIndex(){
  if(!deltaIndexPromise)deltaIndexPromise=fetch('/api/state-index?kind=delta').then(async response=>{
@@ -168,7 +190,7 @@ function drawPressure(){
 const changeLabels=barNodes.map(n=>{const label=document.createElement('span');label.className='live-change';label.hidden=true;n.bar.parentElement.append(label);return label;});
 function drawChangeLabels(state,delta){state.forEach((v,i)=>{const label=changeLabels[i],d=delta[i];label.hidden=liveCount===0;label.dataset.direction=d>0?'increase':d<0?'decrease':'unchanged';label.textContent=(d>0?'+':d<0?'−':'±')+Math.abs(d).toFixed(2);});}
 function drawLive(state,delta,nodes=barNodes,baseline=liveBaseline,markers=baselineMarkers){if(nodes===barNodes)drawChangeLabels(state,delta);state.forEach((v,i)=>{const n=nodes[i],h=Math.abs(v)*5;n.bar.style.height=(v===0?.45:h)+'%';n.bar.style.top=(v>0?50-h:50)+'%';n.bar.className='live-bar '+stateColor(i,v);n.value.className='live-value'+(v>0?' above':'');n.value.textContent=(v>0?'+':'')+v.toFixed(2);const marker=markers[i];if(marker){marker.hidden=baseline===null;if(baseline!==null)marker.style.top=(50-baseline[i]*5)+'%';}n.button.dataset.detail=`${liveNames[i]}: ${v.toFixed(2)} · ${stateColorMeaning(i,v)} · latest change ${delta[i]>0?'+':''}${delta[i].toFixed(2)}`+(baseline===null?'':` · starting level ${baseline[i].toFixed(2)}`);n.button.setAttribute('aria-label',n.button.dataset.detail);if(tooltipTarget===n.button)$('live-inspect').textContent=n.button.dataset.detail;});}
-function liveControls(){ $('random-event-once').disabled=liveBusy||liveRunning; $('manual-event-submit').disabled=liveBusy;const label=liveRunning?'Pause':'Play';$('live-toggle').textContent=liveRunning?'Ⅱ':'▶';$('live-toggle').setAttribute('aria-label',label);$('live-toggle').title=label;$('live-toggle').setAttribute('aria-pressed',String(liveRunning));$('live-toggle').disabled=liveBusy&&!liveRunning;for(const id of ['live-start','live-seed','random-seed'])$(id).disabled=liveRunning||liveCount>0||liveBusy; }
+function liveControls(){ $('random-event-once').disabled=liveBusy||liveRunning; $('manual-event-submit').disabled=liveBusy;const label=liveRunning?'Pause':'Play random events';$('live-toggle').textContent=liveRunning?'⏸':'🔀';$('live-toggle').setAttribute('aria-label',label);$('live-toggle').title=label;$('live-toggle').setAttribute('aria-pressed',String(liveRunning));$('live-toggle').disabled=liveBusy&&!liveRunning;for(const id of ['live-start','live-seed','random-seed'])$(id).disabled=liveRunning||liveCount>0||liveBusy; }
 function pauseLive(message='Paused. State is retained.'){lastAnimatedEventAt=null;liveRunning=false;liveGeneration++;clearTimeout(liveTimer);$('live-status').textContent=message;liveControls();}
 function resetLive(){historySession=crypto.randomUUID();pauseLive('Session reset. Start with a fresh personality.');liveState=null;liveBaseline=null;pressureState=null;liveCount=0;$('live-count').textContent='0';$('live-event-text').textContent='Start to watch the personality respond.';$('live-history').replaceChildren();eventTurnsByKey.clear();$('event-turn-details').hidden=true;drawLive(Array(23).fill(0),Array(23).fill(0));drawPressure();$('live-inspect').textContent='Hover or focus an emoji for its state name, value, and latest change.';liveControls();if($('live-start').value==='saved'&&loadedPersonality){previewPersonality();restorePersonalityLog();}}
 async function liveTick(manualEvent=null,singleTurn=false){

@@ -56,7 +56,7 @@ window.TempestHosted = (() => {
       $('live-reset').disabled = busy || playing || Boolean(pendingEvent) || !isPersonalityChoiceValid();
       $('live-toggle').disabled = !playing && (busy || Boolean(pendingEvent));
       const playbackLabel = playing ? 'Pause' : 'Play';
-      $('live-toggle').textContent = playing ? 'Ⅱ' : '▶';
+      $('live-toggle').textContent = playing ? '⏸' : '🔀';
       $('live-toggle').setAttribute('aria-label', playbackLabel);
       $('live-toggle').title = playbackLabel;
       $('live-toggle').setAttribute('aria-pressed', String(playing));
@@ -67,7 +67,7 @@ window.TempestHosted = (() => {
       $('manual-event').disabled = busy || Boolean(pendingEvent);
       $('event-actor').disabled = busy || Boolean(pendingEvent);
       for (const id of ['saved-personality-select','history-session','history-refresh']) $(id).disabled = busy || playing;
-      $('manual-event-submit').textContent = pendingEvent ? 'Retry pending event' : 'Apply event';
+      $('manual-event-submit').textContent = pendingEvent ? '⏎ Retry' : '⏎ Submit';
       // Configuration must remain unchanged while a turn awaits replay.
       for (const input of document.querySelectorAll('#category-controls input,#pressure-controls input,#recovery-sliders input,#multiplier-sliders input,#recovery-master,#pressure-enabled,#long-enabled')) input.disabled = busy || Boolean(pendingEvent);
       for (const id of ['category-reset','recovery-reset','multiplier-reset']) $(id).disabled = busy || Boolean(pendingEvent);
@@ -350,12 +350,12 @@ window.TempestHosted = (() => {
     function addRelationshipChart() {
       const actorLabel = document.createElement('label');
       actorLabel.className = 'event-actor-label';
-      actorLabel.textContent = 'Event actor user ID (optional)';
+      actorLabel.textContent = 'Actor';
       const actor = document.createElement('input');
       actor.id = 'event-actor'; actor.type = 'text'; actor.maxLength = 128;
-      actor.placeholder = 'Leave blank for an untagged event';
+      actor.placeholder = 'Optional user ID';
       actorLabel.append(actor);
-      $('manual-event').after(actorLabel);
+      document.querySelector('.event-actor-slot').append(actorLabel);
       const section = document.createElement('section');
       section.setAttribute('aria-labelledby', 'user-delta-heading');
       section.innerHTML = '<h2 id="user-delta-heading">Per-user accumulated event deltas</h2><p>Each tagged event changes the global personality once and accumulates its event effect for that actor. These per-user deltas do not feed back into global inference, recovery, or baseline shifts.</p><label>Event actor<select id="relationship-user"><option value="">No tagged users yet</option></select></label><p id="relationship-user-status" role="status">Apply an event with an actor user ID to begin.</p>';
