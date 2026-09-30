@@ -138,12 +138,14 @@ returns 409. Current template permission is checked again on every retry.
 `{description, idempotency_key}` or
 `{draft_id, answers, idempotency_key}`. It may return `status: "questions"` and
 1–10 clarification questions, or `status: "complete"`, a template, and a newly
-owned instance. Drafts are isolated by account and bound quota user; account-wide
-credentials use a separate draft namespace. Completed templates are restricted
-to the originating **account**, so other keys in that account may see and copy
-them. This is account privacy, not per-user template secrecy. Generated output
-cannot choose ownership, visibility, grants, or credentials. There is currently
-no HTTP endpoint for listing or fetching drafts independently of the workflow.
+owned instance. Account credentials create account-restricted templates and
+instances. An administrator may omit `account_id` to create a system-only
+template and an unaccounted system instance; supplying an account explicitly
+keeps creation account-restricted. Drafts are isolated by account and bound
+quota user; system-admin drafts use a separate internal namespace. Generated
+output cannot choose ownership, visibility, grants, or credentials. There is
+currently no HTTP endpoint for listing or fetching drafts independently of the
+workflow.
 
 No external creator is enabled by default. Without configuration the endpoint
 returns 503 and sends no provider request. To opt in, configure both

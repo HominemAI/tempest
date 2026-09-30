@@ -119,6 +119,26 @@ class APITests(unittest.TestCase):
         internal=reopened.encode('same','one')
         self.assertEqual(reopened.output({'user_id':internal}),{'user_id':'same','source':'one'})
 
+    def test_admin_description_creation_defaults_to_system_owned(self):
+        self.server.api.generator=lambda context:{
+            'status':'complete',
+            'configuration':{'name':'System character','baseline':[0]*23},
+            'description':'Created for system use',
+        }
+        status,result,_=self.call('/characters/describe',{
+            'description':'A thoughtful character',
+            'idempotency_key':'system-character-1',
+        },token=self.admin)
+        self.assertEqual(status,200,result)
+        self.assertEqual(result['template']['visibility'],'system')
+        self.assertEqual(result['template']['owner'],'system')
+        instance=result['instance']
+        owner=self.call('/admin/instances/'+instance['id'],token=self.admin)[1]
+        self.assertIsNone(owner['account_id'])
+        self.assertIsNone(owner['user_id'])
+        self.assertEqual(self.call('/templates',token=self.key)[1]['templates'],[])
+        self.assertEqual(self.call('/templates',token=self.admin)[1]['templates'][0]['id'],result['template']['id'])
+
     def test_unlimited_expiration_preserves_existing_keys(self):
         base={'name':'test','kind':'account','account_id':self.a}
         status,existing,_=self.call('/admin/keys',base,token=self.admin)

@@ -148,14 +148,15 @@ class API:
             return result if admin else text_view(result)
         if path=='/characters/describe' and method=='POST':
             if self.generator is None:raise Unavailable('Description creation provider is not configured')
-            account_id=self.account(payload['account_id']) if admin else p['account_id']
+            account_id=(self.account(payload['account_id']) if payload.get('account_id') else None) if admin else p['account_id']
             user_id=payload.get('user_id') if admin else p.get('user_id')
+            if admin and user_id and not account_id:raise ValueError('A user-bound personality requires an API account')
             if user_id:self.access.provision_user(account_id,user_id)
             request={k:payload[k] for k in ('description','draft_id','answers','idempotency_key') if k in payload}
             key=request.get('idempotency_key')
             if not isinstance(key,str) or not 1<=len(key)<=128:raise ValueError('idempotency_key required')
             def create():
-                result=self.catalog.create_from_description(account_id,user_id,request,self.generator)
+                result=self.catalog.create_from_description(account_id,user_id,request,self.generator,admin=admin)
                 if result['status']=='complete':
                     template_id=result['template']['id']
                     config=self.catalog.configuration_for_copy(template_id,account_id,admin=True)

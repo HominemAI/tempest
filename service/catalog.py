@@ -21,6 +21,11 @@ def bounded_text(value, name, maximum, required=False):
 
 
 class Catalog:
+    # The existing draft tables require a non-null account key. Keep system
+    # drafts in a reserved internal namespace while resulting templates and
+    # instances remain genuinely system-owned (no account owner).
+    SYSTEM_DRAFT_ACCOUNT = '__tempest_system__'
+
     def __init__(self, database, account_exists=None):
         self.database = database
         self.account_exists = account_exists or self._account_exists
@@ -189,7 +194,7 @@ class Catalog:
                     'description': bounded_text(value.get('description', ''), 'description', 20000)}
         raise ValueError('Generator status must be questions or complete')
 
-    def create_from_description(self, account_id, user_id, payload, generator):
+    def create_from_description(self, account_id, user_id, payload, generator, admin=False):
         """Generate or clarify; persist one result per identity and request key.
 
         Initial payload: {description, idempotency_key}. Follow-up payload:
@@ -198,7 +203,14 @@ class Catalog:
         Generation runs within a serialized DB transaction so concurrent replay
         cannot issue duplicate provider requests. Failed generation rolls back.
         """
-        self._account(account_id)
+        system_owned = admin and account_id is None
+        if system_owned:
+            if user_id is not None:
+                raise ValueError('System-owned personality creation cannot specify a user')
+            account_id = self.SYSTEM_DRAFT_ACCOUNT
+            user_id = None
+        else:
+            self._account(account_id)
         user_id = self._user(user_id)
         if not isinstance(payload, dict):
             raise ValueError('Description request must be an object')
@@ -249,7 +261,8 @@ class Catalog:
                 response = {'draft_id': draft['draft_id'], 'status': 'questions', 'questions': list(draft['questions'])}
             else:
                 template = self._template(dict(generated['configuration'], description=generated['description'] or draft['description'],
-                                               visibility='restricted', grants=[account_id]))
+                                               visibility='system' if system_owned else 'restricted',
+                                               grants=[] if system_owned else [account_id]))
                 template.update(id=str(uuid.uuid4()), created_at=draft['updated_at'], updated_at=draft['updated_at'])
                 db.execute('INSERT INTO system_templates VALUES(?,?)', (template['id'], json.dumps(template, allow_nan=False)))
                 draft.pop('questions', None)

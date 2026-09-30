@@ -178,6 +178,21 @@ class CatalogTests(unittest.TestCase):
         with self.assertRaises(KeyError):
             self.catalog.get_draft(first['draft_id'], self.a, 'named')
 
+    def test_admin_can_create_system_owned_description_without_account(self):
+        result = self.catalog.create_from_description(
+            None, None, {'description': 'A system character', 'idempotency_key': 'system-create'},
+            self.complete, admin=True,
+        )
+        self.assertEqual(result['status'], 'complete')
+        template = self.catalog.get_template(result['template']['id'], admin=True, configuration=True)
+        self.assertEqual(template['visibility'], 'system')
+        self.assertEqual(template['owner'], 'system')
+        self.assertEqual(template['grants'], [])
+        with self.database.connect() as db:
+            row = db.execute('SELECT account_id,user_id FROM description_drafts WHERE id=?',
+                             (result['draft_id'],)).fetchone()
+        self.assertEqual(tuple(row), (Catalog.SYSTEM_DRAFT_ACCOUNT, ''))
+
 
 if __name__ == '__main__':
     unittest.main()
