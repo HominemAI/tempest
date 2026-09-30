@@ -239,7 +239,25 @@ class Catalog:
             if not callable(generator):
                 raise ValueError('Description generation is not configured')
             if followup:
-                draft = self._read_draft(db, payload['draft_id'], account_id, user_id, True)
+                try:
+                    draft = self._read_draft(db, payload['draft_id'], account_id, user_id, True)
+                except KeyError:
+                    # The previous Omni integration attached admin-generated
+                    # drafts to a temporary account. During the switch to
+                    # system ownership, an administrator may continue that
+                    # already-open draft; move it into the isolated system
+                    # namespace as part of this transaction. Account callers
+                    # never get this cross-scope lookup.
+                    if not system_owned:
+                        raise
+                    row = db.execute('SELECT account_id,user_id,body FROM description_drafts WHERE id=?' +
+                                     (' FOR UPDATE' if self.database.postgres else ''),
+                                     (payload['draft_id'],)).fetchone()
+                    if not row:
+                        raise
+                    draft = json.loads(row[2])
+                    db.execute('UPDATE description_drafts SET account_id=?,user_id=? WHERE id=?',
+                               (account_id, user_id, payload['draft_id']))
                 if draft['status'] != 'questions':
                     raise Conflict('Description draft is already complete')
                 if len(draft['history']) >= 12:

@@ -193,6 +193,25 @@ class CatalogTests(unittest.TestCase):
                              (result['draft_id'],)).fetchone()
         self.assertEqual(tuple(row), (Catalog.SYSTEM_DRAFT_ACCOUNT, ''))
 
+    def test_admin_can_continue_legacy_account_scoped_description_draft(self):
+        initial = {'description': 'A system character', 'idempotency_key': 'legacy-question'}
+        questions = self.catalog.create_from_description(
+            self.a, None, initial,
+            lambda context: {'status': 'questions', 'questions': ['What matters to them?']},
+            admin=True,
+        )
+        result = self.catalog.create_from_description(
+            None, None,
+            {'draft_id': questions['draft_id'], 'answers': ['Loyalty'], 'idempotency_key': 'legacy-answer'},
+            self.complete, admin=True,
+        )
+        template = self.catalog.get_template(result['template']['id'], admin=True, configuration=True)
+        self.assertEqual(template['visibility'], 'system')
+        with self.database.connect() as db:
+            row = db.execute('SELECT account_id,user_id FROM description_drafts WHERE id=?',
+                             (questions['draft_id'],)).fetchone()
+        self.assertEqual(tuple(row), (Catalog.SYSTEM_DRAFT_ACCOUNT, ''))
+
 
 if __name__ == '__main__':
     unittest.main()
