@@ -240,3 +240,17 @@ hosted live/index views. It does not implement administrator password recovery,
 multiple administrators, user login, ownership transfer, account deletion,
 full research editor hosting, automatic event pools, or final relationship
 feedback/calibration. Existing infrastructure has not been deployed or changed.
+
+## Server diagnostics
+
+Set `TEMPEST_LOG_LEVEL` to a standard Python logging level (`INFO` by default;
+`DEBUG` enables more verbose library diagnostics). Tempest emits JSON-line
+startup, provider, configuration-summary, and HTTP request records to stdout.
+HTTP records include a generated request ID, method, sanitized route, status,
+and duration; the same ID is returned as `X-Request-ID`. Request bodies,
+authorization headers, character descriptions, answers, and query parameters
+are not logged. Description completion records include only the number/range of
+nonzero baseline values, whether adjusters equal defaults, and the ownership
+scope. Missing resources now retain their specific safe error (for example,
+`Description draft not found`) instead of all being reported as
+`Personality not found`.

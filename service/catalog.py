@@ -7,11 +7,15 @@ configuration or ask questions, but cannot choose ownership or access scope.
 import copy
 import hashlib
 import json
+import logging
 import threading
 import time
 import uuid
 
 from core import Conflict, active_mapping, defaults, describe, settings, validate_vector
+
+
+logger = logging.getLogger('tempest.catalog')
 
 
 def bounded_text(value, name, maximum, required=False):
@@ -272,6 +276,13 @@ class Catalog:
                                   'baseline_range': [-10, 10], 'settings_defaults': defaults(),
                                   'dimensions': [d['name'] for d in json.loads(self.mapping.read_text())['dimensions']]}}
             generated = self._generated(generator(context))
+            if generated['status'] == 'complete':
+                baseline = generated['configuration']['baseline']
+                logger.info(json.dumps({'event':'description_configuration_validated',
+                                        'baseline_nonzero_count':sum(value != 0 for value in baseline),
+                                        'baseline_min':min(baseline),'baseline_max':max(baseline),
+                                        'settings_default':generated['configuration']['settings'] == defaults(),
+                                        'ownership_scope':'system' if system_owned else 'account'}))
             draft['status'] = generated['status']
             draft['updated_at'] = int(time.time())
             if generated['status'] == 'questions':

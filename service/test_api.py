@@ -139,6 +139,15 @@ class APITests(unittest.TestCase):
         self.assertEqual(self.call('/templates',token=self.key)[1]['templates'],[])
         self.assertEqual(self.call('/templates',token=self.admin)[1]['templates'][0]['id'],result['template']['id'])
 
+    def test_missing_description_draft_returns_specific_not_found_with_request_id(self):
+        self.server.api.generator=lambda context:None
+        status,result,headers=self.call('/characters/describe',{
+            'draft_id':str(uuid.uuid4()),'answers':['Loyalty'],'idempotency_key':'missing-draft',
+        },token=self.admin)
+        self.assertEqual(status,404)
+        self.assertEqual(result['error'],'Description draft not found')
+        self.assertTrue(headers.get('X-Request-ID'))
+
     def test_unlimited_expiration_preserves_existing_keys(self):
         base={'name':'test','kind':'account','account_id':self.a}
         status,existing,_=self.call('/admin/keys',base,token=self.admin)

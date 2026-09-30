@@ -4,7 +4,9 @@ import hmac
 import json
 import logging
 import os
+import re
 import time
+import uuid
 from pathlib import Path
 import sys
 from http.cookies import SimpleCookie
@@ -22,6 +24,21 @@ import hosted
 class Handler(BaseHTTPRequestHandler):
     def log_message(self,*args): pass  # Do not log event text or credentials.
 
+    def _safe_route(self):
+        path=urlparse(self.path).path
+        # IDs are useful to callers for correlation but need not be copied into
+        # general-purpose logs. Never include query parameters or request data.
+        return re.sub(r'(?i)(?<![a-z0-9])[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?![a-z0-9])', '{id}', path)
+
+    def _log_response(self,status):
+        if getattr(self,'_response_logged',False):return
+        self._response_logged=True
+        logger=logging.getLogger('tempest.http')
+        details={'event':'http_request','request_id':getattr(self,'request_id',''),
+                 'method':self.command,'route':self._safe_route(),'status':status,
+                 'duration_ms':round((time.perf_counter()-getattr(self,'request_started',time.perf_counter()))*1000,1)}
+        logger.log(logging.WARNING if status>=400 else logging.INFO,json.dumps(details))
+
     def respond(self,status,value,headers=None):
         if isinstance(value,dict) and 'server_turn_seconds' in value and hasattr(self,'request_started'):
             value['server_http_seconds']=time.perf_counter()-self.request_started
@@ -31,9 +48,11 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header('Content-Length',str(len(data)))
         self.send_header('Cache-Control','no-store')
         self.send_header('X-Content-Type-Options','nosniff')
+        if hasattr(self,'request_id'):self.send_header('X-Request-ID',self.request_id)
         for k,v in (headers or {}).items():self.send_header(k,v)
         self.end_headers()
         self.wfile.write(data)
+        self._log_response(status)
 
     def do_GET(self): self.handle_api('GET')
     def do_POST(self): self.handle_api('POST')
@@ -47,6 +66,8 @@ class Handler(BaseHTTPRequestHandler):
 
     def handle_api(self,method):
         self.request_started=time.perf_counter()
+        self.request_id=uuid.uuid4().hex
+        self._response_logged=False
         route=urlparse(self.path)
         if method=='GET' and route.path=='/healthz':return self.respond(200,{'status':'ready'})
         try:
@@ -105,11 +126,14 @@ class Handler(BaseHTTPRequestHandler):
         except DatabaseUnavailable:self.respond(503,{'error':'Database is temporarily busy or unavailable. Retry with the same idempotency key.'})
         except PermissionError:self.respond(403,{'error':'Access denied'})
         except Conflict as exc:self.respond(409,{'error':str(exc)})
-        except KeyError:self.respond(404,{'error':'Personality not found'})
+        except KeyError as exc:
+            message=str(exc.args[0]) if exc.args and isinstance(exc.args[0],str) else 'Not found'
+            self.respond(404,{'error':message})
         except (ValueError,TypeError,AssertionError) as exc:self.respond(400,{'error':str(exc)})
         except (BrokenPipeError,ConnectionResetError):pass
-        except Exception:
-            logging.exception('Request failed')
+        except Exception as exc:
+            logging.getLogger('tempest.http').error(json.dumps({'event':'request_failure','request_id':self.request_id,
+                                                                 'route':self._safe_route(),'error_type':type(exc).__name__}),exc_info=True)
             self.respond(500,{'error':'Internal error. Retry with the same idempotency key.'})
 
 def make_server(host,port,token,store,secure_cookie=True,public_origin=None,generator=None):
@@ -124,6 +148,8 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--host',default='127.0.0.1');parser.add_argument('--port',type=int,default=8080)
     args=parser.parse_args()
+    log_level=os.environ.get('TEMPEST_LOG_LEVEL','INFO').upper()
+    logging.basicConfig(level=getattr(logging,log_level,logging.INFO),format='%(message)s')
     token=os.environ.get('TEMPEST_API_TOKEN','')
     if len(token)<24:parser.error('Set TEMPEST_API_TOKEN to at least 24 characters')
     model=Path(os.environ.get('TEMPEST_MODEL_DIR',str(ROOT/'papers/emotion_training/artifacts/jev-discrete-v1-512-20260927')))
@@ -136,7 +162,11 @@ def main():
         database.open(wait=True)
         store=Store(os.environ.get('TEMPEST_DB','/data/tempest.sqlite'),lambda event,state:predict(model,event,state)['categories'],model.name,database=database)
         if config['dimensions']!=store.dimensions:raise ValueError('Checkpoint/index dimension mismatch')
-        server=make_server(args.host,args.port,token,store,public_origin=os.environ.get('TEMPEST_PUBLIC_ORIGIN'),generator=configured_generator(store.mapping_data))
+        generator=configured_generator(store.mapping_data)
+        logging.getLogger('tempest').info(json.dumps({'event':'startup','service':'tempest',
+                                                      'description_creation_enabled':generator is not None,
+                                                      'description_model':os.environ.get('TEMPEST_CREATOR_MODEL') or None}))
+        server=make_server(args.host,args.port,token,store,public_origin=os.environ.get('TEMPEST_PUBLIC_ORIGIN'),generator=generator)
         print(f'Tempest API listening on {args.host}:{args.port}',flush=True)
         try:server.serve_forever()
         except KeyboardInterrupt:pass
