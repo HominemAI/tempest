@@ -33,3 +33,53 @@
 /papers/biochemical-crime/
 /papers/adrenaline-opioids/
 /papers/emotion-components/
+
+# Local agent/editor state and working notes
+.agents/
+.claude/
+.impeccable/
+/CLAUDE.md
+/skills-lock.json
+/local-notes/
+
+# Local datasets, experiments and model bundles (code and model cards stay tracked)
+/data/
+/datasets/
+/runs/
+/artifacts/
+/model-bundle/
+**/.ipynb_checkpoints/
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.onnx
+*.npz
+*.npy
+*.parquet
+*.arrow
+*.jsonl
+*.jsonl.gz
+*.tar.gz
+*.zip
+*.pdf
+
+# Provider submission records; keep active.json and published anchor files tracked
+/papers/personality-mapping/batches/
+/papers/personality-mapping/workflows/
+
+# Generated corpus indexes and conversion reports; keep bibliography and vocabulary
+/papers/combined-index-catalog.json
+/papers/combined-document-labels.json
+/papers/document-index.json
+/papers/conversion-report.json
+
+# Local planning, handoffs and exploratory reports; keep usage, methods and results
+/docs/tempest-migration-plan.md
+/docs/DISPOSITION-RENAME-PLAN.md
+/papers/DESIGN.md
+/papers/PRODUCT.md
+/papers/ACCESS-GAPS.md
+/papers/INDEX-V2-HANDOFF.md
+/papers/COMPARISON-ANALYSIS-*.md
+/papers/PRESSURE-DRAFT.md
