@@ -1,4 +1,8 @@
-# Tempest service — draft v1
+# Tempest service
+
+Source publication does not include model weights or the private runtime image.
+The `model-v1` release is retained privately as a draft; public users need their own
+compatible checkpoint and encoder. See [data availability](../DATA.md).
 
 Standalone CPU HTTP service with persistent PostgreSQL personalities and turn history
 in deployment, and SQLite for local development.
