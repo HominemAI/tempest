@@ -24,3 +24,7 @@ The [first-run report](papers/emotion_training/FIRST-RUN.md) describes the origi
 ## Distribution
 
 No dataset or model-weight release is part of this source publication. Corpus access does not grant redistribution rights. Any later dataset or model release needs its own provenance, licensing, version, and checksums. Private model bundles and container images remain separately controlled.
+
+## Runtime event examples
+
+`service/example_events.json` contains five synthetic examples for source-only development. The full event pool is ignored at `service/random_events.json`. Set `TEMPEST_EVENT_POOL` to a separately supplied JSON file with a nonempty `events` array of strings (at most 1,200 characters each). These examples are not training or evaluation records.

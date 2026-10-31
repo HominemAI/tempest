@@ -32,8 +32,9 @@ docker run --rm --name tempest -p 127.0.0.1:8080:8080 \
 Application releases reuse the digest-pinned, validated `v0.2.0` runtime from
 GHCR, including CPU dependencies, checkpoint, and encoder. Authenticate Docker
 to GHCR if required to pull that private base. No model download is needed for
-this application-only build. The image includes the random-event text pool but
-not the source labeling database, credentials, or user records.
+this application-only build. Source-only development uses five synthetic example events. A deployed runtime may
+carry a separately supplied private event pool; that pool is not in the public
+repository. Set `TEMPEST_EVENT_POOL` to select an external pool.
 
 For dependency/model changes, use `service/Dockerfile.runtime`: first download
 the private `model-v1` release asset, verify `service/MODEL_SHA256`, and extract

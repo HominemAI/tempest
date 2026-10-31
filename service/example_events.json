@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "description": "Synthetic examples for source-only development; not training or evaluation data.",
+  "events": [
+    "A colleague thanks them for helping with a task.",
+    "Their train is delayed on the way home.",
+    "They finish a difficult project.",
+    "A friend cancels a planned visit.",
+    "They discover a new hobby they enjoy."
+  ]
+}

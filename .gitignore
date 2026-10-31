@@ -83,3 +83,6 @@
 /papers/INDEX-V2-HANDOFF.md
 /papers/COMPARISON-ANALYSIS-*.md
 /papers/PRESSURE-DRAFT.md
+
+# Full runtime event pool stays local; example_events.json is synthetic
+/service/random_events.json
